@@ -1,7 +1,5 @@
-Das ist eine großartige Idee. Eine gute README.md ist das Aushängeschild deines Projekts.
-Hier ist ein Vorschlag für eine moderne, zweisprachige Datei. Sie ist so formatiert, dass du sie direkt kopieren und in deine README.md auf GitHub einfügen kannst.
-Ich habe den Namen "Bastion" verwendet, da wir darüber gesprochen haben, aber du kannst das natürlich ändern.
-🛡️ Bastion — Wealth Simulation
+
+🛡️ Capital-Pilot — Wealth Simulation
 
 🇬🇧 English Description
 Bastion is a powerful, client-side Monte Carlo simulator designed to stress-test your financial independence strategy. Unlike simple compound interest calculators, Bastion simulates market chaos, inflation, and sequence-of-returns risk to answer one question: "Will my money last?"
