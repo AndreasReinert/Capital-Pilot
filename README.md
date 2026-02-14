@@ -38,9 +38,3 @@ Das Tool basiert auf einer Drei-Töpfe-Strategie, um zu visualisieren, wie dein 
  * Visualization: Chart.js
  * Styling: CSS3 Custom Properties (Variables), Glassmorphism UI
  * Font: JetBrains Mono & DM Sans (via Google Fonts)
-⚖️ Disclaimer & License
-MIT License
-Copyright (c) 2024
-⚠️ No Financial Advice / Keine Anlageberatung
-English: This software is for educational and simulation purposes only. Past performance (even simulated) is not indicative of future results. The authors are not responsible for any financial decisions made based on this tool.
-Deutsch: Diese Software dient nur zu Bildungs- und Simulationszwecken. Die Berechnungen stellen keine Anlageberatung dar. Die Autoren haften nicht für finanzielle Entscheidungen, die auf Basis dieses Tools getroffen werden.
