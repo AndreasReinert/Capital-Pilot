@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#080c14">
-    <title>Capital-Pilot — Wealth Simulation</title>
+    <title>Capital Pilot — Withdrawal Simulation</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -35,25 +34,25 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 /* Header */
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;}
 .header-left{text-align:left;}
-.header h1{font-family:‘JetBrains Mono’,monospace;font-size:clamp(1.2rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;background:linear-gradient(135deg,#e2e8f0 0%,var(–sky) 50%,var(–violet) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;}
-.header p{color:var(–text-muted);font-size:clamp(0.6rem,1.5vw,0.8rem);margin-top:0.15rem;letter-spacing:0.12em;text-transform:uppercase;}
+.header h1{font-family:'JetBrains Mono',monospace;font-size:clamp(1.2rem,3.5vw,2.4rem);font-weight:700;letter-spacing:-0.02em;background:linear-gradient(135deg,#e2e8f0 0%,var(--sky) 50%,var(--violet) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;}
+.header p{color:var(--text-muted);font-size:clamp(0.6rem,1.5vw,0.8rem);margin-top:0.15rem;letter-spacing:0.12em;text-transform:uppercase;}
 
 /* Language Picker */
 .lang-picker{position:relative;}
-.lang-btn{display:flex;align-items:center;gap:0.4rem;background:var(–bg-panel);border:1px solid var(–border-subtle);border-radius:10px;padding:0.5rem 0.75rem;color:var(–text-secondary);cursor:pointer;font-family:‘JetBrains Mono’,monospace;font-size:0.75rem;transition:all 0.2s;white-space:nowrap;}
-.lang-btn:hover{border-color:var(–sky);color:var(–sky);}
+.lang-btn{display:flex;align-items:center;gap:0.4rem;background:var(--bg-panel);border:1px solid var(--border-subtle);border-radius:10px;padding:0.5rem 0.75rem;color:var(--text-secondary);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:0.75rem;transition:all 0.2s;white-space:nowrap;}
+.lang-btn:hover{border-color:var(--sky);color:var(--sky);}
 .lang-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;}
-.lang-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:rgba(14,20,34,0.98);border:1px solid var(–border-subtle);border-radius:12px;padding:0.5rem;z-index:100;max-height:320px;overflow-y:auto;min-width:160px;backdrop-filter:blur(20px);box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.lang-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:rgba(14,20,34,0.98);border:1px solid var(--border-subtle);border-radius:12px;padding:0.5rem;z-index:100;max-height:320px;overflow-y:auto;min-width:160px;backdrop-filter:blur(20px);box-shadow:0 20px 60px rgba(0,0,0,0.6);}
 .lang-dropdown.open{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
-.lang-opt{padding:0.45rem 0.6rem;border-radius:6px;cursor:pointer;font-size:0.72rem;font-family:‘JetBrains Mono’,monospace;color:var(–text-secondary);transition:all 0.15s;white-space:nowrap;}
-.lang-opt:hover{background:rgba(56,189,248,0.1);color:var(–sky);}
-.lang-opt.active{background:rgba(56,189,248,0.15);color:var(–sky);font-weight:600;}
+.lang-opt{padding:0.45rem 0.6rem;border-radius:6px;cursor:pointer;font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-secondary);transition:all 0.15s;white-space:nowrap;}
+.lang-opt:hover{background:rgba(56,189,248,0.1);color:var(--sky);}
+.lang-opt.active{background:rgba(56,189,248,0.15);color:var(--sky);font-weight:600;}
 
 /* Panels */
-.panel{background:var(–bg-panel);border:1px solid var(–border-subtle);border-radius:14px;padding:1.25rem;backdrop-filter:blur(20px);transition:border-color 0.3s;}
+.panel{background:var(--bg-panel);border:1px solid var(--border-subtle);border-radius:14px;padding:1.25rem;backdrop-filter:blur(20px);transition:border-color 0.3s;}
 @media(min-width:768px){.panel{border-radius:16px;padding:1.5rem;}}
-.panel:hover{border-color:var(–border-hover);}
-.panel-title{font-family:‘JetBrains Mono’,monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.18em;color:var(–text-muted);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(–border-subtle);}
+.panel:hover{border-color:var(--border-hover);}
+.panel-title{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--text-muted);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border-subtle);}
 
 /* Layout */
 .layout{display:flex;flex-direction:column;gap:1rem;}
@@ -67,31 +66,31 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .param-group{margin-bottom:0.9rem;}
 .param-group:last-child{margin-bottom:0;}
 .param-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.4rem;}
-.param-label{font-size:0.75rem;color:var(–text-secondary);font-weight:500;}
-.param-value{font-family:‘JetBrains Mono’,monospace;font-size:0.75rem;font-weight:700;}
-.val-sky{color:var(–sky);}
-.val-emerald{color:var(–emerald);}
-.val-amber{color:var(–amber);}
+.param-label{font-size:0.75rem;color:var(--text-secondary);font-weight:500;}
+.param-value{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;}
+.val-sky{color:var(--sky);}
+.val-emerald{color:var(--emerald);}
+.val-amber{color:var(--amber);}
 
-input[type=“range”]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:#1e293b;outline:none;cursor:pointer;touch-action:manipulation;}
-input[type=“range”]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(–sky);box-shadow:0 0 10px rgba(56,189,248,0.35);cursor:pointer;}
-input[type=“range”]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(–sky);box-shadow:0 0 10px rgba(56,189,248,0.35);cursor:pointer;border:none;}
+input[type="range"]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:#1e293b;outline:none;cursor:pointer;touch-action:manipulation;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--sky);box-shadow:0 0 10px rgba(56,189,248,0.35);cursor:pointer;}
+input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--sky);box-shadow:0 0 10px rgba(56,189,248,0.35);cursor:pointer;border:none;}
 
 /* KPI */
 .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
 @media(min-width:768px){.kpi-grid{grid-template-columns:repeat(4,1fr);gap:0.75rem;}}
-.kpi-card{background:var(–bg-panel);border:1px solid var(–border-subtle);border-radius:10px;padding:0.9rem 0.7rem;text-align:center;transition:border-color 0.3s;}
+.kpi-card{background:var(--bg-panel);border:1px solid var(--border-subtle);border-radius:10px;padding:0.9rem 0.7rem;text-align:center;transition:border-color 0.3s;}
 @media(min-width:768px){.kpi-card{border-radius:12px;padding:1.25rem 1rem;}}
-.kpi-card.accent-sky{border-left:3px solid var(–sky);}
-.kpi-card.accent-emerald{border-left:3px solid var(–emerald);}
-.kpi-card.accent-amber{border-left:3px solid var(–amber);}
-.kpi-card.accent-violet{border-left:3px solid var(–violet);}
-.kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.12em;color:var(–text-muted);margin-bottom:0.35rem;}
+.kpi-card.accent-sky{border-left:3px solid var(--sky);}
+.kpi-card.accent-emerald{border-left:3px solid var(--emerald);}
+.kpi-card.accent-amber{border-left:3px solid var(--amber);}
+.kpi-card.accent-violet{border-left:3px solid var(--violet);}
+.kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:0.35rem;}
 @media(min-width:768px){.kpi-label{font-size:0.65rem;letter-spacing:0.15em;}}
-.kpi-value{font-family:‘JetBrains Mono’,monospace;font-size:clamp(1.1rem,3vw,1.6rem);font-weight:700;line-height:1;}
-.kpi-unit{font-size:0.6rem;color:var(–text-secondary);margin-top:0.2rem;}
+.kpi-value{font-family:'JetBrains Mono',monospace;font-size:clamp(1.1rem,3vw,1.6rem);font-weight:700;line-height:1;}
+.kpi-unit{font-size:0.6rem;color:var(--text-secondary);margin-top:0.2rem;}
 @media(min-width:768px){.kpi-unit{font-size:0.7rem;margin-top:0.3rem;}}
-.kpi-sub{font-size:0.55rem;color:var(–text-muted);margin-top:0.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.kpi-sub{font-size:0.55rem;color:var(--text-muted);margin-top:0.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 @media(min-width:768px){.kpi-sub{font-size:0.65rem;}}
 
 /* Chart */
@@ -102,16 +101,16 @@ input[type=“range”]::-moz-range-thumb{width:22px;height:22px;border-radius:5
 /* Allocation bar */
 .alloc-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:0.75rem;gap:2px;}
 .alloc-seg{transition:width 0.4s ease;border-radius:2px;}
-.alloc-labels{display:flex;justify-content:space-between;margin-top:0.5rem;font-size:0.6rem;color:var(–text-muted);}
+.alloc-labels{display:flex;justify-content:space-between;margin-top:0.5rem;font-size:0.6rem;color:var(--text-muted);}
 @media(min-width:768px){.alloc-labels{font-size:0.65rem;}}
 
 /* Stats */
 .stats-grid{display:grid;grid-template-columns:1fr;gap:0.5rem;}
 @media(min-width:768px){.stats-grid{grid-template-columns:1fr 1fr;gap:1rem;}}
-.stat-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(–border-subtle);font-size:0.72rem;gap:0.5rem;}
+.stat-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border-subtle);font-size:0.72rem;gap:0.5rem;}
 @media(min-width:768px){.stat-row{font-size:0.8rem;padding:0.5rem 0;}}
-.stat-label{color:var(–text-muted);flex-shrink:1;min-width:0;}
-.stat-val{font-family:‘JetBrains Mono’,monospace;font-weight:600;color:var(–text-primary);white-space:nowrap;}
+.stat-label{color:var(--text-muted);flex-shrink:1;min-width:0;}
+.stat-val{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);white-space:nowrap;}
 
 /* Health */
 .health-bar{width:100%;height:6px;background:#1e293b;border-radius:3px;overflow:hidden;}
@@ -119,231 +118,256 @@ input[type=“range”]::-moz-range-thumb{width:22px;height:22px;border-radius:5
 .health-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
 
 /* Warning & Info */
-.warning-box{background:rgba(251,113,133,0.08);border:1px solid rgba(251,113,133,0.2);border-radius:10px;padding:0.85rem;font-size:0.72rem;color:var(–rose);display:none;line-height:1.5;}
+.warning-box{background:rgba(251,113,133,0.08);border:1px solid rgba(251,113,133,0.2);border-radius:10px;padding:0.85rem;font-size:0.72rem;color:var(--rose);display:none;line-height:1.5;}
 .warning-box.active{display:block;}
-.info-box{background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.1);border-radius:10px;padding:0.85rem;font-size:0.7rem;color:var(–text-secondary);line-height:1.6;}
+.info-box{background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.1);border-radius:10px;padding:0.85rem;font-size:0.7rem;color:var(--text-secondary);line-height:1.6;}
 
 /* Button */
-.btn-sim{font-family:‘JetBrains Mono’,monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;background:transparent;border:1px solid var(–border-subtle);color:var(–text-secondary);padding:0.45rem 0.7rem;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.btn-sim:hover,.btn-sim:active{border-color:var(–sky);color:var(–sky);}
+.btn-sim{font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;background:transparent;border:1px solid var(--border-subtle);color:var(--text-secondary);padding:0.45rem 0.7rem;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-sim:hover,.btn-sim:active{border-color:var(--sky);color:var(--sky);}
 
 /* Legend */
 .legend-row{display:flex;flex-wrap:wrap;gap:0.5rem 0.8rem;justify-content:center;margin-top:0.6rem;}
 @media(min-width:768px){.legend-row{gap:0.6rem 1rem;margin-top:0.75rem;}}
-.legend-item{display:flex;align-items:center;gap:0.3rem;font-size:0.6rem;color:var(–text-muted);}
+.legend-item{display:flex;align-items:center;gap:0.3rem;font-size:0.6rem;color:var(--text-muted);}
 @media(min-width:768px){.legend-item{font-size:0.7rem;gap:0.4rem;}}
 .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 @media(min-width:768px){.legend-dot{width:10px;height:10px;}}
 .legend-stripe{width:8px;height:8px;border-radius:2px;background:rgba(251,113,133,0.15);border:1px solid rgba(251,113,133,0.4);flex-shrink:0;}
 
-.divider{height:1px;background:var(–border-subtle);margin:0.6rem 0;}
+.divider{height:1px;background:var(--border-subtle);margin:0.6rem 0;}
 
 /* Crisis timeline labels */
 .crisis-labels{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem;justify-content:center;}
-.crisis-tag{font-family:‘JetBrains Mono’,monospace;font-size:0.55rem;padding:0.2rem 0.45rem;border-radius:4px;background:rgba(251,113,133,0.1);color:var(–rose);border:1px solid rgba(251,113,133,0.2);white-space:nowrap;}
+.crisis-tag{font-family:'JetBrains Mono',monospace;font-size:0.55rem;padding:0.2rem 0.45rem;border-radius:4px;background:rgba(251,113,133,0.1);color:var(--rose);border:1px solid rgba(251,113,133,0.2);white-space:nowrap;}
 @media(min-width:768px){.crisis-tag{font-size:0.6rem;padding:0.25rem 0.5rem;}}
 
 /* Scrollbar */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(–text-muted);border-radius:2px;}
-</style>
-
+::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:2px;}
+    </style>
 </head>
 <body>
 <div class="app">
 
-<!-- HEADER -->
-<div class="header">
-    <div class="header-left">
-        <h1 data-i18n="title">Captital-Pilot</h1>
-        <p data-i18n="subtitle">Strategic Withdrawal Simulation</p>
-    </div>
-    <div class="lang-picker">
-        <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
-            <span id="langLabel">EN</span>
-        </button>
-        <div class="lang-dropdown" id="langDropdown"></div>
-    </div>
-</div>
-
-<div class="layout">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="panel">
-            <div class="panel-title" data-i18n="baseParams">Base Parameters</div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="startCapital">Starting Capital</span>
-                    <span class="param-value val-sky" id="val-capital">1'983'000 CHF</span>
-                </div>
-                <input type="range" id="in-capital" min="300000" max="5000000" step="10000" value="1983000">
-            </div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="duration">Withdrawal Duration</span>
-                    <span class="param-value val-sky" id="val-years">30 Years</span>
-                </div>
-                <input type="range" id="in-years" min="10" max="50" step="1" value="30">
-            </div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="targetLegacy">Target Legacy</span>
-                    <span class="param-value val-sky" id="val-legacy">500'000 CHF</span>
-                </div>
-                <input type="range" id="in-legacy" min="0" max="3000000" step="25000" value="500000">
-            </div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="inflation">Inflation (% p.a.)</span>
-                    <span class="param-value val-amber" id="val-inflation">2.0 %</span>
-                </div>
-                <input type="range" id="in-inflation" min="0" max="5" step="0.1" value="2.0">
-            </div>
-
-            <div class="divider"></div>
-            <div class="panel-title" data-i18n="marketStrategy">Market & Strategy</div>
-
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="expectedReturn">Expected Return (% p.a.)</span>
-                    <span class="param-value val-emerald" id="val-growth">7.0 %</span>
-                </div>
-                <input type="range" id="in-growth" min="2" max="12" step="0.1" value="7.0">
-            </div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="warChest">War Chest (%)</span>
-                    <span class="param-value val-amber" id="val-warchest">16.8 %</span>
-                </div>
-                <input type="range" id="in-warchest" min="0" max="35" step="0.5" value="16.8">
-            </div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="cashBuffer">Cash Buffer (Years)</span>
-                    <span class="param-value val-emerald" id="val-buffer">3.0</span>
-                </div>
-                <input type="range" id="in-buffer" min="0" max="5" step="0.5" value="3">
-            </div>
-            <div class="param-group">
-                <div class="param-header">
-                    <span class="param-label" data-i18n="pension">Pension (monthly)</span>
-                    <span class="param-value val-emerald" id="val-ahv">1'500 CHF</span>
-                </div>
-                <input type="range" id="in-ahv" min="0" max="8000" step="100" value="1500">
-            </div>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <h1 data-i18n="title">Capital Pilot</h1>
+            <p data-i18n="subtitle">Strategic Withdrawal Simulation</p>
         </div>
-
-        <!-- Allocation -->
-        <div class="panel">
-            <div class="panel-title" data-i18n="allocation">Capital Allocation</div>
-            <div class="alloc-bar" id="alloc-bar"></div>
-            <div class="alloc-labels">
-                <span>ETF: <span id="alloc-etf" style="color:var(--sky)">—</span></span>
-                <span><span data-i18n="bufferShort">Buffer</span>: <span id="alloc-buf" style="color:var(--emerald)">—</span></span>
-                <span><span data-i18n="warShort">War</span>: <span id="alloc-war" style="color:var(--amber)">—</span></span>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+            <div class="lang-picker">
+                <button class="lang-btn" id="curBtn" onclick="toggleCurDropdown()">
+                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span id="curLabel">CHF</span>
+                </button>
+                <div class="lang-dropdown" id="curDropdown"></div>
             </div>
-        </div>
-
-        <div class="warning-box" id="warning-box"></div>
-    </div>
-
-    <!-- MAIN -->
-    <div class="main-area">
-        <!-- KPI -->
-        <div class="kpi-grid">
-            <div class="kpi-card accent-sky">
-                <div class="kpi-label" data-i18n="monthlyBudget">Monthly Budget</div>
-                <div class="kpi-value" id="kpi-monthly" style="color:var(--sky)">—</div>
-                <div class="kpi-unit">CHF / <span data-i18n="month">month</span></div>
-                <div class="kpi-sub" id="kpi-monthly-sub"></div>
+            <div class="lang-picker">
+                <button class="lang-btn" id="langBtn" onclick="toggleLangDropdown()">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+                    <span id="langLabel">EN</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown"></div>
             </div>
-            <div class="kpi-card accent-emerald">
-                <div class="kpi-label" data-i18n="cashBufferLabel">Cash Buffer</div>
-                <div class="kpi-value" id="kpi-buffer" style="color:var(--emerald)">—</div>
-                <div class="kpi-unit" data-i18n="chfSafety">CHF Safety</div>
-                <div class="kpi-sub" id="kpi-buffer-months"></div>
-            </div>
-            <div class="kpi-card accent-amber">
-                <div class="kpi-label" data-i18n="warChestLabel">War Chest</div>
-                <div class="kpi-value" id="kpi-warchest" style="color:var(--amber)">—</div>
-                <div class="kpi-unit" data-i18n="chfCrash">CHF for Crashes</div>
-            </div>
-            <div class="kpi-card accent-violet">
-                <div class="kpi-label" data-i18n="purchasingPower">Purchasing Power</div>
-                <div class="kpi-value" id="kpi-real" style="color:var(--violet)">—</div>
-                <div class="kpi-unit" data-i18n="chfReal">CHF real (today)</div>
-                <div class="kpi-sub" id="kpi-real-sub"></div>
-            </div>
-        </div>
-
-        <!-- Health -->
-        <div class="panel">
-            <div class="health-row">
-                <div class="panel-title" style="margin:0;border:none;padding:0" data-i18n="strategyHealth">Strategy Health</div>
-                <span id="health-label" style="font-family:'JetBrains Mono';font-size:0.7rem;font-weight:700;color:var(--emerald)">Robust</span>
-            </div>
-            <div class="health-bar"><div class="health-fill" id="health-fill" style="width:80%;background:var(--emerald)"></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.55rem;color:var(--text-muted)">
-                <span data-i18n="fragile">Fragile</span><span data-i18n="stable">Stable</span><span data-i18n="robust">Robust</span>
-            </div>
-        </div>
-
-        <!-- Chart -->
-        <div class="panel">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;gap:0.5rem;flex-wrap:wrap;">
-                <div class="panel-title" style="margin:0;border:none;padding:0">
-                    <span data-i18n="historicalSim">Historical Simulation</span> · <span id="lbl-years" style="color:var(--sky)">30</span> <span data-i18n="yearsShort">Years</span>
-                </div>
-                <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
-                    <button class="btn-sim" onclick="shiftTimeline(-5)" title="Earlier">← 5Y</button>
-                    <button class="btn-sim" onclick="shiftTimeline(5)" title="Later">5Y →</button>
-                    <button class="btn-sim" onclick="recalc()">↻</button>
-                </div>
-            </div>
-            <div style="text-align:center;margin-bottom:0.4rem;">
-                <span style="font-family:'JetBrains Mono';font-size:0.7rem;color:var(--text-muted);" id="timeline-label">1995 — 2025</span>
-            </div>
-            <div class="chart-container">
-                <canvas id="mainChart"></canvas>
-            </div>
-            <div class="legend-row">
-                <div class="legend-item"><div class="legend-dot" style="background:var(--sky)"></div> <span data-i18n="etfDepot">ETF Depot</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:var(--emerald)"></div> <span data-i18n="bufferShort">Buffer</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> <span data-i18n="warShort">War Chest</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:var(--rose);opacity:0.5"></div> <span data-i18n="totalWealth">Total</span></div>
-                <div class="legend-item"><div class="legend-stripe"></div> <span data-i18n="crisisPhase">Crisis</span></div>
-            </div>
-            <div class="crisis-labels" id="crisis-tags"></div>
-        </div>
-
-        <!-- Stats -->
-        <div class="panel">
-            <div class="panel-title" data-i18n="withdrawalAnalysis">Withdrawal Analysis</div>
-            <div class="stats-grid">
-                <div>
-                    <div class="stat-row"><span class="stat-label" data-i18n="totalWithdrawal">Total Withdrawal</span><span class="stat-val" id="stat-total-out">—</span></div>
-                    <div class="stat-row"><span class="stat-label" data-i18n="capitalUsed">Capital Used</span><span class="stat-val" id="stat-capital-used">—</span></div>
-                    <div class="stat-row"><span class="stat-label" style="color:var(--emerald)" data-i18n="marketGain">Market Gain</span><span class="stat-val" style="color:var(--emerald)" id="stat-market-gain">—</span></div>
-                    <div class="stat-row"><span class="stat-label">SWR</span><span class="stat-val" id="stat-swr">—</span></div>
-                </div>
-                <div>
-                    <div class="stat-row"><span class="stat-label" data-i18n="endWealth">End Wealth (Sim)</span><span class="stat-val" id="stat-end-value">—</span></div>
-                    <div class="stat-row"><span class="stat-label" data-i18n="worstDepot">Worst Depot Value</span><span class="stat-val" id="stat-worst">—</span></div>
-                    <div class="stat-row"><span class="stat-label" data-i18n="crisesSurvived">Crises Survived</span><span class="stat-val" id="stat-crises">—</span></div>
-                    <div class="stat-row"><span class="stat-label" data-i18n="bufferMonths">Buffer Months Used</span><span class="stat-val" id="stat-buffer-used">—</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="info-box">
-            <strong style="color:var(--sky)">v4:</strong>
-            <span data-i18n="methodInfo">Historical crisis overlay (1975–2025) with real events: Oil Crisis, Black Monday, Dotcom, GFC, COVID, 2022 Bear. Shift the timeline to see how early/late crises affect your plan. Newton-Raphson solver, inflation-adjusted withdrawals, dynamic reduction on drawdowns.</span>
         </div>
     </div>
-</div>
 
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="panel">
+                <div class="panel-title" data-i18n="baseParams">Base Parameters</div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="startCapital">Starting Capital</span>
+                        <span class="param-value val-sky" id="val-capital">1'983'000 CHF</span>
+                    </div>
+                    <input type="range" id="in-capital" min="300000" max="5000000" step="10000" value="1983000">
+                </div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="duration">Withdrawal Duration</span>
+                        <span class="param-value val-sky" id="val-years">30 Years</span>
+                    </div>
+                    <input type="range" id="in-years" min="10" max="50" step="1" value="30">
+                </div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="targetLegacy">Target Legacy</span>
+                        <span class="param-value val-sky" id="val-legacy">500'000 CHF</span>
+                    </div>
+                    <input type="range" id="in-legacy" min="0" max="3000000" step="25000" value="500000">
+                </div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="inflation">Inflation (% p.a.)</span>
+                        <span class="param-value val-amber" id="val-inflation">2.0 %</span>
+                    </div>
+                    <input type="range" id="in-inflation" min="0" max="5" step="0.1" value="2.0">
+                </div>
+
+                <div class="divider"></div>
+                <div class="panel-title" data-i18n="marketStrategy">Market & Strategy</div>
+
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="expectedReturn">Expected Return (% p.a.)</span>
+                        <span class="param-value val-emerald" id="val-growth">7.0 %</span>
+                    </div>
+                    <input type="range" id="in-growth" min="2" max="12" step="0.1" value="7.0">
+                </div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="warChest">War Chest (%)</span>
+                        <span class="param-value val-amber" id="val-warchest">16.8 %</span>
+                    </div>
+                    <input type="range" id="in-warchest" min="0" max="35" step="0.5" value="16.8">
+                </div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="cashBuffer">Cash Buffer (Years)</span>
+                        <span class="param-value val-emerald" id="val-buffer">3.0</span>
+                    </div>
+                    <input type="range" id="in-buffer" min="0" max="5" step="0.5" value="3">
+                </div>
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="pension">Pension (monthly)</span>
+                        <span class="param-value val-emerald" id="val-ahv">1'500 CHF</span>
+                    </div>
+                    <input type="range" id="in-ahv" min="0" max="8000" step="100" value="1500">
+                </div>
+
+                <div class="divider"></div>
+                <div class="panel-title" data-i18n="safetyLimits">Safety Limits</div>
+
+                <div class="param-group">
+                    <div class="param-header">
+                        <span class="param-label" data-i18n="maxSWR">Max Withdrawal Rate (%)</span>
+                        <span class="param-value" style="color:var(--rose)" id="val-maxswr">4.0 %</span>
+                    </div>
+                    <input type="range" id="in-maxswr" min="2" max="8" step="0.1" value="4.0">
+                    <div style="display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.55rem;color:var(--text-muted)">
+                        <span data-i18n="conservative">Conservative</span>
+                        <span data-i18n="aggressive">Aggressive</span>
+                    </div>
+                </div>
+
+                <div id="swr-impact" style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:8px;padding:0.6rem;margin-top:0.5rem;font-size:0.65rem;color:var(--violet);display:none;line-height:1.5;"></div>
+            </div>
+
+            <!-- Allocation -->
+            <div class="panel">
+                <div class="panel-title" data-i18n="allocation">Capital Allocation</div>
+                <div class="alloc-bar" id="alloc-bar"></div>
+                <div class="alloc-labels">
+                    <span>ETF: <span id="alloc-etf" style="color:var(--sky)">—</span></span>
+                    <span><span data-i18n="bufferShort">Buffer</span>: <span id="alloc-buf" style="color:var(--emerald)">—</span></span>
+                    <span><span data-i18n="warShort">War</span>: <span id="alloc-war" style="color:var(--amber)">—</span></span>
+                </div>
+            </div>
+
+            <div class="warning-box" id="warning-box"></div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main-area">
+            <!-- KPI -->
+            <div class="kpi-grid">
+                <div class="kpi-card accent-sky">
+                    <div class="kpi-label" data-i18n="monthlyBudget">Monthly Budget</div>
+                    <div class="kpi-value" id="kpi-monthly" style="color:var(--sky)">—</div>
+                    <div class="kpi-unit"><span class="cur-unit">CHF</span> / <span data-i18n="month">month</span></div>
+                    <div class="kpi-sub" id="kpi-monthly-sub"></div>
+                </div>
+                <div class="kpi-card accent-emerald">
+                    <div class="kpi-label" data-i18n="cashBufferLabel">Cash Buffer</div>
+                    <div class="kpi-value" id="kpi-buffer" style="color:var(--emerald)">—</div>
+                    <div class="kpi-unit"><span class="cur-unit">CHF</span> <span data-i18n="chfSafety">Safety</span></div>
+                    <div class="kpi-sub" id="kpi-buffer-months"></div>
+                </div>
+                <div class="kpi-card accent-amber">
+                    <div class="kpi-label" data-i18n="warChestLabel">War Chest</div>
+                    <div class="kpi-value" id="kpi-warchest" style="color:var(--amber)">—</div>
+                    <div class="kpi-unit"><span class="cur-unit">CHF</span> <span data-i18n="chfCrash">for Crashes</span></div>
+                </div>
+                <div class="kpi-card accent-violet">
+                    <div class="kpi-label" data-i18n="purchasingPower">Purchasing Power</div>
+                    <div class="kpi-value" id="kpi-real" style="color:var(--violet)">—</div>
+                    <div class="kpi-unit"><span class="cur-unit">CHF</span> <span data-i18n="chfReal">real (today)</span></div>
+                    <div class="kpi-sub" id="kpi-real-sub"></div>
+                </div>
+            </div>
+
+            <!-- Health -->
+            <div class="panel">
+                <div class="health-row">
+                    <div class="panel-title" style="margin:0;border:none;padding:0" data-i18n="strategyHealth">Strategy Health</div>
+                    <span id="health-label" style="font-family:'JetBrains Mono';font-size:0.7rem;font-weight:700;color:var(--emerald)">Robust</span>
+                </div>
+                <div class="health-bar"><div class="health-fill" id="health-fill" style="width:80%;background:var(--emerald)"></div></div>
+                <div style="display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.55rem;color:var(--text-muted)">
+                    <span data-i18n="fragile">Fragile</span><span data-i18n="stable">Stable</span><span data-i18n="robust">Robust</span>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="panel">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;gap:0.5rem;flex-wrap:wrap;">
+                    <div class="panel-title" style="margin:0;border:none;padding:0">
+                        <span data-i18n="historicalSim">Historical Simulation</span> · <span id="lbl-years" style="color:var(--sky)">30</span> <span data-i18n="yearsShort">Years</span>
+                    </div>
+                    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                        <button class="btn-sim" onclick="shiftTimeline(-5)" title="Earlier">← 5Y</button>
+                        <button class="btn-sim" onclick="shiftTimeline(5)" title="Later">5Y →</button>
+                        <button class="btn-sim" onclick="recalc()">↻</button>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-bottom:0.4rem;">
+                    <span style="font-family:'JetBrains Mono';font-size:0.7rem;color:var(--text-muted);" id="timeline-label">1995 — 2025</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
+                <div class="legend-row">
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--sky)"></div> <span data-i18n="etfDepot">ETF Depot</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--emerald)"></div> <span data-i18n="bufferShort">Buffer</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> <span data-i18n="warShort">War Chest</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--rose);opacity:0.5"></div> <span data-i18n="totalWealth">Total</span></div>
+                    <div class="legend-item"><div class="legend-stripe"></div> <span data-i18n="crisisPhase">Crisis</span></div>
+                </div>
+                <div class="crisis-labels" id="crisis-tags"></div>
+            </div>
+
+            <!-- Stats -->
+            <div class="panel">
+                <div class="panel-title" data-i18n="withdrawalAnalysis">Withdrawal Analysis</div>
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="totalWithdrawal">Total Withdrawal</span><span class="stat-val" id="stat-total-out">—</span></div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="capitalUsed">Capital Used</span><span class="stat-val" id="stat-capital-used">—</span></div>
+                        <div class="stat-row"><span class="stat-label" style="color:var(--emerald)" data-i18n="marketGain">Market Gain</span><span class="stat-val" style="color:var(--emerald)" id="stat-market-gain">—</span></div>
+                        <div class="stat-row"><span class="stat-label">SWR</span><span class="stat-val" id="stat-swr">—</span></div>
+                    </div>
+                    <div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="endWealth">End Wealth (Sim)</span><span class="stat-val" id="stat-end-value">—</span></div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="worstDepot">Worst Depot Value</span><span class="stat-val" id="stat-worst">—</span></div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="projectedLegacy">Projected Legacy</span><span class="stat-val" style="color:var(--violet)" id="stat-proj-legacy">—</span></div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="crisesSurvived">Crises Survived</span><span class="stat-val" id="stat-crises">—</span></div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="bufferMonths">Buffer Months Used</span><span class="stat-val" id="stat-buffer-used">—</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong style="color:var(--sky)">v4:</strong>
+                <span data-i18n="methodInfo">Historical crisis overlay (1975–2025) with real events: Oil Crisis, Black Monday, Dotcom, GFC, COVID, 2022 Bear. Shift the timeline to see how early/late crises affect your plan. Newton-Raphson solver, inflation-adjusted withdrawals, dynamic reduction on drawdowns.</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -353,14 +377,14 @@ input[type=“range”]::-moz-range-thumb{width:22px;height:22px;border-radius:5
 
 const LANGS = {
 en:{code:'EN',name:'English',
-    title:'Financial Fortress',subtitle:'Strategic Withdrawal Simulation',
+    title:'Capital Pilot',subtitle:'Strategic Withdrawal Simulation',
     baseParams:'Base Parameters',startCapital:'Starting Capital',duration:'Withdrawal Duration',
     targetLegacy:'Target Legacy',inflation:'Inflation (% p.a.)',marketStrategy:'Market & Strategy',
     expectedReturn:'Expected Return (% p.a.)',warChest:'War Chest (%)',cashBuffer:'Cash Buffer (Years)',
     pension:'Pension (monthly)',allocation:'Capital Allocation',bufferShort:'Buffer',warShort:'War',
-    monthlyBudget:'Monthly Budget',month:'month',cashBufferLabel:'Cash Buffer',chfSafety:'CHF Safety',
-    warChestLabel:'War Chest',chfCrash:'CHF for Crashes',purchasingPower:'Purchasing Power',
-    chfReal:'CHF real (today)',strategyHealth:'Strategy Health',fragile:'Fragile',stable:'Stable',
+    monthlyBudget:'Monthly Budget',month:'month',cashBufferLabel:'Cash Buffer',chfSafety:'Safety',
+    warChestLabel:'War Chest',chfCrash:'for Crashes',purchasingPower:'Purchasing Power',
+    chfReal:'real (today)',strategyHealth:'Strategy Health',fragile:'Fragile',stable:'Stable',
     robust:'Robust',moderate:'Moderate',historicalSim:'Historical Simulation',yearsShort:'Years',
     etfDepot:'ETF Depot',totalWealth:'Total',crisisPhase:'Crisis',
     withdrawalAnalysis:'Withdrawal Analysis',totalWithdrawal:'Total Withdrawal (nominal)',
@@ -368,6 +392,9 @@ en:{code:'EN',name:'English',
     worstDepot:'Worst Depot Value',crisesSurvived:'Crises Survived',bufferMonths:'Buffer Months Used',
     yearsUnit:'Years',monthsUnit:'months',monthsCoverage:'months coverage',
     inclPension:'incl. pension',bearMarkets:'bear markets',
+    safetyLimits:'Safety Limits',maxSWR:'Max Withdrawal Rate (%)',conservative:'Conservative',aggressive:'Aggressive',
+    swrCapped:'SWR capped at {0}%. Budget reduced, projected legacy increases.',swrUncapped:'SWR below limit — no cap applied.',
+    projectedLegacy:'Projected Legacy (det.)',
     warnLowETF:'⚠ Less than 15% in ETF — minimal growth potential.',
     warnNoETF:'🚫 No capital for ETF! Reduce buffer or war chest.',
     warnNegative:'🚫 No positive withdrawal possible with these parameters.',
@@ -377,14 +404,14 @@ en:{code:'EN',name:'English',
     nominalEq:'nominal = {0} real',
 },
 de:{code:'DE',name:'Deutsch',
-    title:'Finanz Festung',subtitle:'Strategische Entnahme-Simulation',
+    title:'Capital Pilot',subtitle:'Strategische Entnahme-Simulation',
     baseParams:'Basis-Parameter',startCapital:'Startkapital',duration:'Entnahme-Dauer',
     targetLegacy:'Ziel-Erbe',inflation:'Inflation (% p.a.)',marketStrategy:'Markt & Strategie',
     expectedReturn:'Erwartete Rendite (% p.a.)',warChest:'Kriegskasse (%)',cashBuffer:'Cash-Puffer (Jahre)',
     pension:'Rente AHV/PK (mtl.)',allocation:'Kapital-Aufteilung',bufferShort:'Puffer',warShort:'Krieg',
-    monthlyBudget:'Monats-Budget',month:'Monat',cashBufferLabel:'Cash-Puffer',chfSafety:'CHF Sicherheit',
-    warChestLabel:'Kriegskasse',chfCrash:'CHF für Crashs',purchasingPower:'Kaufkraft',
-    chfReal:'CHF real (heute)',strategyHealth:'Strategie-Gesundheit',fragile:'Fragil',stable:'Stabil',
+    monthlyBudget:'Monats-Budget',month:'Monat',cashBufferLabel:'Cash-Puffer',chfSafety:'Sicherheit',
+    warChestLabel:'Kriegskasse',chfCrash:'für Crashs',purchasingPower:'Kaufkraft',
+    chfReal:'real (heute)',strategyHealth:'Strategie-Gesundheit',fragile:'Fragil',stable:'Stabil',
     robust:'Robust',moderate:'Mässig',historicalSim:'Historische Simulation',yearsShort:'Jahre',
     etfDepot:'ETF-Depot',totalWealth:'Gesamt',crisisPhase:'Krise',
     withdrawalAnalysis:'Auszahlungs-Analyse',totalWithdrawal:'Gesamte Entnahme (nominal)',
@@ -392,6 +419,9 @@ de:{code:'DE',name:'Deutsch',
     worstDepot:'Tiefster Depotwert',crisesSurvived:'Krisen durchlebt',bufferMonths:'Puffer-Monate genutzt',
     yearsUnit:'Jahre',monthsUnit:'Monate',monthsCoverage:'Monate Deckung',
     inclPension:'inkl. Rente',bearMarkets:'Bärenmärkte',
+    safetyLimits:'Sicherheits-Limits',maxSWR:'Max. Entnahme-Rate (%)',conservative:'Konservativ',aggressive:'Aggressiv',
+    swrCapped:'SWR auf {0}% gedeckelt. Budget reduziert, Erbe steigt.',swrUncapped:'SWR unter Limit — kein Cap aktiv.',
+    projectedLegacy:'Projiziertes Erbe (det.)',
     warnLowETF:'⚠ Weniger als 15% im ETF — kaum Wachstum.',
     warnNoETF:'🚫 Kein Kapital für ETF! Reduziere Puffer oder Kriegskasse.',
     warnNegative:'🚫 Keine positive Entnahme mit diesen Parametern möglich.',
@@ -401,14 +431,14 @@ de:{code:'DE',name:'Deutsch',
     nominalEq:'nominal = {0} real',
 },
 fr:{code:'FR',name:'Français',
-    title:'Forteresse Financière',subtitle:'Simulation de Retrait Stratégique',
+    title:'Capital Pilot',subtitle:'Simulation de Retrait Stratégique',
     baseParams:'Paramètres de base',startCapital:'Capital initial',duration:'Durée de retrait',
     targetLegacy:'Héritage cible',inflation:'Inflation (% p.a.)',marketStrategy:'Marché & Stratégie',
     expectedReturn:'Rendement attendu (% p.a.)',warChest:'Réserve de guerre (%)',cashBuffer:'Tampon Cash (Années)',
     pension:'Retraite (mensuel)',allocation:'Allocation du capital',bufferShort:'Tampon',warShort:'Guerre',
-    monthlyBudget:'Budget Mensuel',month:'mois',cashBufferLabel:'Tampon Cash',chfSafety:'CHF Sécurité',
-    warChestLabel:'Réserve de Guerre',chfCrash:'CHF pour Crashs',purchasingPower:'Pouvoir d\'achat',
-    chfReal:'CHF réel (auj.)',strategyHealth:'Santé de la Stratégie',fragile:'Fragile',stable:'Stable',
+    monthlyBudget:'Budget Mensuel',month:'mois',cashBufferLabel:'Tampon Cash',chfSafety:'Sécurité',
+    warChestLabel:'Réserve de Guerre',chfCrash:'pour Crashs',purchasingPower:'Pouvoir d\'achat',
+    chfReal:'réel (auj.)',strategyHealth:'Santé de la Stratégie',fragile:'Fragile',stable:'Stable',
     robust:'Robuste',moderate:'Modéré',historicalSim:'Simulation Historique',yearsShort:'Ans',
     etfDepot:'Dépôt ETF',totalWealth:'Total',crisisPhase:'Crise',
     withdrawalAnalysis:'Analyse des Retraits',totalWithdrawal:'Retrait total (nominal)',
@@ -416,6 +446,9 @@ fr:{code:'FR',name:'Français',
     worstDepot:'Pire valeur dépôt',crisesSurvived:'Crises traversées',bufferMonths:'Mois tampon utilisés',
     yearsUnit:'Ans',monthsUnit:'mois',monthsCoverage:'mois couverture',
     inclPension:'incl. retraite',bearMarkets:'marchés baissiers',
+    safetyLimits:'Limites de Sécurité',maxSWR:'Taux de Retrait Max (%)',conservative:'Prudent',aggressive:'Agressif',
+    swrCapped:'Taux plafonné à {0}%. Budget réduit, héritage augmente.',swrUncapped:'Taux sous la limite.',
+    projectedLegacy:'Héritage projeté (dét.)',
     warnLowETF:'⚠ Moins de 15% en ETF.',warnNoETF:'🚫 Pas de capital ETF!',
     warnNegative:'🚫 Retrait impossible.',warnHighSWR:'⚠ Taux {0}% — au-dessus de la règle des 4%.',
     warnHighLegacy:'⚠ Héritage > 60% du capital.',
@@ -423,14 +456,14 @@ fr:{code:'FR',name:'Français',
     nominalEq:'nominal = {0} réel',
 },
 es:{code:'ES',name:'Español',
-    title:'Fortaleza Financiera',subtitle:'Simulación de Retiro Estratégico',
+    title:'Capital Pilot',subtitle:'Simulación de Retiro Estratégico',
     baseParams:'Parámetros Base',startCapital:'Capital Inicial',duration:'Duración de Retiro',
     targetLegacy:'Herencia Objetivo',inflation:'Inflación (% p.a.)',marketStrategy:'Mercado y Estrategia',
     expectedReturn:'Rendimiento Esperado (% p.a.)',warChest:'Reserva de Guerra (%)',cashBuffer:'Colchón de Efectivo (Años)',
     pension:'Pensión (mensual)',allocation:'Asignación de Capital',bufferShort:'Colchón',warShort:'Guerra',
-    monthlyBudget:'Presupuesto Mensual',month:'mes',cashBufferLabel:'Colchón de Efectivo',chfSafety:'CHF Seguridad',
-    warChestLabel:'Reserva de Guerra',chfCrash:'CHF para Crisis',purchasingPower:'Poder Adquisitivo',
-    chfReal:'CHF real (hoy)',strategyHealth:'Salud de la Estrategia',fragile:'Frágil',stable:'Estable',
+    monthlyBudget:'Presupuesto Mensual',month:'mes',cashBufferLabel:'Colchón de Efectivo',chfSafety:'Seguridad',
+    warChestLabel:'Reserva de Guerra',chfCrash:'para Crisis',purchasingPower:'Poder Adquisitivo',
+    chfReal:'real (hoy)',strategyHealth:'Salud de la Estrategia',fragile:'Frágil',stable:'Estable',
     robust:'Robusto',moderate:'Moderado',historicalSim:'Simulación Histórica',yearsShort:'Años',
     etfDepot:'Depósito ETF',totalWealth:'Total',crisisPhase:'Crisis',
     withdrawalAnalysis:'Análisis de Retiros',totalWithdrawal:'Retiro total (nominal)',
@@ -438,6 +471,9 @@ es:{code:'ES',name:'Español',
     worstDepot:'Peor valor depósito',crisesSurvived:'Crisis superadas',bufferMonths:'Meses colchón usados',
     yearsUnit:'Años',monthsUnit:'meses',monthsCoverage:'meses cobertura',
     inclPension:'incl. pensión',bearMarkets:'mercados bajistas',
+    safetyLimits:'Límites de Seguridad',maxSWR:'Tasa Máx. Retiro (%)',conservative:'Conservador',aggressive:'Agresivo',
+    swrCapped:'Tasa limitada a {0}%. Presupuesto reducido, herencia aumenta.',swrUncapped:'Tasa bajo límite.',
+    projectedLegacy:'Herencia proyectada (det.)',
     warnLowETF:'⚠ Menos del 15% en ETF.',warnNoETF:'🚫 Sin capital para ETF!',
     warnNegative:'🚫 Retiro imposible.',warnHighSWR:'⚠ Tasa {0}% — sobre la regla del 4%.',
     warnHighLegacy:'⚠ Herencia > 60% del capital.',
@@ -445,14 +481,14 @@ es:{code:'ES',name:'Español',
     nominalEq:'nominal = {0} real',
 },
 it:{code:'IT',name:'Italiano',
-    title:'Fortezza Finanziaria',subtitle:'Simulazione di Prelievo Strategico',
+    title:'Capital Pilot',subtitle:'Simulazione di Prelievo Strategico',
     baseParams:'Parametri Base',startCapital:'Capitale Iniziale',duration:'Durata del Prelievo',
     targetLegacy:'Eredità Obiettivo',inflation:'Inflazione (% p.a.)',marketStrategy:'Mercato e Strategia',
     expectedReturn:'Rendimento Atteso (% p.a.)',warChest:'Riserva di Guerra (%)',cashBuffer:'Cuscinetto Cash (Anni)',
     pension:'Pensione (mensile)',allocation:'Allocazione Capitale',bufferShort:'Cuscinetto',warShort:'Guerra',
-    monthlyBudget:'Budget Mensile',month:'mese',cashBufferLabel:'Cuscinetto Cash',chfSafety:'CHF Sicurezza',
-    warChestLabel:'Riserva di Guerra',chfCrash:'CHF per Crash',purchasingPower:'Potere d\'Acquisto',
-    chfReal:'CHF reale (oggi)',strategyHealth:'Salute della Strategia',fragile:'Fragile',stable:'Stabile',
+    monthlyBudget:'Budget Mensile',month:'mese',cashBufferLabel:'Cuscinetto Cash',chfSafety:'Sicurezza',
+    warChestLabel:'Riserva di Guerra',chfCrash:'per Crash',purchasingPower:'Potere d\'Acquisto',
+    chfReal:'reale (oggi)',strategyHealth:'Salute della Strategia',fragile:'Fragile',stable:'Stabile',
     robust:'Robusto',moderate:'Moderato',historicalSim:'Simulazione Storica',yearsShort:'Anni',
     etfDepot:'Deposito ETF',totalWealth:'Totale',crisisPhase:'Crisi',
     withdrawalAnalysis:'Analisi Prelievi',totalWithdrawal:'Prelievo totale',capitalUsed:'Capitale usato',
@@ -460,28 +496,31 @@ it:{code:'IT',name:'Italiano',
     crisesSurvived:'Crisi superate',bufferMonths:'Mesi cuscinetto usati',
     yearsUnit:'Anni',monthsUnit:'mesi',monthsCoverage:'mesi copertura',
     inclPension:'incl. pensione',bearMarkets:'mercati ribassisti',
+    safetyLimits:'Limiti di Sicurezza',maxSWR:'Tasso Prelievo Max (%)',conservative:'Prudente',aggressive:'Aggressivo',
+    swrCapped:'Tasso limitato a {0}%. Budget ridotto, eredità aumenta.',swrUncapped:'Tasso sotto il limite.',
+    projectedLegacy:'Eredità proiettata (det.)',
     warnLowETF:'⚠ Meno del 15% in ETF.',warnNoETF:'🚫 Nessun capitale ETF!',
     warnNegative:'🚫 Prelievo impossibile.',warnHighSWR:'⚠ Tasso {0}% — sopra la regola del 4%.',
     warnHighLegacy:'⚠ Eredità > 60% del capitale.',
     methodInfo:'Crisi storiche (1975–2025): Crisi petrolifera, Black Monday, Dotcom, Crisi finanziaria, COVID, 2022.',
     nominalEq:'nominale = {0} reale',
 },
-pt:{code:'PT',name:'Português',title:'Fortaleza Financeira',subtitle:'Simulação de Retirada Estratégica',baseParams:'Parâmetros Base',startCapital:'Capital Inicial',duration:'Duração da Retirada',targetLegacy:'Herança Alvo',inflation:'Inflação (% a.a.)',marketStrategy:'Mercado e Estratégia',expectedReturn:'Retorno Esperado (% a.a.)',warChest:'Reserva de Guerra (%)',cashBuffer:'Colchão de Caixa (Anos)',pension:'Pensão (mensal)',allocation:'Alocação de Capital',bufferShort:'Colchão',warShort:'Guerra',monthlyBudget:'Orçamento Mensal',month:'mês',cashBufferLabel:'Colchão de Caixa',chfSafety:'CHF Segurança',warChestLabel:'Reserva de Guerra',chfCrash:'CHF para Crashes',purchasingPower:'Poder de Compra',chfReal:'CHF real (hoje)',strategyHealth:'Saúde da Estratégia',fragile:'Frágil',stable:'Estável',robust:'Robusto',moderate:'Moderado',historicalSim:'Simulação Histórica',yearsShort:'Anos',etfDepot:'Depósito ETF',totalWealth:'Total',crisisPhase:'Crise',withdrawalAnalysis:'Análise de Retiradas',totalWithdrawal:'Retirada total',capitalUsed:'Capital usado',marketGain:'Ganho do mercado',endWealth:'Patrimônio final',worstDepot:'Pior valor depósito',crisesSurvived:'Crises superadas',bufferMonths:'Meses colchão usados',yearsUnit:'Anos',monthsUnit:'meses',monthsCoverage:'meses cobertura',inclPension:'incl. pensão',bearMarkets:'mercados em baixa',warnLowETF:'⚠ Menos de 15% em ETF.',warnNoETF:'🚫 Sem capital ETF!',warnNegative:'🚫 Retirada impossível.',warnHighSWR:'⚠ Taxa {0}% — acima da regra dos 4%.',warnHighLegacy:'⚠ Herança > 60% do capital.',methodInfo:'Crises históricas (1975–2025).',nominalEq:'nominal = {0} real'},
-nl:{code:'NL',name:'Nederlands',title:'Financieel Fort',subtitle:'Strategische Onttrekkingssimulatie',baseParams:'Basisparameters',startCapital:'Startkapitaal',duration:'Onttrekkingsduur',targetLegacy:'Doelerfenis',inflation:'Inflatie (% p.j.)',marketStrategy:'Markt & Strategie',expectedReturn:'Verwacht Rendement (% p.j.)',warChest:'Oorlogskas (%)',cashBuffer:'Cash Buffer (Jaren)',pension:'Pensioen (maandelijks)',allocation:'Kapitaalallocatie',bufferShort:'Buffer',warShort:'Oorlog',monthlyBudget:'Maandbudget',month:'maand',cashBufferLabel:'Cash Buffer',chfSafety:'CHF Veiligheid',warChestLabel:'Oorlogskas',chfCrash:'CHF voor Crashes',purchasingPower:'Koopkracht',chfReal:'CHF reëel (nu)',strategyHealth:'Strategiegezondheid',fragile:'Fragiel',stable:'Stabiel',robust:'Robuust',moderate:'Matig',historicalSim:'Historische Simulatie',yearsShort:'Jaar',etfDepot:'ETF Depot',totalWealth:'Totaal',crisisPhase:'Crisis',withdrawalAnalysis:'Onttrekkingsanalyse',totalWithdrawal:'Totale onttrekking',capitalUsed:'Kapitaal gebruikt',marketGain:'Marktwinst',endWealth:'Eindvermogen',worstDepot:'Laagste depotwaarde',crisesSurvived:'Crises overleefd',bufferMonths:'Buffermaanden gebruikt',yearsUnit:'Jaar',monthsUnit:'maanden',monthsCoverage:'maanden dekking',inclPension:'incl. pensioen',bearMarkets:'berenmarkten',warnLowETF:'⚠ Minder dan 15% in ETF.',warnNoETF:'🚫 Geen ETF kapitaal!',warnNegative:'🚫 Onttrekking onmogelijk.',warnHighSWR:'⚠ Tarief {0}% — boven de 4%-regel.',warnHighLegacy:'⚠ Erfenis > 60% van kapitaal.',methodInfo:'Historische crises (1975–2025).',nominalEq:'nominaal = {0} reëel'},
-pl:{code:'PL',name:'Polski',title:'Finansowa Twierdza',subtitle:'Symulacja Strategiczna Wypłat',baseParams:'Parametry bazowe',startCapital:'Kapitał początkowy',duration:'Okres wypłat',targetLegacy:'Docelowy spadek',inflation:'Inflacja (% r.r.)',marketStrategy:'Rynek i Strategia',expectedReturn:'Oczekiwany zwrot (% r.r.)',warChest:'Rezerwa wojenna (%)',cashBuffer:'Bufor gotówkowy (Lata)',pension:'Emerytura (mies.)',allocation:'Alokacja kapitału',bufferShort:'Bufor',warShort:'Rez.',monthlyBudget:'Budżet miesięczny',month:'miesiąc',cashBufferLabel:'Bufor gotówkowy',chfSafety:'CHF Bezp.',warChestLabel:'Rezerwa wojenna',chfCrash:'CHF na kryzysy',purchasingPower:'Siła nabywcza',chfReal:'CHF realne (dziś)',strategyHealth:'Zdrowie strategii',fragile:'Krucha',stable:'Stabilna',robust:'Solidna',moderate:'Umiarkowana',historicalSim:'Symulacja historyczna',yearsShort:'Lat',etfDepot:'Depozyt ETF',totalWealth:'Razem',crisisPhase:'Kryzys',withdrawalAnalysis:'Analiza wypłat',totalWithdrawal:'Łączna wypłata',capitalUsed:'Użyty kapitał',marketGain:'Zysk rynkowy',endWealth:'Majątek końcowy',worstDepot:'Najgorszy depozyt',crisesSurvived:'Przeżyte kryzysy',bufferMonths:'Miesiące bufora',yearsUnit:'Lat',monthsUnit:'miesięcy',monthsCoverage:'mies. pokrycia',inclPension:'z emeryturą',bearMarkets:'bessy',warnLowETF:'⚠ Poniżej 15% w ETF.',warnNoETF:'🚫 Brak kapitału ETF!',warnNegative:'🚫 Wypłata niemożliwa.',warnHighSWR:'⚠ Stopa {0}% — powyżej 4%.',warnHighLegacy:'⚠ Spadek > 60% kapitału.',methodInfo:'Kryzysy historyczne (1975–2025).',nominalEq:'nominalnie = {0} realnie'},
-ru:{code:'RU',name:'Русский',title:'Финансовая Крепость',subtitle:'Стратегическая симуляция снятия средств',baseParams:'Базовые параметры',startCapital:'Начальный капитал',duration:'Срок снятия',targetLegacy:'Целевое наследство',inflation:'Инфляция (% г.)',marketStrategy:'Рынок и Стратегия',expectedReturn:'Ожидаемая доходность (% г.)',warChest:'Резерв (%)',cashBuffer:'Кэш-буфер (Годы)',pension:'Пенсия (мес.)',allocation:'Распределение капитала',bufferShort:'Буфер',warShort:'Резерв',monthlyBudget:'Месячный бюджет',month:'мес',cashBufferLabel:'Кэш-буфер',chfSafety:'CHF Безопасн.',warChestLabel:'Резерв',chfCrash:'CHF на кризис',purchasingPower:'Покупательная сила',chfReal:'CHF реальн.',strategyHealth:'Здоровье стратегии',fragile:'Хрупкая',stable:'Стабильная',robust:'Устойчивая',moderate:'Средняя',historicalSim:'Историческая симуляция',yearsShort:'Лет',etfDepot:'ETF Депо',totalWealth:'Итого',crisisPhase:'Кризис',withdrawalAnalysis:'Анализ снятий',totalWithdrawal:'Всего снято',capitalUsed:'Использов. капитал',marketGain:'Прибыль рынка',endWealth:'Итоговый капитал',worstDepot:'Мин. значение депо',crisesSurvived:'Пережито кризисов',bufferMonths:'Мес. буфера использ.',yearsUnit:'Лет',monthsUnit:'мес.',monthsCoverage:'мес. покрытия',inclPension:'вкл. пенсию',bearMarkets:'медвежьих рынков',warnLowETF:'⚠ Менее 15% в ETF.',warnNoETF:'🚫 Нет капитала ETF!',warnNegative:'🚫 Снятие невозможно.',warnHighSWR:'⚠ Ставка {0}% — выше правила 4%.',warnHighLegacy:'⚠ Наследство > 60% капитала.',methodInfo:'Исторические кризисы (1975–2025).',nominalEq:'номинал = {0} реальн.'},
-tr:{code:'TR',name:'Türkçe',title:'Finansal Kale',subtitle:'Stratejik Çekim Simülasyonu',baseParams:'Temel Parametreler',startCapital:'Başlangıç Sermayesi',duration:'Çekim Süresi',targetLegacy:'Hedef Miras',inflation:'Enflasyon (% y.b.)',marketStrategy:'Piyasa ve Strateji',expectedReturn:'Beklenen Getiri (% y.b.)',warChest:'Savaş Sandığı (%)',cashBuffer:'Nakit Tampon (Yıl)',pension:'Emekli Maaşı (aylık)',allocation:'Sermaye Dağılımı',bufferShort:'Tampon',warShort:'Savaş',monthlyBudget:'Aylık Bütçe',month:'ay',cashBufferLabel:'Nakit Tampon',chfSafety:'CHF Güvenlik',warChestLabel:'Savaş Sandığı',chfCrash:'CHF Kriz İçin',purchasingPower:'Satın Alma Gücü',chfReal:'CHF reel (bugün)',strategyHealth:'Strateji Sağlığı',fragile:'Kırılgan',stable:'Kararlı',robust:'Sağlam',moderate:'Orta',historicalSim:'Tarihsel Simülasyon',yearsShort:'Yıl',etfDepot:'ETF Deposu',totalWealth:'Toplam',crisisPhase:'Kriz',withdrawalAnalysis:'Çekim Analizi',totalWithdrawal:'Toplam çekim',capitalUsed:'Kullanılan sermaye',marketGain:'Piyasa kazancı',endWealth:'Bitiş varlığı',worstDepot:'En düşük depo',crisesSurvived:'Atlatılan krizler',bufferMonths:'Tampon ayları',yearsUnit:'Yıl',monthsUnit:'ay',monthsCoverage:'ay kapsam',inclPension:'emekli maaşı dahil',bearMarkets:'ayı piyasası',warnLowETF:'⚠ ETF\'de %15\'den az.',warnNoETF:'🚫 ETF sermayesi yok!',warnNegative:'🚫 Çekim imkansız.',warnHighSWR:'⚠ Oran {0}% — %4 kuralının üstünde.',warnHighLegacy:'⚠ Miras > sermayenin %60\'ı.',methodInfo:'Tarihsel krizler (1975–2025).',nominalEq:'nominal = {0} reel'},
-sv:{code:'SV',name:'Svenska',title:'Finansiell Fästning',subtitle:'Strategisk Uttagssimulering',baseParams:'Basparametrar',startCapital:'Startkapital',duration:'Uttagsperiod',targetLegacy:'Målat Arv',inflation:'Inflation (% p.a.)',marketStrategy:'Marknad & Strategi',expectedReturn:'Förväntad Avkastning (% p.a.)',warChest:'Krigskassa (%)',cashBuffer:'Kontantbuffert (År)',pension:'Pension (månadsvis)',allocation:'Kapitalallokering',bufferShort:'Buffert',warShort:'Krig',monthlyBudget:'Månadsbudget',month:'månad',cashBufferLabel:'Kontantbuffert',chfSafety:'CHF Säkerhet',warChestLabel:'Krigskassa',chfCrash:'CHF för Krascher',purchasingPower:'Köpkraft',chfReal:'CHF realt (idag)',strategyHealth:'Strategihälsa',fragile:'Skör',stable:'Stabil',robust:'Robust',moderate:'Måttlig',historicalSim:'Historisk Simulering',yearsShort:'År',etfDepot:'ETF-Depot',totalWealth:'Totalt',crisisPhase:'Kris',withdrawalAnalysis:'Uttagsanalys',totalWithdrawal:'Totalt uttag',capitalUsed:'Kapital använt',marketGain:'Marknadsvinst',endWealth:'Slutförmögenhet',worstDepot:'Lägsta depotvärde',crisesSurvived:'Kriser överlevda',bufferMonths:'Buffertmånader',yearsUnit:'År',monthsUnit:'månader',monthsCoverage:'månader täckning',inclPension:'inkl. pension',bearMarkets:'björnmarknader',warnLowETF:'⚠ Under 15% i ETF.',warnNoETF:'🚫 Inget ETF-kapital!',warnNegative:'🚫 Uttag omöjligt.',warnHighSWR:'⚠ Uttag {0}% — över 4%-regeln.',warnHighLegacy:'⚠ Arv > 60% av kapital.',methodInfo:'Historiska kriser (1975–2025).',nominalEq:'nominellt = {0} realt'},
-da:{code:'DA',name:'Dansk',title:'Finansiel Fæstning',subtitle:'Strategisk Udbetalingssimulering',baseParams:'Basisparametre',startCapital:'Startkapital',duration:'Udbetalingsperiode',targetLegacy:'Mål-Arv',inflation:'Inflation (% p.a.)',marketStrategy:'Marked & Strategi',expectedReturn:'Forventet Afkast (% p.a.)',warChest:'Krigskasse (%)',cashBuffer:'Kontantbuffer (År)',pension:'Pension (månedlig)',allocation:'Kapitalallokering',bufferShort:'Buffer',warShort:'Krig',monthlyBudget:'Månedsbudget',month:'måned',cashBufferLabel:'Kontantbuffer',chfSafety:'CHF Sikkerhed',warChestLabel:'Krigskasse',chfCrash:'CHF til Kriser',purchasingPower:'Købekraft',chfReal:'CHF reel (i dag)',strategyHealth:'Strategisundhed',fragile:'Skrøbelig',stable:'Stabil',robust:'Robust',moderate:'Moderat',historicalSim:'Historisk Simulering',yearsShort:'År',etfDepot:'ETF-Depot',totalWealth:'Total',crisisPhase:'Krise',withdrawalAnalysis:'Udbetalingsanalyse',totalWithdrawal:'Total udbetaling',capitalUsed:'Kapital brugt',marketGain:'Markedsgevinst',endWealth:'Slutformue',worstDepot:'Laveste depotværdi',crisesSurvived:'Kriser overlevet',bufferMonths:'Buffermåneder',yearsUnit:'År',monthsUnit:'måneder',monthsCoverage:'måneder dækning',inclPension:'inkl. pension',bearMarkets:'bjørnemarkeder',warnLowETF:'⚠ Under 15% i ETF.',warnNoETF:'🚫 Ingen ETF-kapital!',warnNegative:'🚫 Udbetaling umulig.',warnHighSWR:'⚠ Rate {0}% — over 4%-reglen.',warnHighLegacy:'⚠ Arv > 60% af kapital.',methodInfo:'Historiske kriser (1975–2025).',nominalEq:'nominelt = {0} reelt'},
-no:{code:'NO',name:'Norsk',title:'Finansiell Festning',subtitle:'Strategisk Uttakssimulering',baseParams:'Basisparametere',startCapital:'Startkapital',duration:'Uttaksperiode',targetLegacy:'Mål-Arv',inflation:'Inflasjon (% p.a.)',marketStrategy:'Marked & Strategi',expectedReturn:'Forventet Avkastning (% p.a.)',warChest:'Krigskasse (%)',cashBuffer:'Kontantbuffer (År)',pension:'Pensjon (månedlig)',allocation:'Kapitalallokering',bufferShort:'Buffer',warShort:'Krig',monthlyBudget:'Månedsbudsjett',month:'måned',cashBufferLabel:'Kontantbuffer',chfSafety:'CHF Sikkerhet',warChestLabel:'Krigskasse',chfCrash:'CHF til Krasj',purchasingPower:'Kjøpekraft',chfReal:'CHF reell (i dag)',strategyHealth:'Strategihelse',fragile:'Skjør',stable:'Stabil',robust:'Robust',moderate:'Moderat',historicalSim:'Historisk Simulering',yearsShort:'År',etfDepot:'ETF-Depot',totalWealth:'Total',crisisPhase:'Krise',withdrawalAnalysis:'Uttaksanalyse',totalWithdrawal:'Totalt uttak',capitalUsed:'Kapital brukt',marketGain:'Markedsgevinst',endWealth:'Sluttformue',worstDepot:'Laveste depotverdi',crisesSurvived:'Kriser overlevd',bufferMonths:'Buffermåneder',yearsUnit:'År',monthsUnit:'måneder',monthsCoverage:'måneder dekning',inclPension:'inkl. pensjon',bearMarkets:'bjørnemarkeder',warnLowETF:'⚠ Under 15% i ETF.',warnNoETF:'🚫 Ingen ETF-kapital!',warnNegative:'🚫UtFuttak umulig.',warnHighSWR:'⚠ Rate {0}% — over 4%-regelen.',warnHighLegacy:'⚠ Arv > 60% av kapital.',methodInfo:'Historiske kriser (1975–2025).',nominalEq:'nominelt = {0} reelt'},
-fi:{code:'FI',name:'Suomi',title:'Taloudellinen Linnoitus',subtitle:'Strateginen Nostosimulaatio',baseParams:'Perusparametrit',startCapital:'Alkupääoma',duration:'Nostojakso',targetLegacy:'Perintötavoite',inflation:'Inflaatio (% v.)',marketStrategy:'Markkinat & Strategia',expectedReturn:'Odotettu Tuotto (% v.)',warChest:'Sotakassa (%)',cashBuffer:'Käteispuskuri (Vuotta)',pension:'Eläke (kk)',allocation:'Pääoman Jako',bufferShort:'Puskuri',warShort:'Sota',monthlyBudget:'Kuukausibudjetti',month:'kk',cashBufferLabel:'Käteispuskuri',chfSafety:'CHF Turva',warChestLabel:'Sotakassa',chfCrash:'CHF Kriisiin',purchasingPower:'Ostovoima',chfReal:'CHF reaal. (tänään)',strategyHealth:'Strategian Terveys',fragile:'Hauras',stable:'Vakaa',robust:'Vahva',moderate:'Kohtalainen',historicalSim:'Historiallinen Simulaatio',yearsShort:'Vuotta',etfDepot:'ETF-Tili',totalWealth:'Yhteensä',crisisPhase:'Kriisi',withdrawalAnalysis:'Nostoanalyysi',totalWithdrawal:'Nostot yhteensä',capitalUsed:'Käytetty pääoma',marketGain:'Markkinatuotto',endWealth:'Loppuvarallisuus',worstDepot:'Alin tilin arvo',crisesSurvived:'Selvityt kriisit',bufferMonths:'Puskurikuukaudet',yearsUnit:'Vuotta',monthsUnit:'kk',monthsCoverage:'kk kattavuus',inclPension:'sis. eläke',bearMarkets:'karhumarkkinat',warnLowETF:'⚠ Alle 15% ETF:ssä.',warnNoETF:'🚫 Ei ETF-pääomaa!',warnNegative:'🚫 Nosto mahdoton.',warnHighSWR:'⚠ Nosto {0}% — yli 4%-säännön.',warnHighLegacy:'⚠ Perintö > 60% pääomasta.',methodInfo:'Historialliset kriisit (1975–2025).',nominalEq:'nimellinen = {0} reaalinen'},
-cs:{code:'CS',name:'Čeština',title:'Finanční Pevnost',subtitle:'Strategická Simulace Výběrů',baseParams:'Základní parametry',startCapital:'Počáteční kapitál',duration:'Období výběrů',targetLegacy:'Cílové dědictví',inflation:'Inflace (% r.)',marketStrategy:'Trh a Strategie',expectedReturn:'Očekávaný výnos (% r.)',warChest:'Válečná pokladna (%)',cashBuffer:'Hotovostní polštář (Roky)',pension:'Důchod (měsíčně)',allocation:'Alokace kapitálu',bufferShort:'Polštář',warShort:'Válka',monthlyBudget:'Měsíční rozpočet',month:'měsíc',cashBufferLabel:'Hotovostní polštář',chfSafety:'CHF Bezpečí',warChestLabel:'Válečná pokladna',chfCrash:'CHF na krize',purchasingPower:'Kupní síla',chfReal:'CHF reálně (dnes)',strategyHealth:'Zdraví strategie',fragile:'Křehká',stable:'Stabilní',robust:'Robustní',moderate:'Střední',historicalSim:'Historická simulace',yearsShort:'Let',etfDepot:'ETF Depot',totalWealth:'Celkem',crisisPhase:'Krize',withdrawalAnalysis:'Analýza výběrů',totalWithdrawal:'Celkový výběr',capitalUsed:'Použitý kapitál',marketGain:'Tržní zisk',endWealth:'Konečný majetek',worstDepot:'Nejnižší hodnota',crisesSurvived:'Přežité krize',bufferMonths:'Měsíce polštáře',yearsUnit:'Let',monthsUnit:'měsíců',monthsCoverage:'měs. pokrytí',inclPension:'vč. důchodu',bearMarkets:'medvědích trhů',warnLowETF:'⚠ Méně než 15% v ETF.',warnNoETF:'🚫 Žádný ETF kapitál!',warnNegative:'🚫 Výběr nemožný.',warnHighSWR:'⚠ Sazba {0}% — nad pravidlem 4%.',warnHighLegacy:'⚠ Dědictví > 60% kapitálu.',methodInfo:'Historické krize (1975–2025).',nominalEq:'nominální = {0} reálně'},
-hu:{code:'HU',name:'Magyar',title:'Pénzügyi Erőd',subtitle:'Stratégiai Kifizetés Szimuláció',baseParams:'Alapparaméterek',startCapital:'Induló tőke',duration:'Kifizetési időszak',targetLegacy:'Cél örökség',inflation:'Infláció (% é.)',marketStrategy:'Piac és Stratégia',expectedReturn:'Várt hozam (% é.)',warChest:'Hadikassza (%)',cashBuffer:'Készpénzpuffer (Év)',pension:'Nyugdíj (havi)',allocation:'Tőkeallokáció',bufferShort:'Puffer',warShort:'Hadi',monthlyBudget:'Havi költségvetés',month:'hónap',cashBufferLabel:'Készpénzpuffer',chfSafety:'CHF Biztonság',warChestLabel:'Hadikassza',chfCrash:'CHF válságra',purchasingPower:'Vásárlóerő',chfReal:'CHF reál (ma)',strategyHealth:'Stratégia egészség',fragile:'Törékeny',stable:'Stabil',robust:'Robusztus',moderate:'Mérsékelt',historicalSim:'Történelmi szimuláció',yearsShort:'Év',etfDepot:'ETF Számla',totalWealth:'Összes',crisisPhase:'Válság',withdrawalAnalysis:'Kifizetés elemzés',totalWithdrawal:'Összes kifizetés',capitalUsed:'Felhasznált tőke',marketGain:'Piaci nyereség',endWealth:'Végső vagyon',worstDepot:'Legrosszabb érték',crisesSurvived:'Túlélt válságok',bufferMonths:'Puffer hónapok',yearsUnit:'Év',monthsUnit:'hónap',monthsCoverage:'hónap fedezet',inclPension:'nyugdíjjal',bearMarkets:'medvepiacok',warnLowETF:'⚠ 15% alatt ETF-ben.',warnNoETF:'🚫 Nincs ETF tőke!',warnNegative:'🚫 Kifizetés lehetetlen.',warnHighSWR:'⚠ Arány {0}% — 4%-szabály felett.',warnHighLegacy:'⚠ Örökség > tőke 60%-a.',methodInfo:'Történelmi válságok (1975–2025).',nominalEq:'nominális = {0} reál'},
-ro:{code:'RO',name:'Română',title:'Fortăreață Financiară',subtitle:'Simulare Strategică de Retrageri',baseParams:'Parametri de bază',startCapital:'Capital inițial',duration:'Durată retragere',targetLegacy:'Moștenire țintă',inflation:'Inflație (% an.)',marketStrategy:'Piață & Strategie',expectedReturn:'Randament așteptat (% an.)',warChest:'Rezervă de război (%)',cashBuffer:'Tampon numerar (Ani)',pension:'Pensie (lunar)',allocation:'Alocarea capitalului',bufferShort:'Tampon',warShort:'Război',monthlyBudget:'Buget lunar',month:'lună',cashBufferLabel:'Tampon numerar',chfSafety:'CHF Siguranță',warChestLabel:'Rezervă de război',chfCrash:'CHF pt. crize',purchasingPower:'Putere de cumpărare',chfReal:'CHF real (azi)',strategyHealth:'Sănătatea strategiei',fragile:'Fragilă',stable:'Stabilă',robust:'Robustă',moderate:'Moderată',historicalSim:'Simulare istorică',yearsShort:'Ani',etfDepot:'Depozit ETF',totalWealth:'Total',crisisPhase:'Criză',withdrawalAnalysis:'Analiza retragerilor',totalWithdrawal:'Retragere totală',capitalUsed:'Capital utilizat',marketGain:'Câștig piață',endWealth:'Avere finală',worstDepot:'Cea mai mică valoare',crisesSurvived:'Crize supraviețuite',bufferMonths:'Luni tampon',yearsUnit:'Ani',monthsUnit:'luni',monthsCoverage:'luni acoperire',inclPension:'incl. pensie',bearMarkets:'piețe bear',warnLowETF:'⚠ Sub 15% în ETF.',warnNoETF:'🚫 Fără capital ETF!',warnNegative:'🚫 Retragere imposibilă.',warnHighSWR:'⚠ Rata {0}% — peste regula 4%.',warnHighLegacy:'⚠ Moștenire > 60% din capital.',methodInfo:'Crize istorice (1975–2025).',nominalEq:'nominal = {0} real'},
-el:{code:'EL',name:'Ελληνικά',title:'Χρηματοοικονομικό Φρούριο',subtitle:'Στρατηγική Προσομοίωση Αναλήψεων',baseParams:'Βασικές Παράμετροι',startCapital:'Αρχικό Κεφάλαιο',duration:'Διάρκεια Ανάληψης',targetLegacy:'Στόχος Κληρονομιάς',inflation:'Πληθωρισμός (% ετ.)',marketStrategy:'Αγορά & Στρατηγική',expectedReturn:'Αναμενόμενη Απόδοση (% ετ.)',warChest:'Πολεμικό Ταμείο (%)',cashBuffer:'Ρεζέρβα Μετρητών (Έτη)',pension:'Σύνταξη (μηνιαία)',allocation:'Κατανομή Κεφαλαίου',bufferShort:'Ρεζέρβα',warShort:'Πόλεμος',monthlyBudget:'Μηνιαίος Προϋπ.',month:'μήνα',cashBufferLabel:'Ρεζέρβα Μετρητών',chfSafety:'CHF Ασφάλεια',warChestLabel:'Πολεμικό Ταμείο',chfCrash:'CHF για Κρίσεις',purchasingPower:'Αγοραστική Δύναμη',chfReal:'CHF πραγμ. (σήμερα)',strategyHealth:'Υγεία Στρατηγικής',fragile:'Εύθραυστη',stable:'Σταθερή',robust:'Ισχυρή',moderate:'Μέτρια',historicalSim:'Ιστορική Προσομοίωση',yearsShort:'Έτη',etfDepot:'ETF Λογ.',totalWealth:'Σύνολο',crisisPhase:'Κρίση',withdrawalAnalysis:'Ανάλυση Αναλήψεων',totalWithdrawal:'Συνολικές αναλήψεις',capitalUsed:'Κεφάλαιο χρησιμοπ.',marketGain:'Κέρδος αγοράς',endWealth:'Τελικό κεφάλαιο',worstDepot:'Χαμηλότερη αξία',crisesSurvived:'Κρίσεις αντιμετωπ.',bufferMonths:'Μήνες ρεζέρβας',yearsUnit:'Έτη',monthsUnit:'μήνες',monthsCoverage:'μήν. κάλυψη',inclPension:'με σύνταξη',bearMarkets:'bear markets',warnLowETF:'⚠ Κάτω από 15% σε ETF.',warnNoETF:'🚫 Χωρίς κεφάλαιο ETF!',warnNegative:'🚫 Ανάληψη αδύνατη.',warnHighSWR:'⚠ Ρυθμός {0}% — πάνω από 4%.',warnHighLegacy:'⚠ Κληρονομιά > 60% κεφαλαίου.',methodInfo:'Ιστορικές κρίσεις (1975–2025).',nominalEq:'ονομαστική = {0} πραγματική'},
-uk:{code:'UK',name:'Українська',title:'Фінансова Фортеця',subtitle:'Стратегічна симуляція виплат',baseParams:'Базові параметри',startCapital:'Початковий капітал',duration:'Період виплат',targetLegacy:'Цільова спадщина',inflation:'Інфляція (% р.)',marketStrategy:'Ринок та Стратегія',expectedReturn:'Очікувана дохідність (% р.)',warChest:'Воєнна скарбниця (%)',cashBuffer:'Грошовий буфер (Роки)',pension:'Пенсія (щомісяця)',allocation:'Розподіл капіталу',bufferShort:'Буфер',warShort:'Війна',monthlyBudget:'Місячний бюджет',month:'міс',cashBufferLabel:'Грошовий буфер',chfSafety:'CHF Безпека',warChestLabel:'Воєнна скарбниця',chfCrash:'CHF на кризу',purchasingPower:'Купівельна спроможність',chfReal:'CHF реальн.',strategyHealth:'Здоров\'я стратегії',fragile:'Крихка',stable:'Стабільна',robust:'Стійка',moderate:'Помірна',historicalSim:'Історична симуляція',yearsShort:'Років',etfDepot:'ETF Депо',totalWealth:'Усього',crisisPhase:'Криза',withdrawalAnalysis:'Аналіз виплат',totalWithdrawal:'Загальна виплата',capitalUsed:'Використаний капітал',marketGain:'Ринковий прибуток',endWealth:'Кінцеве багатство',worstDepot:'Мін. значення депо',crisesSurvived:'Пережитих криз',bufferMonths:'Місяці буфера',yearsUnit:'Років',monthsUnit:'міс.',monthsCoverage:'міс. покриття',inclPension:'вкл. пенсію',bearMarkets:'ведмежих ринків',warnLowETF:'⚠ Менше 15% в ETF.',warnNoETF:'🚫 Немає капіталу ETF!',warnNegative:'🚫 Виплата неможлива.',warnHighSWR:'⚠ Ставка {0}% — вище правила 4%.',warnHighLegacy:'⚠ Спадщина > 60% капіталу.',methodInfo:'Історичні кризи (1975–2025).',nominalEq:'номінал = {0} реальн.'},
-hi:{code:'HI',name:'हिन्दी',title:'वित्तीय किला',subtitle:'रणनीतिक निकासी सिमुलेशन',baseParams:'मूल पैरामीटर',startCapital:'प्रारंभिक पूंजी',duration:'निकासी अवधि',targetLegacy:'लक्ष्य विरासत',inflation:'मुद्रास्फीति (% वार्षिक)',marketStrategy:'बाज़ार और रणनीति',expectedReturn:'अपेक्षित प्रतिफल (% वार्षिक)',warChest:'युद्ध कोष (%)',cashBuffer:'नकद बफर (वर्ष)',pension:'पेंशन (मासिक)',allocation:'पूंजी आवंटन',bufferShort:'बफर',warShort:'युद्ध',monthlyBudget:'मासिक बजट',month:'माह',cashBufferLabel:'नकद बफर',chfSafety:'CHF सुरक्षा',warChestLabel:'युद्ध कोष',chfCrash:'CHF संकट हेतु',purchasingPower:'क्रय शक्ति',chfReal:'CHF वास्तविक (आज)',strategyHealth:'रणनीति स्वास्थ्य',fragile:'नाजुक',stable:'स्थिर',robust:'मजबूत',moderate:'मध्यम',historicalSim:'ऐतिहासिक सिमुलेशन',yearsShort:'वर्ष',etfDepot:'ETF डिपो',totalWealth:'कुल',crisisPhase:'संकट',withdrawalAnalysis:'निकासी विश्लेषण',totalWithdrawal:'कुल निकासी',capitalUsed:'पूंजी उपयोग',marketGain:'बाज़ार लाभ',endWealth:'अंतिम संपत्ति',worstDepot:'न्यूनतम डिपो',crisesSurvived:'संकट सहे',bufferMonths:'बफर माह',yearsUnit:'वर्ष',monthsUnit:'माह',monthsCoverage:'माह कवरेज',inclPension:'पेंशन सहित',bearMarkets:'मंदी बाज़ार',warnLowETF:'⚠ ETF में 15% से कम।',warnNoETF:'🚫 ETF पूंजी नहीं!',warnNegative:'🚫 निकासी असंभव।',warnHighSWR:'⚠ दर {0}% — 4% नियम से ऊपर।',warnHighLegacy:'⚠ विरासत > पूंजी का 60%।',methodInfo:'ऐतिहासिक संकट (1975–2025)।',nominalEq:'अंकित = {0} वास्तविक'},
-zh:{code:'ZH',name:'中文',title:'金融堡垒',subtitle:'战略提款模拟',baseParams:'基本参数',startCapital:'初始资本',duration:'提款期限',targetLegacy:'目标遗产',inflation:'通胀率 (% 年)',marketStrategy:'市场与策略',expectedReturn:'预期收益 (% 年)',warChest:'战争基金 (%)',cashBuffer:'现金缓冲 (年)',pension:'养老金 (月)',allocation:'资本配置',bufferShort:'缓冲',warShort:'战争',monthlyBudget:'月度预算',month:'月',cashBufferLabel:'现金缓冲',chfSafety:'CHF 安全',warChestLabel:'战争基金',chfCrash:'CHF 危机用',purchasingPower:'购买力',chfReal:'CHF 实际(今日)',strategyHealth:'策略健康度',fragile:'脆弱',stable:'稳定',robust:'稳健',moderate:'中等',historicalSim:'历史模拟',yearsShort:'年',etfDepot:'ETF 账户',totalWealth:'总计',crisisPhase:'危机',withdrawalAnalysis:'提款分析',totalWithdrawal:'总提款额',capitalUsed:'已用资本',marketGain:'市场收益',endWealth:'终值财富',worstDepot:'最低账户值',crisesSurvived:'度过危机',bufferMonths:'缓冲月数',yearsUnit:'年',monthsUnit:'月',monthsCoverage:'月覆盖',inclPension:'含养老金',bearMarkets:'熊市',warnLowETF:'⚠ ETF不足15%。',warnNoETF:'🚫 无ETF资本！',warnNegative:'🚫 无法提款。',warnHighSWR:'⚠ 提款率{0}% — 超过4%规则。',warnHighLegacy:'⚠ 遗产 > 资本60%。',methodInfo:'历史危机叠加(1975-2025)。',nominalEq:'名义 = {0} 实际'},
+pt:{code:'PT',name:'Português',title:'Capital Pilot',subtitle:'Simulação de Retirada Estratégica',baseParams:'Parâmetros Base',startCapital:'Capital Inicial',duration:'Duração da Retirada',targetLegacy:'Herança Alvo',inflation:'Inflação (% a.a.)',marketStrategy:'Mercado e Estratégia',expectedReturn:'Retorno Esperado (% a.a.)',warChest:'Reserva de Guerra (%)',cashBuffer:'Colchão de Caixa (Anos)',pension:'Pensão (mensal)',allocation:'Alocação de Capital',bufferShort:'Colchão',warShort:'Guerra',monthlyBudget:'Orçamento Mensal',month:'mês',cashBufferLabel:'Colchão de Caixa',chfSafety:'Segurança',warChestLabel:'Reserva de Guerra',chfCrash:'para Crashes',purchasingPower:'Poder de Compra',chfReal:'real (hoje)',strategyHealth:'Saúde da Estratégia',fragile:'Frágil',stable:'Estável',robust:'Robusto',moderate:'Moderado',historicalSim:'Simulação Histórica',yearsShort:'Anos',etfDepot:'Depósito ETF',totalWealth:'Total',crisisPhase:'Crise',withdrawalAnalysis:'Análise de Retiradas',totalWithdrawal:'Retirada total',capitalUsed:'Capital usado',marketGain:'Ganho do mercado',endWealth:'Patrimônio final',worstDepot:'Pior valor depósito',crisesSurvived:'Crises superadas',bufferMonths:'Meses colchão usados',yearsUnit:'Anos',monthsUnit:'meses',monthsCoverage:'meses cobertura',inclPension:'incl. pensão',bearMarkets:'mercados em baixa',safetyLimits:'Limites de Segurança',maxSWR:'Taxa Máx. Retirada (%)',conservative:'Conservador',aggressive:'Agressivo',swrCapped:'Taxa limitada a {0}%.',swrUncapped:'Taxa sob limite.',warnLowETF:'⚠ Menos de 15% em ETF.',warnNoETF:'🚫 Sem capital ETF!',warnNegative:'🚫 Retirada impossível.',warnHighSWR:'⚠ Taxa {0}% — acima da regra dos 4%.',warnHighLegacy:'⚠ Herança > 60% do capital.',methodInfo:'Crises históricas (1975–2025).',nominalEq:'nominal = {0} real'},
+nl:{code:'NL',name:'Nederlands',title:'Capital Pilot',subtitle:'Strategische Onttrekkingssimulatie',baseParams:'Basisparameters',startCapital:'Startkapitaal',duration:'Onttrekkingsduur',targetLegacy:'Doelerfenis',inflation:'Inflatie (% p.j.)',marketStrategy:'Markt & Strategie',expectedReturn:'Verwacht Rendement (% p.j.)',warChest:'Oorlogskas (%)',cashBuffer:'Cash Buffer (Jaren)',pension:'Pensioen (maandelijks)',allocation:'Kapitaalallocatie',bufferShort:'Buffer',warShort:'Oorlog',monthlyBudget:'Maandbudget',month:'maand',cashBufferLabel:'Cash Buffer',chfSafety:'Veiligheid',warChestLabel:'Oorlogskas',chfCrash:'voor Crashes',purchasingPower:'Koopkracht',chfReal:'reëel (nu)',strategyHealth:'Strategiegezondheid',fragile:'Fragiel',stable:'Stabiel',robust:'Robuust',moderate:'Matig',historicalSim:'Historische Simulatie',yearsShort:'Jaar',etfDepot:'ETF Depot',totalWealth:'Totaal',crisisPhase:'Crisis',withdrawalAnalysis:'Onttrekkingsanalyse',totalWithdrawal:'Totale onttrekking',capitalUsed:'Kapitaal gebruikt',marketGain:'Marktwinst',endWealth:'Eindvermogen',worstDepot:'Laagste depotwaarde',crisesSurvived:'Crises overleefd',bufferMonths:'Buffermaanden gebruikt',yearsUnit:'Jaar',monthsUnit:'maanden',monthsCoverage:'maanden dekking',inclPension:'incl. pensioen',bearMarkets:'berenmarkten',safetyLimits:'Veiligheidslimieten',maxSWR:'Max Onttrekkingsratio (%)',conservative:'Conservatief',aggressive:'Agressief',swrCapped:'Ratio begrensd op {0}%.',swrUncapped:'Ratio onder limiet.',warnLowETF:'⚠ Minder dan 15% in ETF.',warnNoETF:'🚫 Geen ETF kapitaal!',warnNegative:'🚫 Onttrekking onmogelijk.',warnHighSWR:'⚠ Tarief {0}% — boven de 4%-regel.',warnHighLegacy:'⚠ Erfenis > 60% van kapitaal.',methodInfo:'Historische crises (1975–2025).',nominalEq:'nominaal = {0} reëel'},
+pl:{code:'PL',name:'Polski',title:'Capital Pilot',subtitle:'Symulacja Strategiczna Wypłat',baseParams:'Parametry bazowe',startCapital:'Kapitał początkowy',duration:'Okres wypłat',targetLegacy:'Docelowy spadek',inflation:'Inflacja (% r.r.)',marketStrategy:'Rynek i Strategia',expectedReturn:'Oczekiwany zwrot (% r.r.)',warChest:'Rezerwa wojenna (%)',cashBuffer:'Bufor gotówkowy (Lata)',pension:'Emerytura (mies.)',allocation:'Alokacja kapitału',bufferShort:'Bufor',warShort:'Rez.',monthlyBudget:'Budżet miesięczny',month:'miesiąc',cashBufferLabel:'Bufor gotówkowy',chfSafety:'Bezp.',warChestLabel:'Rezerwa wojenna',chfCrash:'na kryzysy',purchasingPower:'Siła nabywcza',chfReal:'realne (dziś)',strategyHealth:'Zdrowie strategii',fragile:'Krucha',stable:'Stabilna',robust:'Solidna',moderate:'Umiarkowana',historicalSim:'Symulacja historyczna',yearsShort:'Lat',etfDepot:'Depozyt ETF',totalWealth:'Razem',crisisPhase:'Kryzys',withdrawalAnalysis:'Analiza wypłat',totalWithdrawal:'Łączna wypłata',capitalUsed:'Użyty kapitał',marketGain:'Zysk rynkowy',endWealth:'Majątek końcowy',worstDepot:'Najgorszy depozyt',crisesSurvived:'Przeżyte kryzysy',bufferMonths:'Miesiące bufora',yearsUnit:'Lat',monthsUnit:'miesięcy',monthsCoverage:'mies. pokrycia',inclPension:'z emeryturą',bearMarkets:'bessy',safetyLimits:'Limity Bezpieczeństwa',maxSWR:'Maks. Stopa Wypłat (%)',conservative:'Konserwatywny',aggressive:'Agresywny',swrCapped:'Stopa ograniczona do {0}%.',swrUncapped:'Stopa poniżej limitu.',warnLowETF:'⚠ Poniżej 15% w ETF.',warnNoETF:'🚫 Brak kapitału ETF!',warnNegative:'🚫 Wypłata niemożliwa.',warnHighSWR:'⚠ Stopa {0}% — powyżej 4%.',warnHighLegacy:'⚠ Spadek > 60% kapitału.',methodInfo:'Kryzysy historyczne (1975–2025).',nominalEq:'nominalnie = {0} realnie'},
+ru:{code:'RU',name:'Русский',title:'Capital Pilot',subtitle:'Стратегическая симуляция снятия средств',baseParams:'Базовые параметры',startCapital:'Начальный капитал',duration:'Срок снятия',targetLegacy:'Целевое наследство',inflation:'Инфляция (% г.)',marketStrategy:'Рынок и Стратегия',expectedReturn:'Ожидаемая доходность (% г.)',warChest:'Резерв (%)',cashBuffer:'Кэш-буфер (Годы)',pension:'Пенсия (мес.)',allocation:'Распределение капитала',bufferShort:'Буфер',warShort:'Резерв',monthlyBudget:'Месячный бюджет',month:'мес',cashBufferLabel:'Кэш-буфер',chfSafety:'Безопасн.',warChestLabel:'Резерв',chfCrash:'на кризис',purchasingPower:'Покупательная сила',chfReal:'реальн.',strategyHealth:'Здоровье стратегии',fragile:'Хрупкая',stable:'Стабильная',robust:'Устойчивая',moderate:'Средняя',historicalSim:'Историческая симуляция',yearsShort:'Лет',etfDepot:'ETF Депо',totalWealth:'Итого',crisisPhase:'Кризис',withdrawalAnalysis:'Анализ снятий',totalWithdrawal:'Всего снято',capitalUsed:'Использов. капитал',marketGain:'Прибыль рынка',endWealth:'Итоговый капитал',worstDepot:'Мин. значение депо',crisesSurvived:'Пережито кризисов',bufferMonths:'Мес. буфера использ.',yearsUnit:'Лет',monthsUnit:'мес.',monthsCoverage:'мес. покрытия',inclPension:'вкл. пенсию',bearMarkets:'медвежьих рынков',safetyLimits:'Лимиты Безопасности',maxSWR:'Макс. Ставка Снятия (%)',conservative:'Консервативно',aggressive:'Агрессивно',swrCapped:'Ставка ограничена {0}%.',swrUncapped:'Ставка ниже лимита.',warnLowETF:'⚠ Менее 15% в ETF.',warnNoETF:'🚫 Нет капитала ETF!',warnNegative:'🚫 Снятие невозможно.',warnHighSWR:'⚠ Ставка {0}% — выше правила 4%.',warnHighLegacy:'⚠ Наследство > 60% капитала.',methodInfo:'Исторические кризисы (1975–2025).',nominalEq:'номинал = {0} реальн.'},
+tr:{code:'TR',name:'Türkçe',title:'Capital Pilot',subtitle:'Stratejik Çekim Simülasyonu',baseParams:'Temel Parametreler',startCapital:'Başlangıç Sermayesi',duration:'Çekim Süresi',targetLegacy:'Hedef Miras',inflation:'Enflasyon (% y.b.)',marketStrategy:'Piyasa ve Strateji',expectedReturn:'Beklenen Getiri (% y.b.)',warChest:'Savaş Sandığı (%)',cashBuffer:'Nakit Tampon (Yıl)',pension:'Emekli Maaşı (aylık)',allocation:'Sermaye Dağılımı',bufferShort:'Tampon',warShort:'Savaş',monthlyBudget:'Aylık Bütçe',month:'ay',cashBufferLabel:'Nakit Tampon',chfSafety:'Güvenlik',warChestLabel:'Savaş Sandığı',chfCrash:'Kriz İçin',purchasingPower:'Satın Alma Gücü',chfReal:'reel (bugün)',strategyHealth:'Strateji Sağlığı',fragile:'Kırılgan',stable:'Kararlı',robust:'Sağlam',moderate:'Orta',historicalSim:'Tarihsel Simülasyon',yearsShort:'Yıl',etfDepot:'ETF Deposu',totalWealth:'Toplam',crisisPhase:'Kriz',withdrawalAnalysis:'Çekim Analizi',totalWithdrawal:'Toplam çekim',capitalUsed:'Kullanılan sermaye',marketGain:'Piyasa kazancı',endWealth:'Bitiş varlığı',worstDepot:'En düşük depo',crisesSurvived:'Atlatılan krizler',bufferMonths:'Tampon ayları',yearsUnit:'Yıl',monthsUnit:'ay',monthsCoverage:'ay kapsam',inclPension:'emekli maaşı dahil',bearMarkets:'ayı piyasası',safetyLimits:'Güvenlik Limitleri',maxSWR:'Maks. Çekim Oranı (%)',conservative:'Temkinli',aggressive:'Agresif',swrCapped:'Oran {0}% ile sınırlı.',swrUncapped:'Oran limit altında.',warnLowETF:'⚠ ETF\'de %15\'den az.',warnNoETF:'🚫 ETF sermayesi yok!',warnNegative:'🚫 Çekim imkansız.',warnHighSWR:'⚠ Oran {0}% — %4 kuralının üstünde.',warnHighLegacy:'⚠ Miras > sermayenin %60\'ı.',methodInfo:'Tarihsel krizler (1975–2025).',nominalEq:'nominal = {0} reel'},
+sv:{code:'SV',name:'Svenska',title:'Capital Pilot',subtitle:'Strategisk Uttagssimulering',baseParams:'Basparametrar',startCapital:'Startkapital',duration:'Uttagsperiod',targetLegacy:'Målat Arv',inflation:'Inflation (% p.a.)',marketStrategy:'Marknad & Strategi',expectedReturn:'Förväntad Avkastning (% p.a.)',warChest:'Krigskassa (%)',cashBuffer:'Kontantbuffert (År)',pension:'Pension (månadsvis)',allocation:'Kapitalallokering',bufferShort:'Buffert',warShort:'Krig',monthlyBudget:'Månadsbudget',month:'månad',cashBufferLabel:'Kontantbuffert',chfSafety:'Säkerhet',warChestLabel:'Krigskassa',chfCrash:'för Krascher',purchasingPower:'Köpkraft',chfReal:'realt (idag)',strategyHealth:'Strategihälsa',fragile:'Skör',stable:'Stabil',robust:'Robust',moderate:'Måttlig',historicalSim:'Historisk Simulering',yearsShort:'År',etfDepot:'ETF-Depot',totalWealth:'Totalt',crisisPhase:'Kris',withdrawalAnalysis:'Uttagsanalys',totalWithdrawal:'Totalt uttag',capitalUsed:'Kapital använt',marketGain:'Marknadsvinst',endWealth:'Slutförmögenhet',worstDepot:'Lägsta depotvärde',crisesSurvived:'Kriser överlevda',bufferMonths:'Buffertmånader',yearsUnit:'År',monthsUnit:'månader',monthsCoverage:'månader täckning',inclPension:'inkl. pension',bearMarkets:'björnmarknader',safetyLimits:'Säkerhetsgränser',maxSWR:'Max Uttagskvot (%)',conservative:'Konservativ',aggressive:'Aggressiv',swrCapped:'Kvot begränsad till {0}%.',swrUncapped:'Kvot under gräns.',warnLowETF:'⚠ Under 15% i ETF.',warnNoETF:'🚫 Inget ETF-kapital!',warnNegative:'🚫 Uttag omöjligt.',warnHighSWR:'⚠ Uttag {0}% — över 4%-regeln.',warnHighLegacy:'⚠ Arv > 60% av kapital.',methodInfo:'Historiska kriser (1975–2025).',nominalEq:'nominellt = {0} realt'},
+da:{code:'DA',name:'Dansk',title:'Capital Pilot',subtitle:'Strategisk Udbetalingssimulering',baseParams:'Basisparametre',startCapital:'Startkapital',duration:'Udbetalingsperiode',targetLegacy:'Mål-Arv',inflation:'Inflation (% p.a.)',marketStrategy:'Marked & Strategi',expectedReturn:'Forventet Afkast (% p.a.)',warChest:'Krigskasse (%)',cashBuffer:'Kontantbuffer (År)',pension:'Pension (månedlig)',allocation:'Kapitalallokering',bufferShort:'Buffer',warShort:'Krig',monthlyBudget:'Månedsbudget',month:'måned',cashBufferLabel:'Kontantbuffer',chfSafety:'Sikkerhed',warChestLabel:'Krigskasse',chfCrash:'til Kriser',purchasingPower:'Købekraft',chfReal:'reel (i dag)',strategyHealth:'Strategisundhed',fragile:'Skrøbelig',stable:'Stabil',robust:'Robust',moderate:'Moderat',historicalSim:'Historisk Simulering',yearsShort:'År',etfDepot:'ETF-Depot',totalWealth:'Total',crisisPhase:'Krise',withdrawalAnalysis:'Udbetalingsanalyse',totalWithdrawal:'Total udbetaling',capitalUsed:'Kapital brugt',marketGain:'Markedsgevinst',endWealth:'Slutformue',worstDepot:'Laveste depotværdi',crisesSurvived:'Kriser overlevet',bufferMonths:'Buffermåneder',yearsUnit:'År',monthsUnit:'måneder',monthsCoverage:'måneder dækning',inclPension:'inkl. pension',bearMarkets:'bjørnemarkeder',safetyLimits:'Sikkerhedsgrænser',maxSWR:'Max Udbetalingsrate (%)',conservative:'Konservativ',aggressive:'Aggressiv',swrCapped:'Rate begrænset til {0}%.',swrUncapped:'Rate under grænse.',warnLowETF:'⚠ Under 15% i ETF.',warnNoETF:'🚫 Ingen ETF-kapital!',warnNegative:'🚫 Udbetaling umulig.',warnHighSWR:'⚠ Rate {0}% — over 4%-reglen.',warnHighLegacy:'⚠ Arv > 60% af kapital.',methodInfo:'Historiske kriser (1975–2025).',nominalEq:'nominelt = {0} reelt'},
+no:{code:'NO',name:'Norsk',title:'Capital Pilot',subtitle:'Strategisk Uttakssimulering',baseParams:'Basisparametere',startCapital:'Startkapital',duration:'Uttaksperiode',targetLegacy:'Mål-Arv',inflation:'Inflasjon (% p.a.)',marketStrategy:'Marked & Strategi',expectedReturn:'Forventet Avkastning (% p.a.)',warChest:'Krigskasse (%)',cashBuffer:'Kontantbuffer (År)',pension:'Pensjon (månedlig)',allocation:'Kapitalallokering',bufferShort:'Buffer',warShort:'Krig',monthlyBudget:'Månedsbudsjett',month:'måned',cashBufferLabel:'Kontantbuffer',chfSafety:'Sikkerhet',warChestLabel:'Krigskasse',chfCrash:'til Krasj',purchasingPower:'Kjøpekraft',chfReal:'reell (i dag)',strategyHealth:'Strategihelse',fragile:'Skjør',stable:'Stabil',robust:'Robust',moderate:'Moderat',historicalSim:'Historisk Simulering',yearsShort:'År',etfDepot:'ETF-Depot',totalWealth:'Total',crisisPhase:'Krise',withdrawalAnalysis:'Uttaksanalyse',totalWithdrawal:'Totalt uttak',capitalUsed:'Kapital brukt',marketGain:'Markedsgevinst',endWealth:'Sluttformue',worstDepot:'Laveste depotverdi',crisesSurvived:'Kriser overlevd',bufferMonths:'Buffermåneder',yearsUnit:'År',monthsUnit:'måneder',monthsCoverage:'måneder dekning',inclPension:'inkl. pensjon',bearMarkets:'bjørnemarkeder',safetyLimits:'Sikkerhetsgrenser',maxSWR:'Maks Uttaksrate (%)',conservative:'Konservativ',aggressive:'Aggressiv',swrCapped:'Rate begrenset til {0}%.',swrUncapped:'Rate under grense.',warnLowETF:'⚠ Under 15% i ETF.',warnNoETF:'🚫 Ingen ETF-kapital!',warnNegative:'🚫UtFuttak umulig.',warnHighSWR:'⚠ Rate {0}% — over 4%-regelen.',warnHighLegacy:'⚠ Arv > 60% av kapital.',methodInfo:'Historiske kriser (1975–2025).',nominalEq:'nominelt = {0} reelt'},
+fi:{code:'FI',name:'Suomi',title:'Capital Pilot',subtitle:'Strateginen Nostosimulaatio',baseParams:'Perusparametrit',startCapital:'Alkupääoma',duration:'Nostojakso',targetLegacy:'Perintötavoite',inflation:'Inflaatio (% v.)',marketStrategy:'Markkinat & Strategia',expectedReturn:'Odotettu Tuotto (% v.)',warChest:'Sotakassa (%)',cashBuffer:'Käteispuskuri (Vuotta)',pension:'Eläke (kk)',allocation:'Pääoman Jako',bufferShort:'Puskuri',warShort:'Sota',monthlyBudget:'Kuukausibudjetti',month:'kk',cashBufferLabel:'Käteispuskuri',chfSafety:'Turva',warChestLabel:'Sotakassa',chfCrash:'Kriisiin',purchasingPower:'Ostovoima',chfReal:'reaal. (tänään)',strategyHealth:'Strategian Terveys',fragile:'Hauras',stable:'Vakaa',robust:'Vahva',moderate:'Kohtalainen',historicalSim:'Historiallinen Simulaatio',yearsShort:'Vuotta',etfDepot:'ETF-Tili',totalWealth:'Yhteensä',crisisPhase:'Kriisi',withdrawalAnalysis:'Nostoanalyysi',totalWithdrawal:'Nostot yhteensä',capitalUsed:'Käytetty pääoma',marketGain:'Markkinatuotto',endWealth:'Loppuvarallisuus',worstDepot:'Alin tilin arvo',crisesSurvived:'Selvityt kriisit',bufferMonths:'Puskurikuukaudet',yearsUnit:'Vuotta',monthsUnit:'kk',monthsCoverage:'kk kattavuus',inclPension:'sis. eläke',bearMarkets:'karhumarkkinat',safetyLimits:'Turvarajat',maxSWR:'Maks. Nostoprosentti (%)',conservative:'Varovainen',aggressive:'Aggressiivinen',swrCapped:'Prosentti rajoitettu {0}%.',swrUncapped:'Prosentti rajan alla.',warnLowETF:'⚠ Alle 15% ETF:ssä.',warnNoETF:'🚫 Ei ETF-pääomaa!',warnNegative:'🚫 Nosto mahdoton.',warnHighSWR:'⚠ Nosto {0}% — yli 4%-säännön.',warnHighLegacy:'⚠ Perintö > 60% pääomasta.',methodInfo:'Historialliset kriisit (1975–2025).',nominalEq:'nimellinen = {0} reaalinen'},
+cs:{code:'CS',name:'Čeština',title:'Capital Pilot',subtitle:'Strategická Simulace Výběrů',baseParams:'Základní parametry',startCapital:'Počáteční kapitál',duration:'Období výběrů',targetLegacy:'Cílové dědictví',inflation:'Inflace (% r.)',marketStrategy:'Trh a Strategie',expectedReturn:'Očekávaný výnos (% r.)',warChest:'Válečná pokladna (%)',cashBuffer:'Hotovostní polštář (Roky)',pension:'Důchod (měsíčně)',allocation:'Alokace kapitálu',bufferShort:'Polštář',warShort:'Válka',monthlyBudget:'Měsíční rozpočet',month:'měsíc',cashBufferLabel:'Hotovostní polštář',chfSafety:'Bezpečí',warChestLabel:'Válečná pokladna',chfCrash:'na krize',purchasingPower:'Kupní síla',chfReal:'reálně (dnes)',strategyHealth:'Zdraví strategie',fragile:'Křehká',stable:'Stabilní',robust:'Robustní',moderate:'Střední',historicalSim:'Historická simulace',yearsShort:'Let',etfDepot:'ETF Depot',totalWealth:'Celkem',crisisPhase:'Krize',withdrawalAnalysis:'Analýza výběrů',totalWithdrawal:'Celkový výběr',capitalUsed:'Použitý kapitál',marketGain:'Tržní zisk',endWealth:'Konečný majetek',worstDepot:'Nejnižší hodnota',crisesSurvived:'Přežité krize',bufferMonths:'Měsíce polštáře',yearsUnit:'Let',monthsUnit:'měsíců',monthsCoverage:'měs. pokrytí',inclPension:'vč. důchodu',bearMarkets:'medvědích trhů',safetyLimits:'Bezpečnostní Limity',maxSWR:'Max. Sazba Výběru (%)',conservative:'Konzervativní',aggressive:'Agresivní',swrCapped:'Sazba omezena na {0}%.',swrUncapped:'Sazba pod limitem.',warnLowETF:'⚠ Méně než 15% v ETF.',warnNoETF:'🚫 Žádný ETF kapitál!',warnNegative:'🚫 Výběr nemožný.',warnHighSWR:'⚠ Sazba {0}% — nad pravidlem 4%.',warnHighLegacy:'⚠ Dědictví > 60% kapitálu.',methodInfo:'Historické krize (1975–2025).',nominalEq:'nominální = {0} reálně'},
+hu:{code:'HU',name:'Magyar',title:'Capital Pilot',subtitle:'Stratégiai Kifizetés Szimuláció',baseParams:'Alapparaméterek',startCapital:'Induló tőke',duration:'Kifizetési időszak',targetLegacy:'Cél örökség',inflation:'Infláció (% é.)',marketStrategy:'Piac és Stratégia',expectedReturn:'Várt hozam (% é.)',warChest:'Hadikassza (%)',cashBuffer:'Készpénzpuffer (Év)',pension:'Nyugdíj (havi)',allocation:'Tőkeallokáció',bufferShort:'Puffer',warShort:'Hadi',monthlyBudget:'Havi költségvetés',month:'hónap',cashBufferLabel:'Készpénzpuffer',chfSafety:'Biztonság',warChestLabel:'Hadikassza',chfCrash:'válságra',purchasingPower:'Vásárlóerő',chfReal:'reál (ma)',strategyHealth:'Stratégia egészség',fragile:'Törékeny',stable:'Stabil',robust:'Robusztus',moderate:'Mérsékelt',historicalSim:'Történelmi szimuláció',yearsShort:'Év',etfDepot:'ETF Számla',totalWealth:'Összes',crisisPhase:'Válság',withdrawalAnalysis:'Kifizetés elemzés',totalWithdrawal:'Összes kifizetés',capitalUsed:'Felhasznált tőke',marketGain:'Piaci nyereség',endWealth:'Végső vagyon',worstDepot:'Legrosszabb érték',crisesSurvived:'Túlélt válságok',bufferMonths:'Puffer hónapok',yearsUnit:'Év',monthsUnit:'hónap',monthsCoverage:'hónap fedezet',inclPension:'nyugdíjjal',bearMarkets:'medvepiacok',safetyLimits:'Biztonsági Korlátok',maxSWR:'Max. Kifizetési Arány (%)',conservative:'Konzervatív',aggressive:'Agresszív',swrCapped:'Arány {0}%-ra korlátozva.',swrUncapped:'Arány limit alatt.',warnLowETF:'⚠ 15% alatt ETF-ben.',warnNoETF:'🚫 Nincs ETF tőke!',warnNegative:'🚫 Kifizetés lehetetlen.',warnHighSWR:'⚠ Arány {0}% — 4%-szabály felett.',warnHighLegacy:'⚠ Örökség > tőke 60%-a.',methodInfo:'Történelmi válságok (1975–2025).',nominalEq:'nominális = {0} reál'},
+ro:{code:'RO',name:'Română',title:'Capital Pilot',subtitle:'Simulare Strategică de Retrageri',baseParams:'Parametri de bază',startCapital:'Capital inițial',duration:'Durată retragere',targetLegacy:'Moștenire țintă',inflation:'Inflație (% an.)',marketStrategy:'Piață & Strategie',expectedReturn:'Randament așteptat (% an.)',warChest:'Rezervă de război (%)',cashBuffer:'Tampon numerar (Ani)',pension:'Pensie (lunar)',allocation:'Alocarea capitalului',bufferShort:'Tampon',warShort:'Război',monthlyBudget:'Buget lunar',month:'lună',cashBufferLabel:'Tampon numerar',chfSafety:'Siguranță',warChestLabel:'Rezervă de război',chfCrash:'pt. crize',purchasingPower:'Putere de cumpărare',chfReal:'real (azi)',strategyHealth:'Sănătatea strategiei',fragile:'Fragilă',stable:'Stabilă',robust:'Robustă',moderate:'Moderată',historicalSim:'Simulare istorică',yearsShort:'Ani',etfDepot:'Depozit ETF',totalWealth:'Total',crisisPhase:'Criză',withdrawalAnalysis:'Analiza retragerilor',totalWithdrawal:'Retragere totală',capitalUsed:'Capital utilizat',marketGain:'Câștig piață',endWealth:'Avere finală',worstDepot:'Cea mai mică valoare',crisesSurvived:'Crize supraviețuite',bufferMonths:'Luni tampon',yearsUnit:'Ani',monthsUnit:'luni',monthsCoverage:'luni acoperire',inclPension:'incl. pensie',bearMarkets:'piețe bear',safetyLimits:'Limite de Siguranță',maxSWR:'Rată Max. Retragere (%)',conservative:'Conservator',aggressive:'Agresiv',swrCapped:'Rata limitată la {0}%.',swrUncapped:'Rata sub limită.',warnLowETF:'⚠ Sub 15% în ETF.',warnNoETF:'🚫 Fără capital ETF!',warnNegative:'🚫 Retragere imposibilă.',warnHighSWR:'⚠ Rata {0}% — peste regula 4%.',warnHighLegacy:'⚠ Moștenire > 60% din capital.',methodInfo:'Crize istorice (1975–2025).',nominalEq:'nominal = {0} real'},
+el:{code:'EL',name:'Ελληνικά',title:'Capital Pilot',subtitle:'Στρατηγική Προσομοίωση Αναλήψεων',baseParams:'Βασικές Παράμετροι',startCapital:'Αρχικό Κεφάλαιο',duration:'Διάρκεια Ανάληψης',targetLegacy:'Στόχος Κληρονομιάς',inflation:'Πληθωρισμός (% ετ.)',marketStrategy:'Αγορά & Στρατηγική',expectedReturn:'Αναμενόμενη Απόδοση (% ετ.)',warChest:'Πολεμικό Ταμείο (%)',cashBuffer:'Ρεζέρβα Μετρητών (Έτη)',pension:'Σύνταξη (μηνιαία)',allocation:'Κατανομή Κεφαλαίου',bufferShort:'Ρεζέρβα',warShort:'Πόλεμος',monthlyBudget:'Μηνιαίος Προϋπ.',month:'μήνα',cashBufferLabel:'Ρεζέρβα Μετρητών',chfSafety:'Ασφάλεια',warChestLabel:'Πολεμικό Ταμείο',chfCrash:'για Κρίσεις',purchasingPower:'Αγοραστική Δύναμη',chfReal:'πραγμ. (σήμερα)',strategyHealth:'Υγεία Στρατηγικής',fragile:'Εύθραυστη',stable:'Σταθερή',robust:'Ισχυρή',moderate:'Μέτρια',historicalSim:'Ιστορική Προσομοίωση',yearsShort:'Έτη',etfDepot:'ETF Λογ.',totalWealth:'Σύνολο',crisisPhase:'Κρίση',withdrawalAnalysis:'Ανάλυση Αναλήψεων',totalWithdrawal:'Συνολικές αναλήψεις',capitalUsed:'Κεφάλαιο χρησιμοπ.',marketGain:'Κέρδος αγοράς',endWealth:'Τελικό κεφάλαιο',worstDepot:'Χαμηλότερη αξία',crisesSurvived:'Κρίσεις αντιμετωπ.',bufferMonths:'Μήνες ρεζέρβας',yearsUnit:'Έτη',monthsUnit:'μήνες',monthsCoverage:'μήν. κάλυψη',inclPension:'με σύνταξη',bearMarkets:'bear markets',safetyLimits:'Όρια Ασφαλείας',maxSWR:'Μέγ. Ρυθμός Ανάληψης (%)',conservative:'Συντηρητικό',aggressive:'Επιθετικό',swrCapped:'Ρυθμός περιορισμένος στο {0}%.',swrUncapped:'Ρυθμός κάτω από όριο.',warnLowETF:'⚠ Κάτω από 15% σε ETF.',warnNoETF:'🚫 Χωρίς κεφάλαιο ETF!',warnNegative:'🚫 Ανάληψη αδύνατη.',warnHighSWR:'⚠ Ρυθμός {0}% — πάνω από 4%.',warnHighLegacy:'⚠ Κληρονομιά > 60% κεφαλαίου.',methodInfo:'Ιστορικές κρίσεις (1975–2025).',nominalEq:'ονομαστική = {0} πραγματική'},
+uk:{code:'UK',name:'Українська',title:'Capital Pilot',subtitle:'Стратегічна симуляція виплат',baseParams:'Базові параметри',startCapital:'Початковий капітал',duration:'Період виплат',targetLegacy:'Цільова спадщина',inflation:'Інфляція (% р.)',marketStrategy:'Ринок та Стратегія',expectedReturn:'Очікувана дохідність (% р.)',warChest:'Воєнна скарбниця (%)',cashBuffer:'Грошовий буфер (Роки)',pension:'Пенсія (щомісяця)',allocation:'Розподіл капіталу',bufferShort:'Буфер',warShort:'Війна',monthlyBudget:'Місячний бюджет',month:'міс',cashBufferLabel:'Грошовий буфер',chfSafety:'Безпека',warChestLabel:'Воєнна скарбниця',chfCrash:'на кризу',purchasingPower:'Купівельна спроможність',chfReal:'реальн.',strategyHealth:'Здоров\'я стратегії',fragile:'Крихка',stable:'Стабільна',robust:'Стійка',moderate:'Помірна',historicalSim:'Історична симуляція',yearsShort:'Років',etfDepot:'ETF Депо',totalWealth:'Усього',crisisPhase:'Криза',withdrawalAnalysis:'Аналіз виплат',totalWithdrawal:'Загальна виплата',capitalUsed:'Використаний капітал',marketGain:'Ринковий прибуток',endWealth:'Кінцеве багатство',worstDepot:'Мін. значення депо',crisesSurvived:'Пережитих криз',bufferMonths:'Місяці буфера',yearsUnit:'Років',monthsUnit:'міс.',monthsCoverage:'міс. покриття',inclPension:'вкл. пенсію',bearMarkets:'ведмежих ринків',safetyLimits:'Межі Безпеки',maxSWR:'Макс. Ставка Виплат (%)',conservative:'Консервативно',aggressive:'Агресивно',swrCapped:'Ставка обмежена {0}%.',swrUncapped:'Ставка нижче ліміту.',warnLowETF:'⚠ Менше 15% в ETF.',warnNoETF:'🚫 Немає капіталу ETF!',warnNegative:'🚫 Виплата неможлива.',warnHighSWR:'⚠ Ставка {0}% — вище правила 4%.',warnHighLegacy:'⚠ Спадщина > 60% капіталу.',methodInfo:'Історичні кризи (1975–2025).',nominalEq:'номінал = {0} реальн.'},
+hi:{code:'HI',name:'हिन्दी',title:'Capital Pilot',subtitle:'रणनीतिक निकासी सिमुलेशन',baseParams:'मूल पैरामीटर',startCapital:'प्रारंभिक पूंजी',duration:'निकासी अवधि',targetLegacy:'लक्ष्य विरासत',inflation:'मुद्रास्फीति (% वार्षिक)',marketStrategy:'बाज़ार और रणनीति',expectedReturn:'अपेक्षित प्रतिफल (% वार्षिक)',warChest:'युद्ध कोष (%)',cashBuffer:'नकद बफर (वर्ष)',pension:'पेंशन (मासिक)',allocation:'पूंजी आवंटन',bufferShort:'बफर',warShort:'युद्ध',monthlyBudget:'मासिक बजट',month:'माह',cashBufferLabel:'नकद बफर',chfSafety:'सुरक्षा',warChestLabel:'युद्ध कोष',chfCrash:'संकट हेतु',purchasingPower:'क्रय शक्ति',chfReal:'वास्तविक (आज)',strategyHealth:'रणनीति स्वास्थ्य',fragile:'नाजुक',stable:'स्थिर',robust:'मजबूत',moderate:'मध्यम',historicalSim:'ऐतिहासिक सिमुलेशन',yearsShort:'वर्ष',etfDepot:'ETF डिपो',totalWealth:'कुल',crisisPhase:'संकट',withdrawalAnalysis:'निकासी विश्लेषण',totalWithdrawal:'कुल निकासी',capitalUsed:'पूंजी उपयोग',marketGain:'बाज़ार लाभ',endWealth:'अंतिम संपत्ति',worstDepot:'न्यूनतम डिपो',crisesSurvived:'संकट सहे',bufferMonths:'बफर माह',yearsUnit:'वर्ष',monthsUnit:'माह',monthsCoverage:'माह कवरेज',inclPension:'पेंशन सहित',bearMarkets:'मंदी बाज़ार',safetyLimits:'सुरक्षा सीमाएँ',maxSWR:'अधिकतम निकासी दर (%)',conservative:'रूढ़िवादी',aggressive:'आक्रामक',swrCapped:'दर {0}% पर सीमित।',swrUncapped:'दर सीमा से नीचे।',warnLowETF:'⚠ ETF में 15% से कम।',warnNoETF:'🚫 ETF पूंजी नहीं!',warnNegative:'🚫 निकासी असंभव।',warnHighSWR:'⚠ दर {0}% — 4% नियम से ऊपर।',warnHighLegacy:'⚠ विरासत > पूंजी का 60%।',methodInfo:'ऐतिहासिक संकट (1975–2025)।',nominalEq:'अंकित = {0} वास्तविक'},
+zh:{code:'ZH',name:'中文',title:'Capital Pilot',subtitle:'战略提款模拟',baseParams:'基本参数',startCapital:'初始资本',duration:'提款期限',targetLegacy:'目标遗产',inflation:'通胀率 (% 年)',marketStrategy:'市场与策略',expectedReturn:'预期收益 (% 年)',warChest:'战争基金 (%)',cashBuffer:'现金缓冲 (年)',pension:'养老金 (月)',allocation:'资本配置',bufferShort:'缓冲',warShort:'战争',monthlyBudget:'月度预算',month:'月',cashBufferLabel:'现金缓冲',chfSafety:'安全',warChestLabel:'战争基金',chfCrash:'危机用',purchasingPower:'购买力',chfReal:'实际(今日)',strategyHealth:'策略健康度',fragile:'脆弱',stable:'稳定',robust:'稳健',moderate:'中等',historicalSim:'历史模拟',yearsShort:'年',etfDepot:'ETF 账户',totalWealth:'总计',crisisPhase:'危机',withdrawalAnalysis:'提款分析',totalWithdrawal:'总提款额',capitalUsed:'已用资本',marketGain:'市场收益',endWealth:'终值财富',worstDepot:'最低账户值',crisesSurvived:'度过危机',bufferMonths:'缓冲月数',yearsUnit:'年',monthsUnit:'月',monthsCoverage:'月覆盖',inclPension:'含养老金',bearMarkets:'熊市',safetyLimits:'安全限制',maxSWR:'最大提款率 (%)',conservative:'保守',aggressive:'激进',swrCapped:'提款率限制在{0}%。',swrUncapped:'提款率低于限制。',warnLowETF:'⚠ ETF不足15%。',warnNoETF:'🚫 无ETF资本！',warnNegative:'🚫 无法提款。',warnHighSWR:'⚠ 提款率{0}% — 超过4%规则。',warnHighLegacy:'⚠ 遗产 > 资本60%。',methodInfo:'历史危机叠加(1975-2025)。',nominalEq:'名义 = {0} 实际'},
 };
 
 let currentLang = 'en';
@@ -503,7 +542,7 @@ function setLang(lang) {
     document.title = t.title + ' — ' + t.subtitle;
     document.getElementById('langLabel').textContent = t.code;
     // Mark active in dropdown
-    document.querySelectorAll('.lang-opt').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+    document.querySelectorAll('.lang-opt:not(.cur-opt)').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     recalc();
 }
 
@@ -569,7 +608,7 @@ const $ = id => document.getElementById(id);
 const inputs = {
     capital: $('in-capital'), years: $('in-years'), legacy: $('in-legacy'),
     inflation: $('in-inflation'), growth: $('in-growth'), warchest: $('in-warchest'),
-    buffer: $('in-buffer'), ahv: $('in-ahv'),
+    buffer: $('in-buffer'), ahv: $('in-ahv'), maxswr: $('in-maxswr'),
 };
 const fmt = n => new Intl.NumberFormat('de-CH', {maximumFractionDigits:0}).format(Math.round(n));
 const fmtK = n => {
@@ -577,6 +616,107 @@ const fmtK = n => {
     if(Math.abs(n)>=1e3) return Math.round(n/1e3)+"k";
     return fmt(n);
 };
+function getCur() {
+    return currentCurrency;
+}
+function fmtC(n) {
+    return fmt(n) + ' ' + currentCurrency;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CURRENCY SYSTEM — Independent from language
+// ═══════════════════════════════════════════════════════════════
+
+const CURRENCIES = [
+    {code:'CHF',symbol:'Fr.',name:'Swiss Franc'},
+    {code:'EUR',symbol:'€',name:'Euro'},
+    {code:'USD',symbol:'$',name:'US Dollar'},
+    {code:'GBP',symbol:'£',name:'British Pound'},
+    {code:'PLN',symbol:'zł',name:'Polish Złoty'},
+    {code:'CZK',symbol:'Kč',name:'Czech Koruna'},
+    {code:'HUF',symbol:'Ft',name:'Hungarian Forint'},
+    {code:'RON',symbol:'lei',name:'Romanian Leu'},
+    {code:'SEK',symbol:'kr',name:'Swedish Krona'},
+    {code:'DKK',symbol:'kr',name:'Danish Krone'},
+    {code:'NOK',symbol:'kr',name:'Norwegian Krone'},
+    {code:'RUB',symbol:'₽',name:'Russian Ruble'},
+    {code:'TRY',symbol:'₺',name:'Turkish Lira'},
+    {code:'UAH',symbol:'₴',name:'Ukrainian Hryvnia'},
+    {code:'INR',symbol:'₹',name:'Indian Rupee'},
+    {code:'CNY',symbol:'¥',name:'Chinese Yuan'},
+    {code:'JPY',symbol:'¥',name:'Japanese Yen'},
+    {code:'CAD',symbol:'C$',name:'Canadian Dollar'},
+    {code:'AUD',symbol:'A$',name:'Australian Dollar'},
+    {code:'BRL',symbol:'R$',name:'Brazilian Real'},
+];
+
+let currentCurrency = 'CHF';
+
+// Smart detection: use browser locale region to pick currency
+function detectCurrency() {
+    const locale = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    const regionMap = {
+        'de-ch':'CHF','fr-ch':'CHF','it-ch':'CHF','rm-ch':'CHF',
+        'de-de':'EUR','de-at':'EUR','de-li':'CHF',
+        'en-us':'USD','en-gb':'GBP','en-au':'AUD','en-ca':'CAD','en-in':'INR',
+        'fr-fr':'EUR','fr-be':'EUR','fr-ca':'CAD',
+        'es-es':'EUR','es-mx':'USD','es-ar':'USD',
+        'it-it':'EUR',
+        'pt-pt':'EUR','pt-br':'BRL',
+        'nl-nl':'EUR','nl-be':'EUR',
+        'pl-pl':'PLN','pl':'PLN',
+        'ru-ru':'RUB','ru':'RUB',
+        'tr-tr':'TRY','tr':'TRY',
+        'sv-se':'SEK','sv':'SEK',
+        'da-dk':'DKK','da':'DKK',
+        'nb-no':'NOK','nn-no':'NOK','no':'NOK',
+        'fi-fi':'EUR','fi':'EUR',
+        'cs-cz':'CZK','cs':'CZK',
+        'hu-hu':'HUF','hu':'HUF',
+        'ro-ro':'RON','ro':'RON',
+        'el-gr':'EUR','el':'EUR',
+        'uk-ua':'UAH','uk':'UAH',
+        'hi-in':'INR','hi':'INR',
+        'zh-cn':'CNY','zh-tw':'CNY','zh':'CNY',
+        'ja-jp':'JPY','ja':'JPY',
+    };
+    // Try full locale first, then language only
+    return regionMap[locale] || regionMap[locale.split('-')[0]] || 'USD';
+}
+
+function setCurrency(code) {
+    currentCurrency = code;
+    $('curLabel').textContent = code;
+    document.querySelectorAll('.cur-unit').forEach(el => { el.textContent = code; });
+    document.querySelectorAll('.cur-opt').forEach(o => o.classList.toggle('active', o.dataset.cur === code));
+    recalc();
+}
+
+function toggleCurDropdown() {
+    const dd = $('curDropdown');
+    dd.classList.toggle('open');
+    if (dd.classList.contains('open')) {
+        setTimeout(() => document.addEventListener('click', closeCurOnOutside, {once:true}), 10);
+    }
+}
+function closeCurOnOutside(e) {
+    const dd = $('curDropdown');
+    if (!dd.contains(e.target) && e.target.id !== 'curBtn') dd.classList.remove('open');
+}
+
+// Build currency dropdown
+(function buildCurDropdown() {
+    const dd = $('curDropdown');
+    CURRENCIES.forEach(cur => {
+        const el = document.createElement('div');
+        el.className = 'lang-opt cur-opt';
+        el.dataset.cur = cur.code;
+        el.textContent = cur.code + ' ' + cur.symbol;
+        el.title = cur.name;
+        el.onclick = (e) => { e.stopPropagation(); setCurrency(cur.code); dd.classList.remove('open'); };
+        dd.appendChild(el);
+    });
+})();
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -754,7 +894,7 @@ function renderChart(data, legacyTarget) {
                     c.setLineDash([5,5]);c.strokeStyle='rgba(167,139,250,0.4)';c.lineWidth=1;
                     c.beginPath();c.moveTo(left,yp);c.lineTo(right,yp);c.stroke();
                     c.setLineDash([]);c.fillStyle='rgba(167,139,250,0.6)';c.font='9px JetBrains Mono';c.textAlign='right';
-                    c.fillText(fmtK(legacyTarget),right-4,yp-5);
+                    c.fillText(fmtK(legacyTarget)+' '+getCur(),right-4,yp-5);
                 }
             }
             c.restore();
@@ -782,7 +922,7 @@ function renderChart(data, legacyTarget) {
                     titleFont:{family:'JetBrains Mono',size:9},bodyFont:{family:'JetBrains Mono',size:9},padding:10,
                     callbacks:{
                         title:items=>{const i=items[0].dataIndex;const yr=timelineStartYear+Math.floor(i/12);const mo=(i%12)+1;return yr+'/'+String(mo).padStart(2,'0');},
-                        label:c=>`${c.dataset.label}: ${fmt(c.raw)} CHF`
+                        label:c=>`${c.dataset.label}: ${fmt(c.raw)} ${getCur()}`
                     }
                 }
             },
@@ -805,31 +945,70 @@ function recalc() {
     const capital=+inputs.capital.value, years=+inputs.years.value, legacy=+inputs.legacy.value;
     const inflation=+inputs.inflation.value, growth=+inputs.growth.value;
     const warchestPct=+inputs.warchest.value, bufferYears=+inputs.buffer.value, ahv=+inputs.ahv.value;
+    const maxSwrPct=+inputs.maxswr.value;
 
     // Labels
-    $('val-capital').textContent=fmt(capital)+' CHF';
+    $('val-capital').textContent=fmt(capital)+' '+getCur();
     $('val-years').textContent=years+' '+t.yearsUnit;
-    $('val-legacy').textContent=fmt(legacy)+' CHF';
+    $('val-legacy').textContent=fmt(legacy)+' '+getCur();
     $('val-inflation').textContent=inflation.toFixed(1)+' %';
     $('val-growth').textContent=growth.toFixed(1)+' %';
     $('val-warchest').textContent=warchestPct.toFixed(1)+' %';
     $('val-buffer').textContent=bufferYears.toFixed(1)+' '+t.yearsUnit;
-    $('val-ahv').textContent=fmt(ahv)+' CHF';
+    $('val-ahv').textContent=fmt(ahv)+' '+getCur();
+    $('val-maxswr').textContent=maxSwrPct.toFixed(1)+' %';
     $('lbl-years').textContent=years;
     $('timeline-label').textContent=timelineStartYear+' — '+(timelineStartYear+years);
 
     // Solve
     const sol=solveWithdrawal(capital,years,legacy,warchestPct,bufferYears,growth/100);
-    const {warChest,buffer,invested,monthlyETF}=sol;
+    let {warChest,buffer,invested,monthlyETF}=sol;
+    let swr=capital>0?(monthlyETF*12)/capital*100:0;
+    let swrWasCapped = false;
+    let projectedLegacyIncrease = 0;
+
+    // SWR CAP: If solver's withdrawal exceeds maxSWR, cap it
+    const maxMonthlyETF = (maxSwrPct / 100 * capital) / 12;
+    if (monthlyETF > maxMonthlyETF && maxMonthlyETF > 0) {
+        const originalETF = monthlyETF;
+        monthlyETF = maxMonthlyETF;
+        swr = maxSwrPct;
+        swrWasCapped = true;
+        // Recalculate buffer with capped withdrawal
+        buffer = Math.max(0, monthlyETF * bufferYears * 12);
+        invested = Math.max(0, capital - warChest - buffer);
+        // Estimate how much more legacy this produces
+        const r = growth / 100 / 12;
+        const n = years * 12;
+        const F = Math.pow(1 + r, n);
+        projectedLegacyIncrease = invested * F - monthlyETF * (F - 1) / r;
+    }
+
     const totalMonthly=monthlyETF+ahv;
-    const swr=capital>0?(monthlyETF*12)/capital*100:0;
+
+    // SWR Impact Info
+    const swrImpact = $('swr-impact');
+    if (swrWasCapped) {
+        swrImpact.style.display = 'block';
+        const msg = t.swrCapped ? t.swrCapped.replace('{0}', maxSwrPct.toFixed(1)) : '';
+        const unsolvedMonthly = sol.monthlyETF + ahv;
+        const diff = unsolvedMonthly - totalMonthly;
+        swrImpact.innerHTML = `🛡️ ${msg}<br>`
+            + `<span style="font-size:0.6rem;color:var(--text-muted)">`
+            + `Budget: ${fmt(unsolvedMonthly)} → <b style="color:var(--sky)">${fmt(totalMonthly)}</b> ${getCur()}/Mt `
+            + `(−${fmt(diff)})<br>`
+            + `${t.targetLegacy}: ${fmt(legacy)} → ~<b style="color:var(--violet)">${fmt(Math.max(0,projectedLegacyIncrease))}</b> ${getCur()}`
+            + `</span>`;
+    } else {
+        swrImpact.style.display = 'none';
+    }
 
     // Warnings
     const warns=[];
     if(invested<capital*0.15) warns.push(t.warnLowETF);
     if(invested<=0) warns.push(t.warnNoETF);
     if(monthlyETF<=0) warns.push(t.warnNegative);
-    if(swr>5) warns.push(t.warnHighSWR.replace('{0}',swr.toFixed(1)));
+    if(swr>maxSwrPct && !swrWasCapped) warns.push(t.warnHighSWR.replace('{0}',swr.toFixed(1)));
     if(legacy>capital*0.6) warns.push(t.warnHighLegacy);
     const wb=$('warning-box');
     if(warns.length){wb.innerHTML=warns.join('<br>');wb.classList.add('active');}else{wb.classList.remove('active');}
@@ -857,19 +1036,21 @@ function recalc() {
     else if(h>40){hf.style.background='var(--amber)';hl.textContent=t.moderate;hl.style.color='var(--amber)';}
     else{hf.style.background='var(--rose)';hl.textContent=t.fragile;hl.style.color='var(--rose)';}
 
-    $('stat-swr').textContent=swr.toFixed(1)+' %';
+    $('stat-swr').textContent=swr.toFixed(1)+' %' + (swrWasCapped ? ' 🛡️' : '');
 
     // Simulate
+    const effectiveLegacy = swrWasCapped ? Math.max(legacy, projectedLegacyIncrease) : legacy;
     const sim=simulate({invested,buffer,warChest,monthlyETF,years,annualGrowth:growth/100,inflation,ahv});
 
     const totalOut=totalMonthly*12*years;
     const capUsed=Math.max(0,capital-legacy);
-    $('stat-total-out').textContent=fmt(totalOut)+' CHF';
-    $('stat-capital-used').textContent=fmt(capUsed)+' CHF';
-    $('stat-market-gain').textContent=fmt(Math.max(0,totalOut-capUsed))+' CHF';
+    $('stat-total-out').textContent=fmt(totalOut)+' '+getCur();
+    $('stat-capital-used').textContent=fmt(capUsed)+' '+getCur();
+    $('stat-market-gain').textContent=fmt(Math.max(0,totalOut-capUsed))+' '+getCur();
     const endV=sim.hD[sim.hD.length-1]+sim.hB[sim.hB.length-1]+sim.hW[sim.hW.length-1];
-    $('stat-end-value').textContent=fmt(endV)+' CHF';
-    $('stat-worst').textContent=fmt(sim.worstDepot)+' CHF';
+    $('stat-end-value').textContent=fmt(endV)+' '+getCur();
+    $('stat-worst').textContent=fmt(sim.worstDepot)+' '+getCur();
+    $('stat-proj-legacy').textContent=fmt(Math.max(0, projectedLegacyIncrease || legacy))+' '+getCur() + (swrWasCapped ? ' ↑' : '');
     $('stat-crises').textContent=sim.crisisCount+' '+t.bearMarkets;
     $('stat-buffer-used').textContent=sim.bufferMonthsUsed+' '+t.monthsUnit;
 
@@ -882,8 +1063,8 @@ function recalc() {
 
 // ─── INIT ───
 Object.values(inputs).forEach(el=>el.addEventListener('input',recalc));
+setCurrency(detectCurrency());
 setLang(detectLang());
 </script>
-
 </body>
 </html>
