@@ -1,11 +1,7 @@
-# ✈️ Capital Pilot — Strategic Withdrawal Simulation
-
-### *Strategische Entnahme-Simulation*
-
-<br>
+# ✈️ Capital Pilot — Strategic Withdrawal Simulation (v5.1)
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-5.0-38bdf8?style=for-the-badge&labelColor=0f172a" alt="Version 5.0">
+  <img src="https://img.shields.io/badge/version-5.1-38bdf8?style=for-the-badge&labelColor=0f172a" alt="Version 5.1">
   <img src="https://img.shields.io/badge/languages-21-a78bfa?style=for-the-badge&labelColor=0f172a" alt="21 Languages">
   <img src="https://img.shields.io/badge/currencies-20-fbbf24?style=for-the-badge&labelColor=0f172a" alt="20 Currencies">
   <img src="https://img.shields.io/badge/offline-100%25-34d399?style=for-the-badge&labelColor=0f172a" alt="Offline Ready">
@@ -18,329 +14,301 @@
   <i>Kannst du früh in Rente gehen, ohne dass das Geld ausgeht?</i>
 </p>
 
-<br>
+---
 
------
+## EN — Overview
 
-<br>
+**Capital Pilot** is a single-file, offline-friendly retirement withdrawal simulator. It answers one question:  
+**How much can I spend per month — and will my strategy survive decades of market chaos?**
 
-## 🎯 What Is This? — *Was ist das?*
+It models a **three-bucket setup** (ETF depot + cash buffer + war chest), **taxes**, **housing** (rent vs. ownership), and a **crisis engine** that lets you navigate real history and generate random crisis-driven futures.
 
-**Capital Pilot** is a single-file, zero-dependency retirement withdrawal simulator that answers the most important question in personal finance: **"How much can I spend per month — and will my money survive 30 years of market chaos?"**
+### What’s new in v5.1
 
-It doesn't just calculate a number. It **stress-tests your strategy against real historical crises** — the 2008 Financial Crisis, the Dotcom Crash, COVID-19, Black Monday — and shows you exactly how your portfolio, cash buffer, and war chest interact when markets collapse. It models **taxes, housing costs, real estate appreciation**, and uses **sector-specific drawdown logic** with a hard -15% withdrawal stop rule.
+- **Crisis Engine navigation**
+  - **← 5Y / 5Y →**: move through real history in 5-year steps
+  - **↻ Random Forecast**: generates a new future every click, starting from **19 Feb 2026**
+- **Historical crises updated**
+  - Added **Trump Tariff Crisis (early 2025)** as the newest historical event
+- **Random crisis generator improved**
+  - Random crises are distributed across the **full withdrawal duration** (e.g., 30 years)
+  - Rule: **at least 1 major crisis per decade** + smaller crises in-between
+- **Currency-aware capital slider**
+  - Starting capital min/max/step **adapt to the selected currency**
+  - Example: **CHF** uses **100k–10M**; high-inflation / low-value currencies scale accordingly and the step size is auto-rounded
+- **CHF-only Eigenmietwert logic**
+  - The **Eigenmietwert (imputed rent)** control is **shown only for CHF**
+  - In tax calculations it is **included only for CHF** and **ignored for all other currencies**
+- **Updated defaults**
+  - Starting capital: **1'200'000**
+  - Inflation: **1.5%**
+  - Expected return: **6.0%**
+  - Pension: **1'800 / month**
 
------
+---
 
-**Capital Pilot** ist ein Entnahme-Simulator in einer einzigen Datei, ohne externe Abhängigkeiten, der die wichtigste Frage der persönlichen Finanzplanung beantwortet: **„Wie viel kann ich pro Monat ausgeben — und überlebt mein Geld 30 Jahre Marktchaos?"**
+## EN — Key Features
 
-Es berechnet nicht nur eine Zahl. Es **testet deine Strategie gegen echte historische Krisen** — die Finanzkrise 2008, den Dotcom-Crash, COVID-19, Black Monday — und zeigt dir exakt, wie dein Portfolio, dein Cash-Puffer und deine Kriegskasse zusammenspielen, wenn die Märkte einbrechen. Es modelliert **Steuern, Wohnkosten, Immobilienwertsteigerung** und verwendet eine **sektorspezifische Drawdown-Logik** mit harter -15% Entnahme-Stopp-Regel.
-
-<br>
-
------
-
-<br>
-
-## 💡 Why This Exists — *Warum das existiert*
-
-Most retirement calculators use averages. Averages lie.
-
-The **sequence of returns** matters more than the average return. Retiring into a 2008-style crash can destroy a plan that looks bulletproof on paper. This simulator lets you **slide the timeline** and watch what happens when the same crisis hits in year 1 vs year 15.
-
------
-
-Die meisten Rentenrechner arbeiten mit Durchschnitten. Durchschnitte lügen.
-
-Die **Reihenfolge der Renditen** ist wichtiger als die Durchschnittsrendite. Ein Renteneintritt direkt in eine Krise wie 2008 kann einen Plan zerstören, der auf dem Papier kugelsicher aussieht. Dieser Simulator lässt dich die **Timeline verschieben** und beobachten, was passiert, wenn dieselbe Krise in Jahr 1 oder Jahr 15 kommt.
-
-<br>
-
------
-
-<br>
-
-## 🧠 The Three-Bucket Strategy — *Die Drei-Topf-Strategie*
-
-The simulator models a sophisticated three-bucket retirement system:
+### Three-bucket withdrawal strategy
 
 | Bucket | Purpose | Behavior |
 |---|---|---|
-| 🔵 **ETF Depot** | Growth engine — your invested capital | Compounds at your expected return rate. Monthly withdrawals come from here in normal markets. |
-| 🟢 **Cash Buffer** | Crisis shield — covers expenses during bear markets | X years of living expenses in cash. When markets crash, you withdraw from here instead of selling at the bottom. |
-| 🟡 **War Chest** | Opportunity fund — buys the dip | Cash reserved to tactically buy at sector-specific thresholds. **Never used for living expenses.** |
+| 🔵 **ETF Depot** | Growth engine | Compounds with expected return. Withdrawals come from here in normal markets. |
+| 🟢 **Cash Buffer** | Crisis shield | Covers expenses when markets crash (withdrawals from ETFs can stop). |
+| 🟡 **War Chest** | Opportunity fund | Reserved for dip-buying at drawdown thresholds; **never used for living expenses**. |
 
-### Advanced Drawdown Logic (v5)
+### Crisis Engine (History + Random Forecast)
 
-The war chest uses **two-tier, sector-weighted thresholds**:
+**History mode (← 5Y / 5Y →)**  
+- Scroll through real historical windows and see crisis markers and shading.
 
-| Asset Class | Weight | Buy Tiers |
-|---|---|---|
-| **Standard** (World ETF) | 80% | -18%, -26%, -33% |
-| **High-Beta** (Banks/Sectors) | 20% | -25%, -40%, -50% |
+**Random forecast mode (↻)**  
+- Anchors start at **19 Feb 2026**
+- Picks from realistic crisis types:
+  - **Banking crisis**
+  - **Oil price shock**
+  - **Pandemic**
+  - **Hyperinflation**
+- Places events across the full horizon, with:
+  - **≥ 1 major crisis per 10 years**
+  - additional smaller crises randomly in-between
+- Each click generates a **new, different future**
 
-Each tier fires **once per crisis** and allocates 20/30/50% (Standard) or 15/30/55% (High-Beta) of the remaining war chest. This prevents shooting the powder too early on minor dips and reserves firepower for true capitulation events.
+### Tax & Housing
 
-### The -15% Rule
+- **Taxes**
+  - Income tax (%)
+  - Capital gains tax (%)
+  - Wealth tax (% p.a.)
+  - **Eigenmietwert** is applied **only when currency = CHF**
+- **Housing toggle**
+  - 🏠 Rent: rent + utilities + living costs
+  - 🏡 Own: property value, mortgage, mortgage interest, maintenance, appreciation  
+    (Eigenmietwert shown only for CHF)
+- **Net budget breakdown**
+  - Gross → Taxes → Housing → Net available spending
 
-When the depot drops more than **15% below its all-time high**, ETF withdrawals are **completely stopped**. Living expenses are covered exclusively from the cash buffer. Only when the buffer is empty does a reduced emergency withdrawal (35% of normal) resume from the depot.
+### Currency & Language
 
------
+- **20 currencies** (e.g., CHF, EUR, USD, GBP, PLN, SEK, NOK, RUB, TRY, INR, CNY, JPY, CAD, AUD, BRL …)
+- **21 languages** (EN, DE, FR, ES, IT, PT, NL, PL, RU, TR, SV, DA, NO, FI, CS, HU, RO, EL, UK, HI, ZH)
+- **Decoupled pickers**: choose any language with any currency
+- **Tooltips**: all parameter tooltips + navigation tooltips translated across supported languages
 
-### Erweiterte Drawdown-Logik (v5)
+---
 
-Die Kriegskasse nutzt **zweistufige, sektorgewichtete Schwellen**:
+## EN — Historical Crisis Database (1973–2025)
 
-| Asset-Klasse | Gewicht | Kauf-Stufen |
-|---|---|---|
-| **Standard** (Welt-ETF) | 80% | -18%, -26%, -33% |
-| **High-Beta** (Banken/Sektoren) | 20% | -25%, -40%, -50% |
+Includes (selection):
+- 1973 Oil Crisis
+- Volcker Recession
+- Black Monday (1987)
+- Gulf War / Early 90s recession
+- Asian / LTCM Crisis (1997–1998)
+- Dotcom Crash (2000)
+- Global Financial Crisis (2008)
+- EU Debt Crisis (2011)
+- China / Oil Shock (2015)
+- COVID-19 Crash (2020)
+- 2022 Bear Market (2022)
+- **Trump Tariff Crisis (2025)**
 
-Jede Stufe feuert **einmal pro Krise**. Das verhindert, zu früh bei kleinen Dips das Pulver zu verschiessen.
+---
 
-### Die -15%-Regel
+## EN — Getting Started
 
-Wenn das Depot mehr als **15% unter dem Allzeithoch** liegt, werden ETF-Entnahmen **komplett gestoppt**. Lebenshaltung wird ausschliesslich aus dem Cash-Puffer gedeckt. Erst bei leerem Puffer gibt es eine reduzierte Notentnahme (35%) aus dem Depot.
-
-<br>
-
------
-
-<br>
-
-## 📊 Features — *Funktionen*
-
-### Core Engine — *Kern-Engine*
-
-- **Newton-Raphson Solver** — Analytically solves the withdrawal annuity with circular buffer dependency
-- **11 Historical Crises (1973–2025)** — Oil Crisis, Volcker Recession, Black Monday, Gulf War, Asian/LTCM Crisis, Dotcom Crash, Global Financial Crisis, EU Debt Crisis, China/Oil Shock, COVID-19, 2022 Bear Market
-- **Timeline Shifting** — Slide the start year ±5 years to test crisis timing
-- **Inflation-Adjusted Withdrawals** — Expenses grow monthly, "Purchasing Power" KPI shows real value
-- **-15% Drawdown Stop** — Hard withdrawal cutoff, forces buffer usage to protect depot
-- **Two-Tier War Chest** — Sector-weighted thresholds with one-time-per-crisis activation
-- **War Chest Protection** — Never used for living expenses, only for buying the dip
-- **Dynamic Withdrawal Reduction** — Auto-reduces to 35% when depot critically low
-- **Automatic Reserve Refill** — Excess growth replenishes buffer and war chest in good times
-
-### Tax & Housing — *Steuern & Wohnen*
-
-- **Three Tax Sliders** — Income tax (22%), capital gains (0% CH), wealth tax (0.30% p.a.)
-- **Swiss Tax Defaults** — 0% Kapitalertragssteuer, Eigenmietwert as income, mortgage/maintenance deductions
-- **Housing Toggle** — 🏠 Rent (rent + utilities) or 🏡 Ownership (mortgage, interest, maintenance, appreciation, imputed rent)
-- **Real Estate Tracking** — Property net value in chart, counts toward legacy
-- **Net Budget Breakdown** — Gross → Taxes → Housing → Net Available
-
-### Currency & Language — *Währung & Sprache*
-
-- **20 Currencies** — CHF, EUR, USD, GBP, PLN, CZK, HUF, RON, SEK, DKK, NOK, RUB, TRY, UAH, INR, CNY, JPY, CAD, AUD, BRL
-- **Independent Pickers** — Currency and language are fully decoupled (German + CHF, English + EUR, etc.)
-- **Smart Detection** — `de-CH`→CHF, `de-DE`→EUR, `en-US`→USD, `fr-CH`→CHF. Default: CHF
-- **21 Languages** — EN, DE, FR, ES, IT, PT, NL, PL, RU, TR, SV, DA, NO, FI, CS, HU, RO, EL, UK, HI, ZH
-- **420 Tooltips** — Every slider has an ⓘ hover-tooltip, translated in all 21 languages
-
-### Interface — *Oberfläche*
-
-- **3-Column Layout** — Parameters | Housing & Taxes | Chart & Analysis (responsive: 3→2→1 columns)
-- **Allocation Bar in Header** — ETF / Buffer / War Chest always visible
-- **Strategy Health** — Fragile → Moderate → Robust indicator
-- **Max SWR Limiter** — Dynamic budget/legacy adjustment when capped
-- **Stress Resistance KPI** — Months surviving -50% crash without selling ETFs
-- **Drawdown Stop Counter** — Months stopped + war chest buy count
-- **Crisis Tags** — Which historical events your portfolio survived
-
-### Deployment — *Deployment*
-
-- **Single HTML File** — No build step, no npm, no framework
-- **100% Offline** — Chart.js from CDN (can be inlined)
-- **GitHub Pages Ready** — Drop file, enable Pages, done
-- **Touch-Optimized** — 22px slider thumbs, responsive grid
-- **PWA Ready** — Add-to-homescreen meta tags
-
-<br>
-
------
-
-<br>
-
-## 🚀 Getting Started — *Schnellstart*
-
-### Option 1: Just Open It
-
-Download `capital-pilot.html` and open it in any browser. Done.
+### Option 1: Open the file
+Open `index.html` in any modern browser.
 
 ### Option 2: GitHub Pages
+1. Commit `index.html` to a repository
+2. Enable **GitHub Pages** → deploy from `main` / root
 
-```bash
-git init capital-pilot && cd capital-pilot
-cp capital-pilot.html index.html
-git add . && git commit -m "✈️ Capital Pilot v5"
-git remote add origin https://github.com/YOUR_USER/capital-pilot.git
-git push -u origin main
-```
-
-Live at `https://YOUR_USER.github.io/capital-pilot/`
-
-### Option 3: Local Server
-
+### Option 3: Local server
 ```bash
 python3 -m http.server 8080
-# → http://localhost:8080/capital-pilot.html
+# http://localhost:8080/
 ```
 
-<br>
+---
 
------
-
-<br>
-
-## 🔬 The Math — *Die Mathematik*
-
-### Solver
-
-```
-Given:
-  C = Starting Capital,  K = War Chest = C × warChestPct
-  B = Buffer Years × 12,  r = Monthly Growth Rate
-  n = Duration (months),  F = (1 + r)^n,  L = Legacy Target
-
-Circular dependency:  buffer = w × B,  invested = C - K - w × B
-
-Annuity equation:     f(w) = (C - K - w×B) × F - w × (F-1)/r - L = 0
-Newton-Raphson:       f'(w) = -B×F - (F-1)/r  (constant → instant convergence)
-```
-
-### Two-Tier War Chest
-
-```
-Standard (80%):   -18% → 20%,  -26% → 30%,  -33% → 50%  of remaining
-High-Beta (20%):  -25% → 15%,  -40% → 30%,  -50% → 55%  of remaining
-Each tier fires ONCE per crisis. Tiers reset for new crises.
-```
-
-### Tax Model
-
-```
-Income Tax    = (Pension + Imputed Rent - Deductions) × Rate
-Capital Gains = ETF Withdrawal × Gains Ratio × CG Rate
-Wealth Tax    = Total Wealth × Rate / 12
-Net Budget    = Gross - Income Tax - CG Tax - Wealth Tax - Housing
-```
-
-### Stress Resistance
-
-```
-Months = Cash Buffer / Monthly Withdrawal
-(War chest excluded — reserved for buying, never spending)
-```
-
-<br>
-
------
-
-<br>
-
-## ⚙️ Default Parameters (Swiss Calibration)
+## EN — Defaults & Ranges (current calibration)
 
 | Parameter | Default | Range |
-|---|---|---|
-| Starting Capital | 1'000'000 CHF | 300k – 5M |
+|---|---:|---:|
+| Starting Capital | 1'200'000 | **Currency-dependent** (e.g., CHF 100k–10M) |
 | Duration | 30 years | 10 – 50 |
-| Target Legacy | 0 CHF | 0 – 3M |
-| Inflation | 1.0% | 0 – 5% |
-| Expected Return | 7.0% | 2 – 12% |
-| War Chest | 15.0% | 0 – 35% |
-| Cash Buffer | 4.0 years | 0 – 5 |
-| Pension (AHV/PK) | 1'500 CHF/mt | 0 – 8'000 |
-| Max SWR | 5.2% | 2 – 8% |
-| Income Tax | 22% | 0 – 100% |
-| Capital Gains Tax | 0% (CH) | 0 – 100% |
-| Wealth Tax | 0.30% p.a. | 0 – 3% |
-| Monthly Rent | 1'500 CHF | 0 – 5'000 |
+| Target Legacy | 0 | 0 – 5'000'000 |
+| Inflation | 1.5% | 0 – 10% |
+| Expected Return | 6.0% | 1 – 20% |
+| Pension (monthly) | 1'800 | 0 – 10'000 |
+| War Chest | 10% | 0 – 40% |
+| Cash Buffer | 2 years | 0 – 6 |
+| Max SWR | 4.0% | 2 – 7% |
+| Income Tax | 20% | 0 – 50% |
+| Capital Gains Tax | 0% | 0 – 35% |
+| Wealth Tax | 0.20% p.a. | 0 – 2% |
 
-<br>
+---
 
------
-
-<br>
-
-## 🏗️ Architecture
+## EN — Architecture (single-file)
 
 ```
-capital-pilot.html (~1400 lines, single file)
+index.html
 │
-├── HTML
-│   ├── Header: Title + Allocation Bar + $ Currency + 🌐 Language
-│   ├── Col Left: Base Params + Market Strategy + Safety Limits
-│   ├── Col Mid: Housing (Rent/Own) + Taxes (3 sliders) + Net Budget
-│   └── Col Right: 4 KPI Cards → Health → Chart → Stats → Info
-│
-├── CSS (embedded)
-│   ├── 3-column responsive grid (1200px/1024px/mobile breakpoints)
-│   ├── Housing toggle, tooltip system, budget breakdown
-│   └── Dark glass-panel aesthetic
-│
-└── JavaScript (embedded)
-    ├── i18n (21 langs × 80+ keys + 420 tooltips)
-    ├── Currency (20 currencies, smart browser detection)
-    ├── Crisis DB (11 events, 1973–2025)
-    ├── Newton-Raphson Solver
-    ├── Simulation Engine
-    │   ├── Two-tier war chest (Std -18/-26/-33 + HB -25/-40/-50)
-    │   ├── -15% drawdown stop
-    │   ├── War chest protection (buy only, never spend)
-    │   ├── Wealth tax deduction
-    │   ├── Property value tracking
-    │   └── Stress resistance calc
-    ├── Tax Engine (income/CG/wealth, CH deductions)
-    ├── Housing Engine (rent vs own, Eigenmietwert)
-    └── Chart.js (crisis shading, legacy line, property line)
+├── HTML (UI + sliders + chart canvas)
+├── CSS  (responsive glass UI)
+└── JS
+    ├── i18n (21 languages)
+    ├── currency engine (20 currencies, scaled ranges)
+    ├── housing + tax engine (CHF-only Eigenmietwert)
+    ├── crisis DB (1973–2025)
+    ├── crisis engine (history navigation + random forecast)
+    ├── simulation engine (buffer + war chest + stop rules)
+    └── Chart.js rendering (shading + crisis tags)
 ```
 
-<br>
+---
 
------
+## EN — License
+MIT
 
-<br>
+---
 
-## 🔄 Version History
+# DE — Überblick
 
-| Version | Changes |
-|---|---|
-| **v5.0** | Tax system (3 sliders, CH defaults), housing module (rent/own), real estate tracking, net budget breakdown, two-tier war chest, -15% drawdown stop, war chest protection, stress resistance KPI, 3-column layout, 420 tooltips (21 langs), 20 currencies (independent), allocation bar in header, Swiss calibration |
-| **v4.0** | Max SWR limiter, historical crisis timeline (1973–2025), 11 real events |
-| **v3.0** | 21 languages, Newton-Raphson solver, three-bucket strategy |
-| **v2.0** | Mobile responsive, Strategy Health indicator, crisis tags |
-| **v1.0** | Initial release |
+**Capital Pilot** ist ein Entnahme‑Simulator in **einer einzigen HTML‑Datei** (offline‑freundlich). Er beantwortet die Kernfrage:  
+**Wie viel kann ich pro Monat ausgeben – und überlebt meine Strategie Jahrzehnte voller Marktkrisen?**
 
-<br>
+Modelliert werden eine **Drei‑Topf‑Strategie** (ETF‑Depot + Cash‑Puffer + Kriegskasse), **Steuern**, **Wohnen** (Miete vs. Eigentum) sowie eine **Krisen‑Engine** (reale Historie + Zufalls‑Zukunft).
 
------
+### Neu in v5.1
 
-<br>
+- **Krisen‑Engine Navigation**
+  - **← 5Y / 5Y →**: Navigation durch die reale Historie in 5‑Jahres‑Schritten
+  - **↻ Zufallsprognose**: erzeugt bei jedem Klick eine neue Zukunft, Start ab **19.02.2026**
+- **Historische Krisen aktualisiert**
+  - Neu: **Trump‑Zoll‑Krise (Anfang 2025)** als aktuellstes historisches Ereignis
+- **Zufalls‑Krisen verbessert**
+  - Verteilung über die **gesamte Entnahmedauer** (z. B. 30 Jahre)
+  - Regel: **mindestens 1 große Krise pro Dekade** + kleinere Krisen zufällig dazwischen
+- **Währungsabhängiger Startkapital‑Slider**
+  - Min/Max/Step passen sich **automatisch** an die gewählte Währung an
+  - Beispiel: **CHF** nutzt **100k–10M**; andere Währungen skalieren entsprechend, Step wird sinnvoll gerundet
+- **Eigenmietwert nur in CHF**
+  - Eigenmietwert‑Slider wird **nur bei CHF** angezeigt
+  - Steuerberechnung berücksichtigt Eigenmietwert **nur bei CHF** und ignoriert ihn sonst
+- **Neue Default‑Werte**
+  - Startkapital: **1'200'000**
+  - Inflation: **1.5%**
+  - Erwartete Rendite: **6.0%**
+  - Pension: **1'800 / Monat**
 
-## ⚠️ Disclaimer — *Haftungsausschluss*
+---
 
-**This is a simulation tool for educational purposes. It is not financial advice.**
+## DE — Hauptfunktionen
 
-Past performance does not predict future results. Tax calculations are approximations — consult a tax advisor for your specific situation. Always consult a qualified financial advisor before making retirement decisions.
+### Drei‑Topf‑Strategie
 
------
+| Topf | Zweck | Verhalten |
+|---|---|---|
+| 🔵 **ETF‑Depot** | Wachstums‑Motor | Verzinst mit erwarteter Rendite. Entnahmen in normalen Märkten. |
+| 🟢 **Cash‑Puffer** | Krisen‑Schutz | Deckt Ausgaben bei Crashs (ETF‑Entnahmen können stoppen). |
+| 🟡 **Kriegskasse** | Chancen‑Topf | Für Dip‑Käufe bei Drawdowns; **nie für Lebenshaltung**. |
 
-**Dies ist ein Simulationswerkzeug zu Bildungszwecken. Es stellt keine Finanzberatung dar.**
+### Krisen‑Engine (Historie + Zufall)
 
-Vergangene Wertentwicklungen sind kein verlässlicher Indikator für zukünftige Ergebnisse. Steuerberechnungen sind Näherungswerte — konsultiere einen Steuerberater. Konsultiere immer einen qualifizierten Finanzberater vor Pensionierungsentscheidungen.
+**Historie (← 5Y / 5Y →)**  
+- Reale Zeitfenster durchblättern, Krisen‑Marker & Schattierung sehen.
 
-<br>
+**Zufallsprognose (↻)**  
+- Start ab **19.02.2026**
+- Krisen‑Pool:
+  - **Bankenkrise**
+  - **Ölpreisschock**
+  - **Pandemie**
+  - **Hyperinflation**
+- Platzierung über den kompletten Horizont:
+  - **≥ 1 große Krise pro 10 Jahre**
+  - zusätzliche kleinere Krisen zufällig dazwischen
+- Jeder Klick erzeugt eine **andere Zukunft**
 
------
+### Steuern & Wohnen
 
-<br>
+- **Steuern**
+  - Einkommenssteuer (%)
+  - Kapitalertragssteuer (%)
+  - Vermögenssteuer (% p.a.)
+  - **Eigenmietwert nur bei CHF**
+- **Wohnen**
+  - 🏠 Miete: Miete + NK + Lebenshaltung
+  - 🏡 Eigentum: Immobilienwert, Hypothek, Hypozins, Unterhalt, Wertentwicklung  
+    (Eigenmietwert‑Anzeige nur CHF)
+- **Budget‑Aufschlüsselung**
+  - Brutto → Steuern → Wohnen → Netto‑Budget
 
-<p align="center">
-  <b>Built with obsessive attention to financial math and zero dependencies.</b><br>
-  <i>Gebaut mit obsessiver Aufmerksamkeit für Finanzmathematik und null Abhängigkeiten.</i>
-</p>
+### Währung & Sprache
 
-<p align="center">
-  ✈️
-</p>
+- **20 Währungen** (u. a. CHF, EUR, USD, GBP, PLN, SEK, NOK, RUB, TRY, INR, CNY, JPY, CAD, AUD, BRL …)
+- **21 Sprachen** (EN, DE, FR, ES, IT, PT, NL, PL, RU, TR, SV, DA, NO, FI, CS, HU, RO, EL, UK, HI, ZH)
+- **Entkoppelt**: Sprache und Währung frei kombinierbar
+- **Tooltips**: Parameter‑ und Navigations‑Tooltips sind übersetzt
+
+---
+
+## DE — Krisen‑Datenbank (1973–2025)
+
+Enthält u. a.:
+- Ölkrise 1973
+- Volcker‑Rezession
+- Black Monday (1987)
+- Golfkrieg / frühe 90er
+- Asien/LTCM (1997–1998)
+- Dotcom (2000)
+- Finanzkrise (2008)
+- Eurokrise (2011)
+- China/Öl‑Schock (2015)
+- COVID‑Crash (2020)
+- Bärenmarkt 2022
+- **Trump‑Zoll‑Krise (2025)**
+
+---
+
+## DE — Schnellstart
+
+### Option 1: Datei öffnen
+`index.html` lokal im Browser öffnen.
+
+### Option 2: GitHub Pages
+1. `index.html` committen
+2. GitHub Pages aktivieren → Deploy aus `main` / root
+
+### Option 3: Lokaler Server
+```bash
+python3 -m http.server 8080
+# http://localhost:8080/
+```
+
+---
+
+## DE — Defaults & Ranges (aktuelle Kalibrierung)
+
+| Parameter | Default | Range |
+|---|---:|---:|
+| Startkapital | 1'200'000 | **währungsabhängig** (z. B. CHF 100k–10M) |
+| Dauer | 30 Jahre | 10 – 50 |
+| Ziel‑Erbe | 0 | 0 – 5'000'000 |
+| Inflation | 1.5% | 0 – 10% |
+| Erwartete Rendite | 6.0% | 1 – 20% |
+| Pension (monatlich) | 1'800 | 0 – 10'000 |
+| Kriegskasse | 10% | 0 – 40% |
+| Cash‑Puffer | 2 Jahre | 0 – 6 |
+| Max SWR | 4.0% | 2 – 7% |
+| Einkommenssteuer | 20% | 0 – 50% |
+| Kapitalertragssteuer | 0% | 0 – 35% |
+| Vermögenssteuer | 0.20% p.a. | 0 – 2% |
+
+---
+
+## DE — Lizenz
+MIT
