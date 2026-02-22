@@ -96,7 +96,7 @@ The Opportunity Cost Indicator makes the trade-off explicit: in some scenarios, 
 - Scroll through real historical windows and see crisis markers and shading.
 
 **Random forecast mode (↻)**  
-- Anchors start at **19 Feb 2026**
+- Anchors start at **Today**
 - Picks from realistic crisis types: Banking crisis, Oil price shock, Pandemic, Hyperinflation
 - Places events across the full horizon: ≥ 1 major crisis per 10 years + smaller crises
 - Each click generates a **new, different future**
