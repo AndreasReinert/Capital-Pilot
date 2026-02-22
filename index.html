@@ -273,7 +273,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                         <span class="param-label" data-i18n="startCapital" data-tip>Starting Capital<span class="param-tip" data-i18n-tip="tipCapital"></span></span>
                         <span class="param-value val-sky" id="val-capital">1'200'000 CHF</span>
                     </div>
-                    <input type="range" id="in-capital" min="100000" max="10000000" step="10000" value="1200000">
+                    <input type="range" id="in-capital" min="100000" max="10000000" step="10000" value="600000">
                 </div>
                 <div class="param-group">
                     <div class="param-header">
@@ -287,14 +287,14 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                         <span class="param-label" data-i18n="targetLegacy" data-tip>Target Legacy<span class="param-tip" data-i18n-tip="tipLegacy"></span></span>
                         <span class="param-value val-sky" id="val-legacy">500'000 CHF</span>
                     </div>
-                    <input type="range" id="in-legacy" min="0" max="3000000" step="25000" value="0">
+                    <input type="range" id="in-legacy" min="0" max="3000000" step="25000" value="100000">
                 </div>
                 <div class="param-group">
                     <div class="param-header">
                         <span class="param-label" data-i18n="inflation" data-tip>Inflation (% p.a.)<span class="param-tip" data-i18n-tip="tipInflation"></span></span>
                         <span class="param-value val-amber" id="val-inflation">1.5 %</span>
                     </div>
-                    <input type="range" id="in-inflation" min="0" max="10" step="0.1" value="1.5">
+                    <input type="range" id="in-inflation" min="0" max="10" step="0.1" value="1.1">
                 </div>
 
                 <div class="divider"></div>
@@ -312,21 +312,21 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                         <span class="param-label" data-i18n="warChest" data-tip>War Chest (%)<span class="param-tip" data-i18n-tip="tipWarChest"></span></span>
                         <span class="param-value val-amber" id="val-warchest">16.8 %</span>
                     </div>
-                    <input type="range" id="in-warchest" min="0" max="35" step="0.5" value="15.0">
+                    <input type="range" id="in-warchest" min="0" max="35" step="0.5" value="10.0">
                 </div>
                 <div class="param-group">
                     <div class="param-header">
                         <span class="param-label" data-i18n="cashBuffer" data-tip>Cash Buffer<span class="param-tip" data-i18n-tip="tipBuffer"></span></span>
                         <span class="param-value val-emerald" id="val-buffer">3.0</span>
                     </div>
-                    <input type="range" id="in-buffer" min="0" max="5" step="0.5" value="4">
+                    <input type="range" id="in-buffer" min="0" max="5" step="0.5" value="3">
                 </div>
                 <div class="param-group">
                     <div class="param-header">
                         <span class="param-label" data-i18n="pension" data-tip>Pension (monthly)<span class="param-tip" data-i18n-tip="tipPension"></span></span>
                         <span class="param-value val-emerald" id="val-ahv">1'800 CHF</span>
                     </div>
-                    <input type="range" id="in-ahv" min="0" max="10000" step="100" value="1800">
+                    <input type="range" id="in-ahv" min="0" max="10000" step="100" value="1600">
                 </div>
 
                 <div class="divider"></div>
@@ -337,7 +337,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                         <span class="param-label" data-i18n="maxSWR" data-tip>Max SWR<span class="param-tip" data-i18n-tip="tipMaxSWR"></span></span>
                         <span class="param-value" style="color:var(--rose)" id="val-maxswr">4.0 %</span>
                     </div>
-                    <input type="range" id="in-maxswr" min="2" max="8" step="0.1" value="5.2">
+                    <input type="range" id="in-maxswr" min="2" max="8" step="0.1" value="5.3">
                     <div style="display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.55rem;color:var(--text-muted)">
                         <span data-i18n="conservative">Conservative</span>
                         <span data-i18n="aggressive">Aggressive</span>
@@ -365,9 +365,9 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                     <button class="toggle-opt" id="tog-own" onclick="setHousingMode('own')" data-i18n="ownership">🏡 Ownership</button>
                 </div>
                 <div class="cond-rent show" id="sec-rent">
-                    <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="monthlyRent" data-tip>Monthly Rent<span class="param-tip" data-i18n-tip="tipRent"></span></span><span class="param-value val-sky" id="val-rent">1'500</span></div><input type="range" id="in-rent" min="0" max="5000" step="50" value="1500"></div>
-                    <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="utilities" data-tip>Utilities<span class="param-tip" data-i18n-tip="tipUtilities"></span></span><span class="param-value val-sky" id="val-utilities">200</span></div><input type="range" id="in-utilities" min="0" max="1500" step="25" value="200"></div>
-                    <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="livingCosts" data-tip>Living Costs<span class="param-tip" data-i18n-tip="tipLiving"></span></span><span class="param-value val-sky" id="val-living-rent">2'500</span></div><input type="range" id="in-living-rent" min="0" max="5000" step="50" value="2500"></div>
+                    <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="monthlyRent" data-tip>Monthly Rent<span class="param-tip" data-i18n-tip="tipRent"></span></span><span class="param-value val-sky" id="val-rent">1'500</span></div><input type="range" id="in-rent" min="0" max="5000" step="50" value="1600"></div>
+                    <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="utilities" data-tip>Utilities<span class="param-tip" data-i18n-tip="tipUtilities"></span></span><span class="param-value val-sky" id="val-utilities">200</span></div><input type="range" id="in-utilities" min="0" max="1500" step="25" value="250"></div>
+                    <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="livingCosts" data-tip>Living Costs<span class="param-tip" data-i18n-tip="tipLiving"></span></span><span class="param-value val-sky" id="val-living-rent">2'500</span></div><input type="range" id="in-living-rent" min="0" max="5000" step="50" value="1600"></div>
                 </div>
                 <div class="cond-own" id="sec-own">
                     <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="propertyValue" data-tip>Property Value<span class="param-tip" data-i18n-tip="tipPropVal"></span></span><span class="param-value val-sky" id="val-propval">800'000</span></div><input type="range" id="in-propval" min="100000" max="3000000" step="25000" value="800000"></div>
@@ -384,8 +384,8 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
             <div class="panel">
                 <div class="panel-title" data-i18n="taxes">Taxes</div>
                 <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="incomeTax" data-tip>Income Tax<span class="param-tip" data-i18n-tip="tipIncTax"></span></span><span class="param-value" style="color:var(--rose)" id="val-inctax">22.0 %</span></div><input type="range" id="in-inctax" min="0" max="100" step="0.5" value="22"></div>
-                <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="capitalGainsTax" data-tip>Capital Gains Tax<span class="param-tip" data-i18n-tip="tipCgTax"></span></span><span class="param-value" style="color:var(--rose)" id="val-cgtax">0.0 %</span></div><input type="range" id="in-cgtax" min="0" max="100" step="0.5" value="0"></div>
-                <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="wealthTax" data-tip>Wealth Tax<span class="param-tip" data-i18n-tip="tipWealthTax"></span></span><span class="param-value" style="color:var(--rose)" id="val-wealthtax">0.30 %</span></div><input type="range" id="in-wealthtax" min="0" max="3" step="0.01" value="0.30"></div>
+                <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="capitalGainsTax" data-tip>Capital Gains Tax<span class="param-tip" data-i18n-tip="tipCgTax"></span></span><span class="param-value" style="color:var(--rose)" id="val-cgtax">0.0 %</span></div><input type="range" id="in-cgtax" min="0" max="100" step="0.5" value="2"></div>
+                <div class="param-group"><div class="param-header"><span class="param-label" data-i18n="wealthTax" data-tip>Wealth Tax<span class="param-tip" data-i18n-tip="tipWealthTax"></span></span><span class="param-value" style="color:var(--rose)" id="val-wealthtax">0.30 %</span></div><input type="range" id="in-wealthtax" min="0" max="3" step="0.01" value="0.28"></div>
             </div>
 
             <!-- NET BUDGET + ALLOCATION -->
