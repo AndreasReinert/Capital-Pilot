@@ -23,10 +23,27 @@
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-muted: #475569;
+    --range-track: #1e293b;
+}
+:root.light-mode {
+    --bg-deep: #f0f4f8;
+    --bg-panel: rgba(255,255,255,0.92);
+    --border-subtle: rgba(0,0,0,0.09);
+    --border-hover: rgba(56,189,248,0.45);
+    --sky: #0284c7;
+    --emerald: #059669;
+    --amber: #d97706;
+    --rose: #e11d48;
+    --violet: #7c3aed;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #94a3b8;
+    --range-track: #cbd5e1;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;transition:background 0.3s,color 0.3s;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(56,189,248,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.012) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+:root.light-mode body::before{display:none;}
 
 .app{position:relative;z-index:1;padding:1rem;max-width:1440px;margin:0 auto;}
 @media(min-width:768px){.app{padding:1.5rem;}}
@@ -45,10 +62,13 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .lang-btn:hover{border-color:var(--sky);color:var(--sky);}
 .lang-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;}
 .lang-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:rgba(14,20,34,0.98);border:1px solid var(--border-subtle);border-radius:12px;padding:0.5rem;z-index:100;max-height:320px;overflow-y:auto;min-width:160px;backdrop-filter:blur(20px);box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+:root.light-mode .lang-dropdown{background:rgba(255,255,255,0.98);box-shadow:0 20px 60px rgba(0,0,0,0.15);}
 .lang-dropdown.open{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
 .lang-opt{padding:0.45rem 0.6rem;border-radius:6px;cursor:pointer;font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-secondary);transition:all 0.15s;white-space:nowrap;}
 .lang-opt:hover{background:rgba(56,189,248,0.1);color:var(--sky);}
+:root.light-mode .lang-opt:hover{background:rgba(2,132,199,0.1);}
 .lang-opt.active{background:rgba(56,189,248,0.15);color:var(--sky);font-weight:600;}
+:root.light-mode .lang-opt.active{background:rgba(2,132,199,0.12);}
 
 /* Panels */
 .panel{background:var(--bg-panel);border:1px solid var(--border-subtle);border-radius:14px;padding:1.25rem;backdrop-filter:blur(20px);transition:border-color 0.3s;}
@@ -82,7 +102,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .val-emerald{color:var(--emerald);}
 .val-amber{color:var(--amber);}
 
-input[type="range"]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:#1e293b;outline:none;cursor:pointer;touch-action:manipulation;}
+input[type="range"]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--range-track);outline:none;cursor:pointer;touch-action:manipulation;}
 input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--sky);box-shadow:0 0 10px rgba(56,189,248,0.35);cursor:pointer;}
 input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--sky);box-shadow:0 0 10px rgba(56,189,248,0.35);cursor:pointer;border:none;}
 
@@ -123,7 +143,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
 .stat-val{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);white-space:nowrap;}
 
 /* Health */
-.health-bar{width:100%;height:6px;background:#1e293b;border-radius:3px;overflow:hidden;}
+.health-bar{width:100%;height:6px;background:var(--range-track);border-radius:3px;overflow:hidden;}
 .health-fill{height:100%;border-radius:3px;transition:width 0.5s ease,background 0.3s;}
 .health-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
 
@@ -192,6 +212,11 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
             </div>
         </div>
         <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+            <!-- THEME TOGGLE -->
+            <button class="lang-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+                <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <span id="themeLabel">Dark</span>
+            </button>
             <div class="lang-picker">
                 <button class="lang-btn" id="curBtn" onclick="toggleCurDropdown()">
                     <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -409,6 +434,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                     <div class="legend-item"><div class="legend-dot" style="background:var(--rose);opacity:0.5"></div> <span data-i18n="totalWealth">Total</span></div>
                     <div class="legend-item"><div class="legend-stripe"></div> <span data-i18n="crisisPhase">Crisis</span></div>
                     <div class="legend-item" id="legend-prop" style="display:none"><div class="legend-dot" style="background:#64748b"></div> <span data-i18n="propertyNet">Property (net)</span></div>
+                    <div class="legend-item" id="legend-bah"><div class="legend-dot" style="background:var(--violet);opacity:0.6"></div> <span data-i18n="bahLine">Buy &amp; Hold</span></div>
                 </div>
                 <div class="crisis-labels" id="crisis-tags"></div>
             </div>
@@ -431,12 +457,25 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                         <div class="stat-row"><span class="stat-label" data-i18n="bufferMonths">Buffer Months Used</span><span class="stat-val" id="stat-buffer-used">—</span></div>
                         <div class="stat-row"><span class="stat-label" data-i18n="drawdownStops">Drawdown Stops (-15%)</span><span class="stat-val" style="color:var(--amber)" id="stat-dd-stops">—</span></div>
                         <div class="stat-row"><span class="stat-label" data-i18n="stressResistance">Stress Resistance (-50%)</span><span class="stat-val" style="color:var(--sky)" id="stat-stress">—</span></div>
+                        <div class="stat-row"><span class="stat-label" data-i18n="rebalEvents">Rebalancing Events</span><span class="stat-val" style="color:var(--emerald)" id="stat-rebal-events">—</span></div>
+                    </div>
+                </div>
+
+                <!-- OPPORTUNITY COST INDICATOR -->
+                <div style="margin-top:0.75rem;">
+                    <div id="opp-cost-box" style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:10px;padding:0.85rem;font-size:0.7rem;line-height:1.7;display:none;">
+                        <div style="font-family:'JetBrains Mono';font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--violet);margin-bottom:0.5rem;" data-i18n="oppCostTitle">⚖️ Opportunity Cost vs. Buy &amp; Hold</div>
+                        <div class="stats-grid" style="gap:0.4rem;">
+                            <div class="stat-row"><span class="stat-label" data-i18n="oppHoldEnd">B&amp;H End Wealth</span><span class="stat-val" style="color:var(--violet)" id="stat-bah-end">—</span></div>
+                            <div class="stat-row"><span class="stat-label" data-i18n="oppStratEnd">Strategy End Wealth</span><span class="stat-val" style="color:var(--sky)" id="stat-strat-end">—</span></div>
+                        </div>
+                        <div id="opp-delta-line" style="border-top:1px solid var(--border-subtle);padding-top:0.4rem;margin-top:0.2rem;font-family:'JetBrains Mono';font-size:0.68rem;"></div>
                     </div>
                 </div>
             </div>
 
             <div class="info-box">
-                <strong style="color:var(--sky)">v5.1:</strong>
+                <strong style="color:var(--sky)">v6.0:</strong>
                 <span data-i18n="methodInfo">Historical crisis overlay (1973–2026) with real events: Oil Crisis, Black Monday, Dotcom, GFC, COVID, 2022 Bear. Shift the timeline to see how early/late crises affect your plan. Newton-Raphson solver, inflation-adjusted withdrawals, dynamic reduction on drawdowns.</span>
             </div>
         </div>
@@ -445,6 +484,12 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
 </div>
 
 <script>
+// ─── GLOBAL STATE ───────────────────────────────────────────────
+// These must be declared before any function that references them
+let isLightMode = false;        // Light/Dark theme toggle
+let _lastSim = null;            // Cache last simulation result for theme re-render
+let _lastLegacy = 0;            // Cache last legacy value for theme re-render
+
 // ═══════════════════════════════════════════════════════════════
 // i18n — 21 Languages
 // ═══════════════════════════════════════════════════════════════
@@ -504,6 +549,13 @@ en:{code:'EN',name:'English',
     warnHighLegacy:'⚠ Target legacy > 60% of capital — limited withdrawal room.',
     methodInfo:'Historical crisis overlay (1973–2026) with real events: Oil Crisis, Black Monday, Dotcom, GFC, COVID, 2022 Bear. Shift the timeline to see how early/late crises affect your plan. Newton-Raphson solver, inflation-adjusted withdrawals, dynamic reduction on drawdowns.',
     nominalEq:'nominal = {0} real',
+    rebalEvents:'Rebalancing Events',
+    oppCostTitle:'⚖️ Opportunity Cost vs. Buy & Hold',
+    oppHoldEnd:'B&H End Wealth',oppStratEnd:'Strategy End Wealth',
+    oppAhead:'Strategy outperforms B&H by',oppBehind:'Strategy trails B&H by',
+    bahLine:'Buy & Hold',
+    themeDark:'Dark',themeLight:'Light',
+    tipRebal:'Fair-weather rebalancing: when the ETF depot hits a new ATH, surplus gains automatically refill the Cash Buffer and War Chest to their target levels.',
 },
 de:{code:'DE',name:'Deutsch',
     title:'Capital Pilot',subtitle:'Strategische Entnahme-Simulation',
@@ -559,6 +611,13 @@ de:{code:'DE',name:'Deutsch',
     warnHighLegacy:'⚠ Ziel-Erbe > 60% des Kapitals — wenig Entnahme-Spielraum.',
     methodInfo:'Historische Krisen-Überlagerung (1973–2026) mit realen Events: Ölkrise, Black Monday, Dotcom, Finanzkrise, COVID, 2022-Bärenmarkt. Timeline verschieben um den Effekt früher/später Krisen zu sehen.',
     nominalEq:'nominal = {0} real',
+    rebalEvents:'Rebalancing-Ereignisse',
+    oppCostTitle:'⚖️ Opportunitätskosten vs. Buy & Hold',
+    oppHoldEnd:'B&H Endvermögen',oppStratEnd:'Strategie Endvermögen',
+    oppAhead:'Strategie besser als B&H um',oppBehind:'Strategie schlechter als B&H um',
+    bahLine:'Buy & Hold',
+    themeDark:'Dunkel',themeLight:'Hell',
+    tipRebal:'Schönwetter-Rebalancing: Sobald das ETF-Depot ein neues ATH erreicht, werden Überschussgewinne automatisch genutzt, um Cash-Puffer und Kriegskasse auf ihr Zielniveau aufzufüllen.',
 },
 fr:{code:'FR',name:'Français',
     title:'Capital Pilot',subtitle:'Simulation de Retrait Stratégique',
@@ -583,8 +642,8 @@ fr:{code:'FR',name:'Français',
     warnNegative:'🚫 Retrait impossible.',warnHighSWR:'⚠ Taux {0}% — au-dessus de la règle des 4%.',
     warnHighLegacy:'⚠ Héritage > 60% du capital.',
     methodInfo:'Crises historiques (1973–2026): Choc pétrolier, Black Monday, Dotcom, Crise financière, COVID, 2022.',
-    nominalEq:'nominal = {0} réel',tipCapital:'Actifs liquides totaux au départ (épargne, 2e/3e pilier, placements).',tipDuration:'Combien d\'années l\'argent doit durer. Espérance de vie moins âge de retraite.',tipLegacy:'Montant à transmettre. 0 = tout dépenser.',tipInflation:'Hausse annuelle des prix. CH ~1% historique. Prudent: 2%.',tipReturn:'Rendement nominal annuel du portefeuille ETF. MSCI World moy. ~7% sur 30 ans.',tipWarChest:'Réserve cash pour acheter en baisse. Déployée automatiquement lors de chutes >1.5%.',tipBuffer:'Années de dépenses en cash. En crise, on puise ici au lieu de vendre les ETF au plus bas.',tipPension:'Revenu mensuel de retraite (AVS/LPP). Réduit les retraits ETF nécessaires.',tipMaxSWR:'Taux de retrait max. Règle des 4% classique. Plafonne le budget si le solveur calcule plus.',tipRent:'Loyer mensuel (sans charges).',tipUtilities:'Charges: chauffage, eau, déchets, assurance bâtiment etc.',tipPropVal:'Valeur marchande actuelle de votre bien immobilier.',tipMortgage:'Dette hypothécaire restante. Soustraite de la valeur pour la fortune nette.',tipMortRate:'Taux hypothécaire annuel. CH: 1-2% (SARON), fixe: 1.5-3%.',tipMaint:'Frais d\'entretien + charges mensuels. Règle: ~1% de la valeur par an.',tipPropGrowth:'Appréciation annuelle. CH moyenne ~1.5%. Zones urbaines plus élevé.',tipImputed:'CH uniquement: valeur locative. Imposée comme revenu. Typ. 60-70% du loyer marché.',tipIncTax:'Taux marginal sur pension + valeur locative. CH: 15-35%. DE: 30-45%.',tipCgTax:'Impôt sur les gains. CH: 0% privé. DE: 26.375%. US: 15-20%.',tipWealthTax:'Impôt annuel sur la fortune. CH: 0.1-0.5% cantonal. DE/US: 0%.',livingCosts:'Frais de subsistance',tipLiving:'Alimentation, transports, assurance maladie, loisirs, hobbys. Tout ce dont vous avez besoin au quotidien hors logement.',disclaimerTitle:'Avertissement',disclaimerText:'Ceci est un outil de simulation à des fins éducatives uniquement. Il ne constitue pas un conseil financier, fiscal ou d\'investissement. Les performances passées ne préjugent pas des résultats futurs. Consultez un conseiller financier qualifié avant toute décision de retraite. L\'auteur décline toute responsabilité.',
-    housing:'Logement',rent:'🏠 Location',ownership:'🏡 Propriété',monthlyRent:'Loyer mensuel',utilities:'Charges / Frais annexes',propertyValue:'Valeur du bien',mortgage:'Solde hypothécaire',mortgageRate:'Taux hypothécaire (%)',maintenanceCost:'Entretien + Charges',propertyGrowth:'Croissance valeur (% p.a.)',imputedRent:'Valeur locative imputée',propertyNet:'Immobilier (net)',taxes:'Impôts',incomeTax:'Impôt sur le revenu (%)',capitalGainsTax:'Impôt sur les gains (%)',wealthTax:'Impôt sur la fortune (% p.a.)',netBudget:'Détail du budget net',drawdownStops:'Arrêts de retrait (-15%)',stressResistance:'Résistance au stress (-50%)'},
+    nominalEq:'nominal = {0} réel',rebalEvents:'Rééquilibrages',oppCostTitle:'⚖️ Coût d\'opportunité vs. B&H',oppHoldEnd:'B&H Richesse finale',oppStratEnd:'Stratégie Richesse finale',oppAhead:'Stratégie surperforme B&H de',oppBehind:'Stratégie sous-performe B&H de',bahLine:'Buy & Hold',themeDark:'Sombre',themeLight:'Clair',tipRebal:'Rééquilibrage automatique lorsque le dépôt atteint un nouveau sommet historique.',tipCapital:'Actifs liquides totaux au départ (épargne, 2e/3e pilier, placements).',tipDuration:'Combien d\'années l\'argent doit durer. Espérance de vie moins âge de retraite.',tipLegacy:'Montant à transmettre. 0 = tout dépenser.',tipInflation:'Hausse annuelle des prix. CH ~1% historique. Prudent: 2%.',tipReturn:'Rendement nominal annuel du portefeuille ETF. MSCI World moy. ~7% sur 30 ans.',tipWarChest:'Réserve cash pour acheter en baisse. Déployée automatiquement lors de chutes >1.5%.',tipBuffer:'Années de dépenses en cash. En crise, on puise ici au lieu de vendre les ETF au plus bas.',tipPension:'Revenu mensuel de retraite (AVS/LPP). Réduit les retraits ETF nécessaires.',tipMaxSWR:'Taux de retrait max. Règle des 4% classique. Plafonne le budget si le solveur calcule plus.',tipRent:'Loyer mensuel (sans charges).',tipUtilities:'Charges: chauffage, eau, déchets, assurance bâtiment etc.',tipPropVal:'Valeur marchande actuelle de votre bien immobilier.',tipMortgage:'Dette hypothécaire restante. Soustraite de la valeur pour la fortune nette.',tipMortRate:'Taux hypothécaire annuel. CH: 1-2% (SARON), fixe: 1.5-3%.',tipMaint:'Frais d\'entretien + charges mensuels. Règle: ~1% de la valeur par an.',tipPropGrowth:'Appréciation annuelle. CH moyenne ~1.5%. Zones urbaines plus élevé.',tipImputed:'CH uniquement: valeur locative. Imposée comme revenu. Typ. 60-70% du loyer marché.',tipIncTax:'Taux marginal sur pension + valeur locative. CH: 15-35%. DE: 30-45%.',tipCgTax:'Impôt sur les gains. CH: 0% privé. DE: 26.375%. US: 15-20%.',tipWealthTax:'Impôt annuel sur la fortune. CH: 0.1-0.5% cantonal. DE/US: 0%.',livingCosts:'Frais de subsistance',tipLiving:'Alimentation, transports, assurance maladie, loisirs, hobbys. Tout ce dont vous avez besoin au quotidien hors logement.',disclaimerTitle:'Avertissement',disclaimerText:'Ceci est un outil de simulation à des fins éducatives uniquement. Il ne constitue pas un conseil financier, fiscal ou d\'investissement. Les performances passées ne préjugent pas des résultats futurs. Consultez un conseiller financier qualifié avant toute décision de retraite. L\'auteur décline toute responsabilité.',
+    housing:'Logement',rent:'🏠 Location',ownership:'🏡 Propriété',monthlyRent:'Loyer mensuel',utilities:'Charges / Frais annexes',propertyValue:'Valeur du bien',mortgage:'Solde hypothécaire',mortgageRate:'Taux hypothécaire (%)',maintenanceCost:'Entretien + Charges',propertyGrowth:'Croissance valeur (% p.a.)',imputedRent:'Valeur locative imputée',propertyNet:'Immobilier (net)',taxes:'Impôts',incomeTax:'Impôt sur le revenu (%)',capitalGainsTax:'Impôt sur les gains (%)',wealthTax:'Impôt sur la fortune (% p.a.)',netBudget:'Détail du budget net',grossBudget:'Budget brut',taxDeduction:'Impôts',housingCosts:'Frais de logement',wealthTaxCost:'Impôt fortune',netAvailable:'Net disponible',drawdownStops:'Arrêts de retrait (-15%)',stressResistance:'Résistance au stress (-50%)'},
 es:{code:'ES',name:'Español',
     title:'Capital Pilot',subtitle:'Simulación de Retiro Estratégico',
     baseParams:'Parámetros Base',startCapital:'Capital Inicial',duration:'Duración de Retiro',
@@ -687,6 +746,9 @@ function setLang(lang) {
     document.title = t.title + ' — ' + t.subtitle;
     document.getElementById('langLabel').textContent = t.code;
     document.querySelectorAll('.lang-opt:not(.cur-opt)').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+    // Update theme button label
+    const tLabel = document.getElementById('themeLabel');
+    if (tLabel) tLabel.textContent = isLightMode ? (t.themeLight||'Light') : (t.themeDark||'Dark');
     updateNavButtonTooltips();
     recalc();
 }
@@ -1268,6 +1330,12 @@ function simulate(params) {
     // ─── -15% RULE: Drawdown threshold for ETF withdrawal stop ───
     const DRAWDOWN_STOP = 0.15;
 
+    // ─── ATH REBALANCING THRESHOLDS ───
+    // When depot is at ATH and both buffer and war chest are below these fractions, refill them
+    const REBAL_ATH_SURPLUS_FRACTION = 0.015; // Use up to 1.5% of ATH-surplus for refilling
+    const REBAL_BUFFER_TARGET = 1.0;           // Refill buffer to 100% of target
+    const REBAL_WARCHEST_TARGET = 1.0;         // Refill war chest to 100% of target
+
     let d = invested, b = buffer, w = warChest;
     let propNet = hasProperty ? propNetStart : 0;
     let depotHighWater = invested; // Track all-time high for drawdown calc
@@ -1275,10 +1343,18 @@ function simulate(params) {
     let crisisCount=0, bufferMonthsUsed=0, worstDepot=invested;
     let drawdownStopMonths = 0; // How many months ETF withdrawal was stopped
     let warChestBuysCount = 0;
+    let rebalancingEvents = 0;  // Count of ATH-triggered rebalancing events
     const hitCrises = [];
     // Track which war chest tiers have been triggered per crisis
     let currentCrisisTiersUsed = { std: [false,false,false], hb: [false,false,false] };
     let lastCrisisName = null;
+
+    // ─── BUY & HOLD PARALLEL SIMULATION ───
+    // Pure B&H: all capital in ETF, no buffer, no war chest, same withdrawals
+    const bahTotal = invested + buffer + warChest; // same starting capital
+    let bahD = bahTotal; // B&H depot
+    let bahDepotHigh = bahTotal;
+    const hBah = []; // track B&H depot over time
 
     for (let m = 0; m <= months; m++) {
         const nowAbs = startAbs + m;
@@ -1409,13 +1485,40 @@ function simulate(params) {
 
             d -= needed;
 
-            // Refill buffer & war chest in good times
-            if (d > invested * 0.7) {
+            // ─── FAIR-WEATHER (ATH) REBALANCING ───
+            // When ETF depot sets a new all-time high, use a fraction of the surplus
+            // to refill Cash Buffer and War Chest to their target levels.
+            if (d > depotHighWater) {
+                const surplus = (d - depotHighWater) * REBAL_ATH_SURPLUS_FRACTION;
+                let refilled = false;
+
+                // Refill Buffer first (priority: crisis protection)
+                if (b < buffer * REBAL_BUFFER_TARGET) {
+                    const needed_b = Math.min(surplus * 0.65, buffer - b);
+                    if (needed_b > 1) { b += needed_b; d -= needed_b; refilled = true; }
+                }
+
+                // Then refill War Chest
+                if (w < warChest * REBAL_WARCHEST_TARGET) {
+                    const needed_w = Math.min(surplus * 0.35, warChest - w);
+                    if (needed_w > 1) { w += needed_w; d -= needed_w; refilled = true; }
+                }
+
+                if (refilled) rebalancingEvents++;
+            } else if (d > invested * 0.7) {
+                // Legacy slow-drip refill in good times (existing behavior kept for non-ATH months)
                 const surplus = d * 0.002;
                 if (b < buffer * 0.9) { const r2 = Math.min(surplus*0.6, buffer-b); if(r2>0){b+=r2;d-=r2;}}
                 if (w < warChest * 0.8) { const r2 = Math.min(surplus*0.3, warChest-w); if(r2>0){w+=r2;d-=r2;}}
             }
         }
+
+        // ─── BUY & HOLD UPDATE ───
+        // B&H sells same monthly amount (inflation-adjusted) directly from depot; no buffers
+        const bahReturn = inCrisis ? crisisReturn : (baseReturn + (Math.random() - 0.5) * 0.015);
+        bahD = Math.max(0, bahD - needed);
+        bahD = Math.max(0, bahD * (1 + bahReturn));
+        hBah.push(bahD);
 
         // Deduct wealth tax from depot
         d -= wTaxMonth;
@@ -1448,9 +1551,9 @@ function simulate(params) {
     const stressMonths = Math.floor((buffer + warChest * 0.0) / monthlyNeed);
     // Note: warChest is excluded (Point 3: never for living expenses)
 
-    return { labels, hD, hB, hW, hTotal, hProp, crisisZones, crisisCount,
+    return { labels, hD, hB, hW, hTotal, hProp, hBah, crisisZones, crisisCount,
              bufferMonthsUsed, worstDepot, hitCrises, hasProperty,
-             drawdownStopMonths, warChestBuysCount, stressMonths };
+             drawdownStopMonths, warChestBuysCount, stressMonths, rebalancingEvents };
 }
 
 
@@ -1471,6 +1574,7 @@ function renderChart(data, legacyTarget) {
         {label:'Buffer',data:data.hB,borderColor:'rgba(52,211,153,0.65)',borderWidth:1.5,pointRadius:0,tension:0.3,fill:false,order:3},
         {label:'War',data:data.hW,borderColor:'rgba(251,191,36,0.55)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,tension:0.3,fill:false,order:4},
         {label:'Total',data:data.hTotal,borderColor:'rgba(251,113,133,0.2)',borderWidth:1,borderDash:[2,4],pointRadius:0,tension:0.3,fill:false,order:1},
+        {label:'B&H',data:data.hBah,borderColor:'rgba(167,139,250,0.5)',borderWidth:1.5,borderDash:[6,2],pointRadius:0,tension:0.3,fill:false,order:0},
     ];
     if (data.hasProperty) {
         datasets.push({label:'Property',data:data.hProp,borderColor:'rgba(100,116,139,0.6)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,tension:0.3,fill:false,order:5});
@@ -1519,7 +1623,10 @@ function renderChart(data, legacyTarget) {
             plugins:{
                 legend:{display:false},
                 tooltip:{
-                    backgroundColor:'rgba(8,12,20,0.95)',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,
+                    backgroundColor:isLightMode?'rgba(240,244,248,0.97)':'rgba(8,12,20,0.95)',
+                    borderColor:isLightMode?'rgba(0,0,0,0.1)':'rgba(255,255,255,0.1)',borderWidth:1,
+                    titleColor:isLightMode?'#0f172a':'#f1f5f9',
+                    bodyColor:isLightMode?'#334155':'#94a3b8',
                     titleFont:{family:'JetBrains Mono',size:9},bodyFont:{family:'JetBrains Mono',size:9},padding:10,
                     callbacks:{
                         title:items=>{const i=items[0].dataIndex;const abs=getTimelineStartAbs()+i;const yr=Math.floor((abs-1)/12);const mo=((abs-1)%12)+1;return yr+'/'+String(mo).padStart(2,'0');},
@@ -1528,8 +1635,8 @@ function renderChart(data, legacyTarget) {
                 }
             },
             scales:{
-                x:{ticks:{color:'#475569',font:{family:'JetBrains Mono',size:9},maxTicksLimit:window.innerWidth<600?8:16,maxRotation:45},grid:{display:false}},
-                y:{beginAtZero:true,ticks:{color:'#475569',font:{family:'JetBrains Mono',size:10},callback:v=>fmtChart(v)},grid:{color:'rgba(255,255,255,0.03)'}}
+                x:{ticks:{color:isLightMode?'#64748b':'#475569',font:{family:'JetBrains Mono',size:9},maxTicksLimit:window.innerWidth<600?8:16,maxRotation:45},grid:{display:false}},
+                y:{beginAtZero:true,ticks:{color:isLightMode?'#64748b':'#475569',font:{family:'JetBrains Mono',size:10},callback:v=>fmtChart(v)},grid:{color:isLightMode?'rgba(0,0,0,0.06)':'rgba(255,255,255,0.03)'}}
             }
         },
         plugins:[customPlugin]
@@ -1739,11 +1846,34 @@ function recalc() {
     $('stat-buffer-used').textContent=sim.bufferMonthsUsed+' '+t.monthsUnit;
     $('stat-dd-stops').textContent=sim.drawdownStopMonths+' '+t.monthsUnit+(sim.warChestBuysCount?' ('+sim.warChestBuysCount+' buys)':'');
     $('stat-stress').textContent=sim.stressMonths+' '+t.monthsUnit;
+    $('stat-rebal-events').textContent=sim.rebalancingEvents;
+
+    // ─── OPPORTUNITY COST INDICATOR ───
+    const bahEndVal = sim.hBah[sim.hBah.length - 1] || 0;
+    const stratEndVal = sim.hD[sim.hD.length-1] + sim.hB[sim.hB.length-1] + sim.hW[sim.hW.length-1]
+        + (sim.hasProperty ? sim.hProp[sim.hProp.length-1] : 0);
+    const oppCostBox = $('opp-cost-box');
+    const delta = stratEndVal - bahEndVal;
+    if (oppCostBox) {
+        oppCostBox.style.display = 'block';
+        $('stat-bah-end').textContent = fmt(bahEndVal) + ' ' + getCur();
+        $('stat-strat-end').textContent = fmt(stratEndVal) + ' ' + getCur();
+        const deltaLine = $('opp-delta-line');
+        if (delta >= 0) {
+            deltaLine.innerHTML = `<span style="color:var(--emerald)">✅ ${t.oppAhead||'Strategy outperforms B&H by'} <b>${fmt(delta)} ${getCur()}</b></span>`;
+        } else {
+            deltaLine.innerHTML = `<span style="color:var(--amber)">⚠️ ${t.oppBehind||'Strategy trails B&H by'} <b>${fmt(Math.abs(delta))} ${getCur()}</b></span>
+            <br><span style="font-size:0.6rem;color:var(--text-muted)">The 3-bucket strategy provides crisis protection and behavioral benefits not captured in a simple wealth comparison.</span>`;
+        }
+    }
 
     // Crisis tags
     const tagsEl=$('crisis-tags');
     tagsEl.innerHTML=sim.hitCrises.map(c=>`<span class="crisis-tag">${getCrisisDisplayName(c)} (${c.startYear})</span>`).join('');
 
+    // Cache for theme re-render
+    _lastSim = sim;
+    _lastLegacy = legacy;
     renderChart(sim,legacy);
 }
 
@@ -1751,6 +1881,24 @@ function recalc() {
 Object.values(inputs).forEach(el=>el.addEventListener('input',recalc));
 setCurrency(detectCurrency());
 setLang(detectLang());
+
+// ─── THEME TOGGLE ───
+function toggleTheme() {
+    isLightMode = !isLightMode;
+    document.documentElement.classList.toggle('light-mode', isLightMode);
+    const t = LANGS[currentLang] || LANGS['en'];
+    const label = $('themeLabel');
+    const icon = $('themeIcon');
+    if (isLightMode) {
+        label.textContent = t.themeLight || 'Light';
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    } else {
+        label.textContent = t.themeDark || 'Dark';
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+    // Re-render chart with updated colors
+    if (_lastSim) renderChart(_lastSim, _lastLegacy);
+}
 </script>
 </body>
 </html>
