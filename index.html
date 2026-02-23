@@ -192,6 +192,31 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:2px;}
+
+/* ─── EXPORT ──────────────────────────────────────────────── */
+.btn-export{display:inline-flex;align-items:center;gap:0.4rem;font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;background:linear-gradient(135deg,rgba(56,189,248,0.12),rgba(167,139,250,0.12));border:1px solid rgba(56,189,248,0.25);color:var(--sky);padding:0.5rem 0.9rem;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.btn-export:hover{background:linear-gradient(135deg,rgba(56,189,248,0.22),rgba(167,139,250,0.22));border-color:rgba(56,189,248,0.5);box-shadow:0 0 16px rgba(56,189,248,0.15);}
+.btn-export svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
+
+/* Export Modal */
+.export-overlay{display:none;position:fixed;inset:0;background:rgba(4,8,16,0.82);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.export-overlay.open{display:flex;}
+.export-modal{background:var(--bg-panel);border:1px solid var(--border-subtle);border-radius:16px;padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,0.7);}
+:root.light-mode .export-modal{box-shadow:0 30px 80px rgba(0,0,0,0.18);}
+.export-modal-title{font-family:'JetBrains Mono',monospace;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--sky);margin-bottom:1.2rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;}
+.export-close{cursor:pointer;color:var(--text-muted);font-size:1.2rem;line-height:1;background:none;border:none;padding:0.1rem 0.3rem;border-radius:4px;transition:color 0.15s;}
+.export-close:hover{color:var(--rose);}
+.export-options{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.25rem;}
+.export-opt{display:flex;align-items:flex-start;gap:0.9rem;background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:0.9rem 1rem;cursor:pointer;transition:all 0.2s;}
+.export-opt:hover{border-color:var(--sky);background:rgba(56,189,248,0.06);}
+.export-opt-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;}
+.export-opt-icon.csv{background:rgba(52,211,153,0.12);color:var(--emerald);}
+.export-opt-icon.json{background:rgba(251,191,36,0.12);color:var(--amber);}
+.export-opt-icon.html{background:rgba(167,139,250,0.12);color:var(--violet);}
+.export-opt-body{flex:1;}
+.export-opt-title{font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--text-primary);margin-bottom:0.2rem;}
+.export-opt-desc{font-size:0.62rem;color:var(--text-muted);line-height:1.5;}
+.export-info{font-size:0.6rem;color:var(--text-muted);line-height:1.6;background:rgba(56,189,248,0.04);border:1px solid rgba(56,189,248,0.08);border-radius:8px;padding:0.65rem 0.8rem;}
     </style>
 </head>
 <body>
@@ -258,7 +283,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                 <div class="kpi-card accent-violet">
                     <div class="kpi-label" data-i18n="purchasingPower">Purchasing Power</div>
                     <div class="kpi-value" id="kpi-real" style="color:var(--violet)">—</div>
-                    <div class="kpi-unit"><span class="cur-unit">CHF</span> <span data-i18n="chfReal">real (today)</span></div>
+                    <div class="kpi-unit"><span class="cur-unit">CHF</span> <span data-i18n="chfReal">real (at end)</span></div>
                     <div class="kpi-sub" id="kpi-real-sub"></div>
                 </div>
             </div>
@@ -337,7 +362,7 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
                         <span class="param-label" data-i18n="maxSWR" data-tip>Max SWR<span class="param-tip" data-i18n-tip="tipMaxSWR"></span></span>
                         <span class="param-value" style="color:var(--rose)" id="val-maxswr">4.0 %</span>
                     </div>
-                    <input type="range" id="in-maxswr" min="2" max="8" step="0.1" value="5.3">
+                    <input type="range" id="in-maxswr" min="2" max="8" step="0.1" value="4.0">
                     <div style="display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.55rem;color:var(--text-muted)">
                         <span data-i18n="conservative">Conservative</span>
                         <span data-i18n="aggressive">Aggressive</span>
@@ -441,7 +466,13 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
 
             <!-- Stats -->
             <div class="panel">
-                <div class="panel-title" data-i18n="withdrawalAnalysis">Withdrawal Analysis</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border-subtle);">
+                    <div class="panel-title" style="margin:0;border:none;padding:0" data-i18n="withdrawalAnalysis">Withdrawal Analysis</div>
+                    <button class="btn-export" onclick="openExportModal()" title="Export simulation data">
+                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>Export</span>
+                    </button>
+                </div>
                 <div class="stats-grid">
                     <div>
                         <div class="stat-row"><span class="stat-label" data-i18n="totalWithdrawal">Total Withdrawal</span><span class="stat-val" id="stat-total-out">—</span></div>
@@ -475,12 +506,55 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
             </div>
 
             <div class="info-box">
-                <strong style="color:var(--sky)">v6.0:</strong>
+                <strong style="color:var(--sky)">v6.2:</strong>
                 <span data-i18n="methodInfo">Historical crisis overlay (1973–2026) with real events: Oil Crisis, Black Monday, Dotcom, GFC, COVID, 2022 Bear. Shift the timeline to see how early/late crises affect your plan. Newton-Raphson solver, inflation-adjusted withdrawals, dynamic reduction on drawdowns.</span>
             </div>
         </div>
 
     </div>
+</div>
+
+<!-- ─── EXPORT MODAL ─────────────────────────────────── -->
+<div class="export-overlay" id="exportOverlay" onclick="closeExportOnOutside(event)">
+  <div class="export-modal">
+    <div class="export-modal-title">
+      <span>📤 Export Simulation Data</span>
+      <button class="export-close" onclick="closeExportModal()">✕</button>
+    </div>
+    <div class="export-options">
+      <div class="export-opt" onclick="exportCSV()">
+        <div class="export-opt-icon csv">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="export-opt-body">
+          <div class="export-opt-title">CSV — Monthly Detail</div>
+          <div class="export-opt-desc">Year · Month · ETF Depot · Cash Buffer · War Chest · Total Wealth · B&amp;H Comparison · Drawdown % · Crisis Flag · Rebalancing Event · Cash Interest · Monthly Withdrawal · Inflation Factor</div>
+        </div>
+      </div>
+      <div class="export-opt" onclick="exportJSON()">
+        <div class="export-opt-icon json">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="export-opt-body">
+          <div class="export-opt-title">JSON — Full Data</div>
+          <div class="export-opt-desc">All monthly data + simulation parameters + KPI summary + crisis events — ideal for further analysis in Python, Excel Power Query, or custom dashboards</div>
+        </div>
+      </div>
+      <div class="export-opt" onclick="exportHTMLReport()">
+        <div class="export-opt-icon html">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        </div>
+        <div class="export-opt-body">
+          <div class="export-opt-title">HTML Report — Print / Share</div>
+          <div class="export-opt-desc">Standalone printable report with parameter summary, KPIs, crisis table, yearly milestones and B&amp;H comparison — no internet needed</div>
+        </div>
+      </div>
+    </div>
+    <div class="export-info" id="export-info-line">
+      💡 All exports are generated locally in your browser — no data leaves your device.
+      The CSV can be opened in Excel, LibreOffice or Numbers.
+    </div>
+  </div>
 </div>
 
 <script>
@@ -503,7 +577,7 @@ en:{code:'EN',name:'English',
     pension:'Pension (monthly)',allocation:'Capital Allocation',bufferShort:'Buffer',warShort:'War',
     monthlyBudget:'Monthly Budget',month:'month',cashBufferLabel:'Cash Buffer',chfSafety:'Safety',
     warChestLabel:'War Chest',chfCrash:'for Crashes',purchasingPower:'Purchasing Power',
-    chfReal:'real (today)',strategyHealth:'Strategy Health',fragile:'Fragile',stable:'Stable',
+    chfReal:'real (at end)',strategyHealth:'Strategy Health',fragile:'Fragile',stable:'Stable',
     robust:'Robust',moderate:'Moderate',historicalSim:'Historical Simulation',yearsShort:'Years',
     etfDepot:'ETF Depot',totalWealth:'Total',crisisPhase:'Crisis',
     withdrawalAnalysis:'Withdrawal Analysis',totalWithdrawal:'Total Withdrawal (nominal)',
@@ -549,6 +623,7 @@ en:{code:'EN',name:'English',
     warnHighLegacy:'⚠ Target legacy > 60% of capital — limited withdrawal room.',
     methodInfo:'Historical crisis overlay (1973–2026) with real events: Oil Crisis, Black Monday, Dotcom, GFC, COVID, 2022 Bear. Shift the timeline to see how early/late crises affect your plan. Newton-Raphson solver, inflation-adjusted withdrawals, dynamic reduction on drawdowns.',
     nominalEq:'nominal = {0} real',
+    purchasingPowerSub:'real purchasing power after {0} years',
     rebalEvents:'Rebalancing Events',
     oppCostTitle:'⚖️ Opportunity Cost vs. Buy & Hold',
     oppHoldEnd:'B&H End Wealth',oppStratEnd:'Strategy End Wealth',
@@ -565,7 +640,7 @@ de:{code:'DE',name:'Deutsch',
     pension:'Rente AHV/PK (mtl.)',allocation:'Kapital-Aufteilung',bufferShort:'Puffer',warShort:'Krieg',
     monthlyBudget:'Monats-Budget',month:'Monat',cashBufferLabel:'Cash-Puffer',chfSafety:'Sicherheit',
     warChestLabel:'Kriegskasse',chfCrash:'für Crashs',purchasingPower:'Kaufkraft',
-    chfReal:'real (heute)',strategyHealth:'Strategie-Gesundheit',fragile:'Fragil',stable:'Stabil',
+    chfReal:'real (am Ende)',strategyHealth:'Strategie-Gesundheit',fragile:'Fragil',stable:'Stabil',
     robust:'Robust',moderate:'Mässig',historicalSim:'Historische Simulation',yearsShort:'Jahre',
     etfDepot:'ETF-Depot',totalWealth:'Gesamt',crisisPhase:'Krise',
     withdrawalAnalysis:'Auszahlungs-Analyse',totalWithdrawal:'Gesamte Entnahme (nominal)',
@@ -611,6 +686,7 @@ de:{code:'DE',name:'Deutsch',
     warnHighLegacy:'⚠ Ziel-Erbe > 60% des Kapitals — wenig Entnahme-Spielraum.',
     methodInfo:'Historische Krisen-Überlagerung (1973–2026) mit realen Events: Ölkrise, Black Monday, Dotcom, Finanzkrise, COVID, 2022-Bärenmarkt. Timeline verschieben um den Effekt früher/später Krisen zu sehen.',
     nominalEq:'nominal = {0} real',
+    purchasingPowerSub:'reale Kaufkraft nach {0} Jahren',
     rebalEvents:'Rebalancing-Ereignisse',
     oppCostTitle:'⚖️ Opportunitätskosten vs. Buy & Hold',
     oppHoldEnd:'B&H Endvermögen',oppStratEnd:'Strategie Endvermögen',
@@ -1310,9 +1386,10 @@ function solveWithdrawal(capital, years, legacy, warchestPct, bufferYears, annua
 
 function simulate(params) {
     const { invested, buffer, warChest, monthlyETF, years, annualGrowth, inflation, ahv,
-            housingMode, propNetStart, propGrowthRate, housingCost, totalTaxMonthly, wealthTaxRate } = params;
+            housingMode, propNetStart, propGrowthRate, housingCost, totalTaxMonthly, wealthTaxRate,
+            surplusMonthly } = params;
     const months = years * 12;
-    const rCash = 0.02 / 12;
+    const rCash = 1.5 / 100 / 12;   // Change 3: money-market ETF rate 1.5% p.a.
     const baseReturn = annualGrowth / 12;
     const startAbs = getTimelineStartAbs();
     const hasProperty = housingMode === 'own' && propNetStart > 0;
@@ -1485,11 +1562,32 @@ function simulate(params) {
 
             d -= needed;
 
+            // ─── SWR SURPLUS REFILL (Change 2) ───
+            // If SWR capping created a monthly surplus, redirect it to refill Cash Buffer → War Chest → ETF
+            if (surplusMonthly && surplusMonthly > 0) {
+                const inflFactor2 = Math.pow(1 + inflation / 100 / 12, m);
+                let surplus = surplusMonthly * inflFactor2; // inflation-adjust the surplus too
+                if (b < buffer) {
+                    const fillB = Math.min(surplus, buffer - b);
+                    b += fillB; d -= fillB; surplus -= fillB;
+                    if (fillB > 1) rebalancingEvents++;
+                }
+                if (surplus > 0 && w < warChest) {
+                    const fillW = Math.min(surplus, warChest - w);
+                    w += fillW; d -= fillW; surplus -= fillW;
+                    if (fillW > 1) rebalancingEvents++;
+                }
+                // remainder stays in ETF depot (surplus -= surplus → d unchanged)
+            }
+
             // ─── FAIR-WEATHER (ATH) REBALANCING ───
-            // When ETF depot sets a new all-time high, use a fraction of the surplus
-            // to refill Cash Buffer and War Chest to their target levels.
-            if (d > depotHighWater) {
-                const surplus = (d - depotHighWater) * REBAL_ATH_SURPLUS_FRACTION;
+            // Trigger 1: New all-time high (strict ATH)
+            // Trigger 2: Depot grew more than 5% above its value 12 months ago (looser, post-crisis recovery)
+            const prevDepot = hD.length >= 12 ? hD[hD.length - 12] : invested;
+            const rebalTrigger = (d > depotHighWater) || (prevDepot > 0 && d > prevDepot * 1.05 && (b < buffer * 0.95 || w < warChest * 0.95));
+            if (rebalTrigger) {
+                const surplusBase = d > depotHighWater ? (d - depotHighWater) : (d - prevDepot);
+                const surplus = Math.max(0, surplusBase) * REBAL_ATH_SURPLUS_FRACTION;
                 let refilled = false;
 
                 // Refill Buffer first (priority: crisis protection)
@@ -1780,14 +1878,29 @@ function recalc() {
         const msg = t.swrCapped ? t.swrCapped.replace('{0}', maxSwrPct.toFixed(1)) : '';
         const unsolvedMonthly = sol.monthlyETF + ahv;
         const diff = unsolvedMonthly - totalMonthly;
+        const surplusAmt = Math.max(0, sol.monthlyETF - monthlyETF);
+        // Determine surplus destination for status label
+        const bufferFull = buffer <= 0 || (buffer * bufferYears * 12) <= 0;
+        const warFull = warChest <= 0;
+        let surplusStatus = '';
+        if (!bufferFull) surplusStatus = (currentLang === 'de') ? '→ füllt Cash-Puffer auf' : '→ refilling Cash Buffer';
+        else if (!warFull) surplusStatus = (currentLang === 'de') ? '→ füllt Kriegskasse auf' : '→ refilling War Chest';
+        else surplusStatus = (currentLang === 'de') ? '→ verbleibt im ETF-Depot' : '→ stays in ETF Depot';
+
         swrImpact.innerHTML = `🛡️ ${msg}<br>`
             + `<span style="font-size:0.6rem;color:var(--text-muted)">`
             + `Budget: ${fmt(unsolvedMonthly)} → <b style="color:var(--sky)">${fmt(totalMonthly)}</b> ${getCur()}/Mt `
             + `(−${fmt(diff)})<br>`
-            + `${t.targetLegacy}: ${fmt(legacy)} → ~<b style="color:var(--violet)">${fmt(Math.max(0,projectedLegacyIncrease))}</b> ${getCur()}`
+            + `<span style="color:var(--emerald)">Surplus: +${fmt(surplusAmt)} ${getCur()}/Mt ${surplusStatus}</span><br>`
+            + `${t.targetLegacy}: ${fmt(legacy)} → ~<b style="color:var(--violet)">${fmt(Math.max(0,projectedLegacyIncrease))}</b> ${getCur()}<br>`
+            + `<span style="color:var(--amber)">💰 ${(currentLang === 'de') ? 'Cash-Töpfe werden mit 1,5% p.a. verzinst.' : 'Cash buckets earn 1.5% p.a. (money market).'}</span>`
             + `</span>`;
     } else {
-        swrImpact.style.display = 'none';
+        // Even when not capped, show cash interest note
+        swrImpact.style.display = 'block';
+        swrImpact.innerHTML = `<span style="font-size:0.6rem;color:var(--text-muted)">`
+            + (t.swrUncapped || 'SWR below limit — no cap applied.')
+            + ` <span style="color:var(--amber)">💰 ${(currentLang === 'de') ? 'Cash-Töpfe: 1,5% p.a.' : 'Cash buckets: 1.5% p.a.'}</span></span>`;
     }
 
     // Warnings
@@ -1808,7 +1921,8 @@ function recalc() {
     $('kpi-warchest').textContent=fmtK(warChest);
     const realEnd=totalMonthly/Math.pow(1+inflation/100,years);
     $('kpi-real').textContent=fmt(realEnd);
-    $('kpi-real-sub').textContent=t.nominalEq.replace('{0}',fmt(realEnd));
+    const ppSubTpl = t.purchasingPowerSub || 'real purchasing power after {0} years';
+    $('kpi-real-sub').textContent = ppSubTpl.replace('{0}', years);
 
     // Allocation
     const propNet0 = housingMode==='own' ? propNetStart : 0;
@@ -1829,8 +1943,10 @@ function recalc() {
 
     // Simulate
     const effectiveLegacy = swrWasCapped ? Math.max(legacy, projectedLegacyIncrease) : legacy;
+    // surplusMonthly = difference between uncapped and capped withdrawal (what the SWR cap "saves" each month)
+    const surplusMonthly = swrWasCapped ? Math.max(0, sol.monthlyETF - monthlyETF) : 0;
     const sim=simulate({invested,buffer,warChest,monthlyETF,years,annualGrowth:growth/100,inflation,ahv,
-        housingMode,propNetStart,propGrowthRate:propGr/100,housingCost,totalTaxMonthly,wealthTaxRate});
+        housingMode,propNetStart,propGrowthRate:propGr/100,housingCost,totalTaxMonthly,wealthTaxRate,surplusMonthly});
 
     const totalOut=totalMonthly*12*years;
     const capUsed=Math.max(0,capital-legacy);
@@ -1898,6 +2014,407 @@ function toggleTheme() {
     }
     // Re-render chart with updated colors
     if (_lastSim) renderChart(_lastSim, _lastLegacy);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORT ENGINE — v6.2
+// ═══════════════════════════════════════════════════════════════
+
+// ─── Export state cache ───────────────────────────────────────
+// We piggyback on _lastSim and capture extra params at recalc time
+let _exportParams = null; // captured each recalc
+
+// Patch recalc to capture export params — called at end of recalc
+// We extend the existing recalc by storing a snapshot after it runs.
+// Wrap is done via the _exportParams variable populated inside recalc itself.
+
+// ─── Modal helpers ────────────────────────────────────────────
+function openExportModal() {
+    if (!_lastSim) { alert('Run a simulation first.'); return; }
+    const overlay = document.getElementById('exportOverlay');
+    overlay.classList.add('open');
+    // Update info line with current sim stats
+    const info = document.getElementById('export-info-line');
+    const cur = getCur();
+    const rows = _lastSim.hD.length;
+    info.innerHTML = `💡 All exports are generated locally — no data leaves your device.<br>
+        <span style="color:var(--sky)">${rows} monthly data points</span> · Currency: <b>${cur}</b> · 
+        Mode: <b>${simulationMode === 'random' ? '↻ Random Forecast' : '📅 Historical'}</b>`;
+}
+function closeExportModal() {
+    document.getElementById('exportOverlay').classList.remove('open');
+}
+function closeExportOnOutside(e) {
+    if (e.target === document.getElementById('exportOverlay')) closeExportModal();
+}
+
+// ─── Download helper ──────────────────────────────────────────
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+}
+
+// ─── Shared: build month-by-month rows ───────────────────────
+function buildMonthlyRows(sim) {
+    const startAbs = getTimelineStartAbs();
+    const rows = [];
+    const n = sim.hD.length;
+
+    for (let i = 0; i < n; i++) {
+        const absM = startAbs + i;
+        const year  = Math.floor((absM - 1) / 12);
+        const month = ((absM - 1) % 12) + 1;
+
+        const etf   = sim.hD[i];
+        const buf   = sim.hB[i];
+        const war   = sim.hW[i];
+        const bah   = sim.hBah[i];
+        const total = sim.hTotal[i];
+        const prop  = sim.hProp ? sim.hProp[i] : 0;
+        const inCrisis = sim.crisisZones[i] ? 1 : 0;
+
+        // Drawdown vs ATH up to this point
+        const athUpToNow = Math.max(...sim.hD.slice(0, i + 1));
+        const drawdownPct = athUpToNow > 0 ? ((athUpToNow - etf) / athUpToNow * 100) : 0;
+
+        // Monthly return (approx, derived from consecutive values)
+        const prevETF = i > 0 ? sim.hD[i - 1] : etf;
+        const monthlyReturnPct = prevETF > 0 ? ((etf - prevETF) / prevETF * 100) : 0;
+
+        // Buffer + war chest interest estimate (1.5% p.a. / 12)
+        const cashInterest = i > 0
+            ? ((sim.hB[i-1] || 0) + (sim.hW[i-1] || 0)) * (1.5 / 100 / 12)
+            : 0;
+
+        // B&H vs Strategy delta
+        const stratVsBah = total - bah;
+
+        rows.push({ year, month, etf, buf, war, prop, total, bah, stratVsBah,
+                    drawdownPct, monthlyReturnPct, cashInterest, inCrisis });
+    }
+    return rows;
+}
+
+// ─── Get current params snapshot ─────────────────────────────
+function getCurrentParams() {
+    const capital = +inputs.capital.value;
+    const years   = +inputs.years.value;
+    const legacy  = +inputs.legacy.value;
+    const inflation = +inputs.inflation.value;
+    const growth  = +inputs.growth.value;
+    const warchestPct = +inputs.warchest.value;
+    const bufferYears = +inputs.buffer.value;
+    const ahv     = +inputs.ahv.value;
+    const maxSwrPct = +inputs.maxswr.value;
+    const cur = getCur();
+    return { capital, years, legacy, inflation, growth, warchestPct, bufferYears, ahv, maxSwrPct, cur,
+             simulationMode, timelineStartYear, lang: currentLang };
+}
+
+// ─── 1. CSV EXPORT ────────────────────────────────────────────
+function exportCSV() {
+    const sim = _lastSim;
+    if (!sim) return;
+    const p = getCurrentParams();
+    const cur = p.cur;
+    const rows = buildMonthlyRows(sim);
+
+    // BOM for Excel UTF-8 detection
+    const BOM = '\uFEFF';
+    const sep = ';'; // semicolon for European Excel compatibility
+
+    const headers = [
+        'Year', 'Month',
+        `ETF_Depot_${cur}`, `Cash_Buffer_${cur}`, `War_Chest_${cur}`,
+        `Property_Net_${cur}`, `Total_Wealth_${cur}`,
+        `BuyHold_${cur}`, `Strategy_vs_BuyHold_${cur}`,
+        'Drawdown_Pct', 'ETF_MonthlyReturn_Pct',
+        `CashInterest_${cur}`, 'InCrisis_Flag'
+    ].join(sep);
+
+    const dataRows = rows.map(r => [
+        r.year,
+        String(r.month).padStart(2, '0'),
+        Math.round(r.etf),
+        Math.round(r.buf),
+        Math.round(r.war),
+        Math.round(r.prop),
+        Math.round(r.total),
+        Math.round(r.bah),
+        Math.round(r.stratVsBah),
+        r.drawdownPct.toFixed(2),
+        r.monthlyReturnPct.toFixed(3),
+        r.cashInterest.toFixed(2),
+        r.inCrisis
+    ].join(sep));
+
+    // Parameter block at top
+    const paramBlock = [
+        `# Capital Pilot v6.2 — Simulation Export`,
+        `# Generated: ${new Date().toLocaleString()}`,
+        `# Currency: ${cur}  |  Language: ${p.lang}  |  Mode: ${p.simulationMode}`,
+        `# ────────────────────────────────────────────────────────`,
+        `# Starting Capital${sep}${p.capital}${sep}${cur}`,
+        `# Duration${sep}${p.years}${sep}Years`,
+        `# Target Legacy${sep}${p.legacy}${sep}${cur}`,
+        `# Inflation${sep}${p.inflation}${sep}% p.a.`,
+        `# Expected Return${sep}${p.growth}${sep}% p.a.`,
+        `# War Chest${sep}${p.warchestPct}${sep}%`,
+        `# Cash Buffer${sep}${p.bufferYears}${sep}Years`,
+        `# Pension / AHV${sep}${p.ahv}${sep}${cur}/month`,
+        `# Max SWR${sep}${p.maxSwrPct}${sep}%`,
+        `# ────────────────────────────────────────────────────────`,
+        `# KPI Summary`,
+        `# Crises Survived${sep}${sim.crisisCount}`,
+        `# Buffer Months Used${sep}${sim.bufferMonthsUsed}`,
+        `# Drawdown Stop Months${sep}${sim.drawdownStopMonths}`,
+        `# Rebalancing Events${sep}${sim.rebalancingEvents}`,
+        `# Worst ETF Depot${sep}${Math.round(sim.worstDepot)}${sep}${cur}`,
+        `# Stress Resistance${sep}${sim.stressMonths}${sep}months`,
+        `# ────────────────────────────────────────────────────────`,
+        ``
+    ].join('\n');
+
+    const csv = BOM + paramBlock + headers + '\n' + dataRows.join('\n');
+    const ts = new Date().toISOString().slice(0,10);
+    downloadFile(csv, `capital-pilot-${p.cur}-${ts}.csv`, 'text/csv;charset=utf-8');
+    closeExportModal();
+}
+
+// ─── 2. JSON EXPORT ───────────────────────────────────────────
+function exportJSON() {
+    const sim = _lastSim;
+    if (!sim) return;
+    const p = getCurrentParams();
+    const rows = buildMonthlyRows(sim);
+
+    const payload = {
+        meta: {
+            tool: 'Capital Pilot v6.2',
+            generated: new Date().toISOString(),
+            currency: p.cur,
+            language: p.lang,
+            simulationMode: p.simulationMode,
+            timelineStartYear: p.timelineStartYear
+        },
+        parameters: {
+            startingCapital: p.capital,
+            years: p.years,
+            targetLegacy: p.legacy,
+            inflationPct: p.inflation,
+            expectedReturnPct: p.growth,
+            warChestPct: p.warchestPct,
+            cashBufferYears: p.bufferYears,
+            pensionMonthly: p.ahv,
+            maxSWRPct: p.maxSwrPct
+        },
+        kpiSummary: {
+            crisesSurvived: sim.crisisCount,
+            bufferMonthsUsed: sim.bufferMonthsUsed,
+            drawdownStopMonths: sim.drawdownStopMonths,
+            warChestBuys: sim.warChestBuysCount,
+            rebalancingEvents: sim.rebalancingEvents,
+            worstETFDepot: Math.round(sim.worstDepot),
+            stressResistanceMonths: sim.stressMonths,
+            endETFDepot: Math.round(sim.hD[sim.hD.length - 1]),
+            endBuffer: Math.round(sim.hB[sim.hB.length - 1]),
+            endWarChest: Math.round(sim.hW[sim.hW.length - 1]),
+            endBuyHold: Math.round(sim.hBah[sim.hBah.length - 1]),
+            endTotalWealth: Math.round(sim.hTotal[sim.hTotal.length - 1])
+        },
+        crisisEvents: sim.hitCrises.map(c => ({
+            name: c.name,
+            startYear: c.startYear,
+            startMonth: c.startMonth,
+            durationMonths: c.durationMonths,
+            totalDropPct: (c.totalDrop * 100).toFixed(1),
+            recoveryMonths: c.recovery,
+            type: c.type
+        })),
+        monthlyData: rows.map(r => ({
+            year: r.year,
+            month: r.month,
+            etfDepot: Math.round(r.etf),
+            cashBuffer: Math.round(r.buf),
+            warChest: Math.round(r.war),
+            propertyNet: Math.round(r.prop),
+            totalWealth: Math.round(r.total),
+            buyHold: Math.round(r.bah),
+            strategyVsBuyHold: Math.round(r.stratVsBah),
+            drawdownPct: +r.drawdownPct.toFixed(2),
+            etfMonthlyReturnPct: +r.monthlyReturnPct.toFixed(3),
+            cashInterest: +r.cashInterest.toFixed(2),
+            inCrisis: r.inCrisis === 1
+        }))
+    };
+
+    const ts = new Date().toISOString().slice(0,10);
+    downloadFile(JSON.stringify(payload, null, 2),
+        `capital-pilot-${p.cur}-${ts}.json`, 'application/json');
+    closeExportModal();
+}
+
+// ─── 3. HTML REPORT EXPORT ────────────────────────────────────
+function exportHTMLReport() {
+    const sim = _lastSim;
+    if (!sim) return;
+    const p = getCurrentParams();
+    const rows = buildMonthlyRows(sim);
+    const cur = p.cur;
+    const ts = new Date().toLocaleDateString();
+
+    // Crisis list
+    const crisisRows = sim.hitCrises.map(c =>
+        `<tr><td>${c.name}</td><td>${c.startYear}/${String(c.startMonth).padStart(2,'0')}</td>
+         <td>${c.durationMonths} mo</td><td style="color:#ef4444">${(c.totalDrop*100).toFixed(0)}%</td>
+         <td>${c.recovery} mo</td><td>${c.type||''}</td></tr>`
+    ).join('');
+
+    // Yearly milestone rows (every 12 months)
+    const yearlyRows = rows
+        .filter((_,i) => i % 12 === 0)
+        .map(r => {
+            const dd = r.drawdownPct > 0.5 ? `<span style="color:#ef4444">−${r.drawdownPct.toFixed(1)}%</span>` : `<span style="color:#22c55e">—</span>`;
+            const bah = r.stratVsBah >= 0
+                ? `<span style="color:#22c55e">+${Math.round(r.stratVsBah).toLocaleString()}</span>`
+                : `<span style="color:#f59e0b">${Math.round(r.stratVsBah).toLocaleString()}</span>`;
+            return `<tr>
+                <td><b>${r.year}</b></td>
+                <td>${Math.round(r.etf).toLocaleString()}</td>
+                <td>${Math.round(r.buf).toLocaleString()}</td>
+                <td>${Math.round(r.war).toLocaleString()}</td>
+                <td><b>${Math.round(r.total).toLocaleString()}</b></td>
+                <td>${Math.round(r.bah).toLocaleString()}</td>
+                <td>${bah}</td>
+                <td>${dd}</td>
+                <td>${r.inCrisis ? '🔴' : '🟢'}</td>
+            </tr>`;
+        }).join('');
+
+    const endTotal = Math.round(sim.hTotal[sim.hTotal.length - 1]);
+    const endBah   = Math.round(sim.hBah[sim.hBah.length - 1]);
+    const deltaFinal = endTotal - endBah;
+    const deltaColor = deltaFinal >= 0 ? '#22c55e' : '#f59e0b';
+    const deltaSign  = deltaFinal >= 0 ? '+' : '';
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Capital Pilot — Simulation Report ${ts}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;color:#0f172a;line-height:1.5;}
+  .page{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  h1{font-size:1.6rem;font-weight:800;color:#0f172a;margin-bottom:0.2rem;}
+  .subtitle{color:#64748b;font-size:0.85rem;margin-bottom:2rem;}
+  .badge{display:inline-block;background:#e0f2fe;color:#0284c7;border-radius:4px;padding:0.15rem 0.5rem;font-size:0.7rem;font-weight:600;margin-right:0.3rem;}
+  h2{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;margin:2rem 0 0.75rem;padding-bottom:0.4rem;border-bottom:2px solid #e2e8f0;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin-bottom:1rem;}
+  .kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:0.9rem 1rem;}
+  .kpi-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8;margin-bottom:0.3rem;}
+  .kpi-val{font-size:1.2rem;font-weight:800;color:#0f172a;font-family:monospace;}
+  .kpi-sub{font-size:0.62rem;color:#94a3b8;margin-top:0.15rem;}
+  .kpi.sky{border-left:3px solid #38bdf8;} .kpi.green{border-left:3px solid #22c55e;} .kpi.amber{border-left:3px solid #f59e0b;} .kpi.violet{border-left:3px solid #a78bfa;} .kpi.rose{border-left:3px solid #fb7185;}
+  table{width:100%;border-collapse:collapse;font-size:0.78rem;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.07);}
+  th{background:#f1f5f9;color:#475569;font-weight:600;text-align:right;padding:0.6rem 0.8rem;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;}
+  th:first-child{text-align:left;}
+  td{padding:0.55rem 0.8rem;border-bottom:1px solid #f1f5f9;text-align:right;font-family:monospace;}
+  td:first-child{text-align:left;font-family:inherit;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8fafc;}
+  .param-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem 2rem;}
+  .param-row{display:flex;justify-content:space-between;font-size:0.78rem;padding:0.3rem 0;border-bottom:1px solid #f1f5f9;}
+  .param-label-p{color:#64748b;}
+  .param-val-p{font-weight:600;font-family:monospace;}
+  .footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e2e8f0;font-size:0.65rem;color:#94a3b8;text-align:center;}
+  @media print{body{background:#fff;} .page{padding:1rem;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>✈️ Capital Pilot — Simulation Report</h1>
+  <div class="subtitle">
+    <span class="badge">${cur}</span>
+    <span class="badge">v6.2</span>
+    <span class="badge">${p.simulationMode === 'random' ? '↻ Random' : '📅 Historical'}</span>
+    Generated: ${ts}
+  </div>
+
+  <h2>Parameters</h2>
+  <div class="param-grid">
+    <div>
+      <div class="param-row"><span class="param-label-p">Starting Capital</span><span class="param-val-p">${p.capital.toLocaleString()} ${cur}</span></div>
+      <div class="param-row"><span class="param-label-p">Duration</span><span class="param-val-p">${p.years} years</span></div>
+      <div class="param-row"><span class="param-label-p">Target Legacy</span><span class="param-val-p">${p.legacy.toLocaleString()} ${cur}</span></div>
+      <div class="param-row"><span class="param-label-p">Inflation</span><span class="param-val-p">${p.inflation}% p.a.</span></div>
+      <div class="param-row"><span class="param-label-p">Expected Return</span><span class="param-val-p">${p.growth}% p.a.</span></div>
+    </div>
+    <div>
+      <div class="param-row"><span class="param-label-p">War Chest</span><span class="param-val-p">${p.warchestPct}%</span></div>
+      <div class="param-row"><span class="param-label-p">Cash Buffer</span><span class="param-val-p">${p.bufferYears} years</span></div>
+      <div class="param-row"><span class="param-label-p">Pension / AHV</span><span class="param-val-p">${p.ahv.toLocaleString()} ${cur}/mo</span></div>
+      <div class="param-row"><span class="param-label-p">Max SWR</span><span class="param-val-p">${p.maxSwrPct}%</span></div>
+      <div class="param-row"><span class="param-label-p">Cash Bucket Rate</span><span class="param-val-p">1.5% p.a.</span></div>
+    </div>
+  </div>
+
+  <h2>KPI Summary</h2>
+  <div class="kpi-grid">
+    <div class="kpi sky"><div class="kpi-label">End Wealth (Strategy)</div><div class="kpi-val">${endTotal.toLocaleString()}</div><div class="kpi-sub">${cur} total</div></div>
+    <div class="kpi violet"><div class="kpi-label">Buy &amp; Hold End Wealth</div><div class="kpi-val">${endBah.toLocaleString()}</div><div class="kpi-sub">${cur} B&H</div></div>
+    <div class="kpi ${deltaFinal >= 0 ? 'green' : 'amber'}"><div class="kpi-label">Strategy vs B&H Delta</div><div class="kpi-val" style="color:${deltaColor}">${deltaSign}${deltaFinal.toLocaleString()}</div><div class="kpi-sub">${cur}</div></div>
+    <div class="kpi rose"><div class="kpi-label">Crises Survived</div><div class="kpi-val">${sim.crisisCount}</div><div class="kpi-sub">bear markets</div></div>
+    <div class="kpi green"><div class="kpi-label">Rebalancing Events</div><div class="kpi-val">${sim.rebalancingEvents}</div><div class="kpi-sub">ATH + surplus refills</div></div>
+    <div class="kpi amber"><div class="kpi-label">Buffer Months Used</div><div class="kpi-val">${sim.bufferMonthsUsed}</div><div class="kpi-sub">months</div></div>
+    <div class="kpi sky"><div class="kpi-label">Drawdown Stop Months</div><div class="kpi-val">${sim.drawdownStopMonths}</div><div class="kpi-sub">−15% rule activated</div></div>
+    <div class="kpi violet"><div class="kpi-label">Worst ETF Depot</div><div class="kpi-val">${Math.round(sim.worstDepot).toLocaleString()}</div><div class="kpi-sub">${cur}</div></div>
+  </div>
+
+  <h2>Crises Encountered</h2>
+  ${sim.hitCrises.length === 0 ? '<p style="color:#94a3b8;font-size:0.8rem">No crises in this simulation window.</p>' : `
+  <table>
+    <thead><tr><th>Crisis</th><th>Start</th><th>Duration</th><th>Total Drop</th><th>Recovery</th><th>Type</th></tr></thead>
+    <tbody>${crisisRows}</tbody>
+  </table>`}
+
+  <h2>Yearly Milestones</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>ETF Depot</th>
+        <th>Cash Buffer</th>
+        <th>War Chest</th>
+        <th>Total Wealth</th>
+        <th>Buy &amp; Hold</th>
+        <th>vs B&H</th>
+        <th>Drawdown</th>
+        <th>Crisis</th>
+      </tr>
+    </thead>
+    <tbody>${yearlyRows}</tbody>
+  </table>
+
+  <div class="footer">
+    Capital Pilot v6.2 · Simulation tool for educational purposes only · Not financial advice ·
+    All values in ${cur} · Generated locally in browser · No data transmitted
+  </div>
+</div>
+</body>
+</html>`;
+
+    const ts2 = new Date().toISOString().slice(0,10);
+    downloadFile(html, `capital-pilot-report-${cur}-${ts2}.html`, 'text/html;charset=utf-8');
+    closeExportModal();
 }
 </script>
 </body>
