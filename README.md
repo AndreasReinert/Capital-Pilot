@@ -259,7 +259,7 @@ Netlify Drop, Vercel, Cloudflare Pages, AWS S3 — drop the single file, instant
 | Target Legacy | 0 | 0 – 5'000'000 |
 | Inflation | 1.5% | 0 – 10% |
 | Expected Return (ETF) | 6.0% | 1 – 20% |
-| Pension / AHV (monthly) | 1'800 | 0 – 10'000 |
+| Pension / AHV (monthly) | 1'800 | 0 – 30'000 |
 | War Chest | 10% | 0 – 40% |
 | Cash Buffer | 2 years | 0 – 6 |
 | Max SWR | 4.0% | 2 – 7% |
