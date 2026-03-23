@@ -1,11 +1,11 @@
-# ✈️ Capital Pilot — Strategic Withdrawal Simulation (v6.2)
+# ✈️ Capital Pilot — Strategic Withdrawal Simulation (v6.3)
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-6.2-38bdf8?style=for-the-badge&labelColor=0f172a" alt="Version 6.2">
+  <img src="https://img.shields.io/badge/version-6.3-38bdf8?style=for-the-badge&labelColor=0f172a" alt="Version 6.3">
   <img src="https://img.shields.io/badge/languages-21-a78bfa?style=for-the-badge&labelColor=0f172a" alt="21 Languages">
   <img src="https://img.shields.io/badge/currencies-20-fbbf24?style=for-the-badge&labelColor=0f172a" alt="20 Currencies">
   <img src="https://img.shields.io/badge/offline-100%25-34d399?style=for-the-badge&labelColor=0f172a" alt="Offline Ready">
-  <img src="https://img.shields.io/badge/mobile-optimized-fbbf24?style=for-the-badge&labelColor=0f172a" alt="Mobile Ready">
+  <img src="https://img.shields.io/badge/live%20ETF-SPPW.DE-38bdf8?style=for-the-badge&labelColor=0f172a" alt="Live ETF">
   <img src="https://img.shields.io/badge/export-CSV%20%7C%20JSON%20%7C%20HTML-fb7185?style=for-the-badge&labelColor=0f172a" alt="Export">
   <img src="https://img.shields.io/badge/license-MIT-64748b?style=for-the-badge&labelColor=0f172a" alt="MIT License">
 </p>
@@ -25,105 +25,159 @@
 
 It models a **three-bucket setup** (ETF Depot + Cash Buffer + War Chest), **taxes**, **housing** (rent vs. ownership with full mortgage modelling), and a **crisis engine** that replays real market history or generates probabilistic random futures. All calculation runs locally in your browser — no server, no account, no data upload.
 
+New in v6.3: a fully live **Withdrawal & War Chest Barometer** powered by real SPPW.DE market data, a corrected 4-formula financial engine, a completely overhauled 21-language system, and a fully localised HTML export report.
+
+---
+
+## EN — What's New in v6.3
+
+### 📡 Live Withdrawal & War Chest Barometer
+
+A new real-time dashboard panel appears directly in the KPI area, showing you where the current market drawdown sits relative to your withdrawal and War Chest strategy — at a glance, every time you open the app.
+
+**Data source:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — the same ETF used as the standard reference index throughout the simulation. Price data is fetched live from Yahoo Finance via two independent CORS proxy services with automatic fallback.
+
+**What the Barometer shows:**
+
+| Element | Description |
+|---|---|
+| **Drawdown %** | Current distance from 52-week high (AZH), updated every 5 minutes |
+| **Kurs / Price** | Last available price (Yahoo Finance, ~15 min delayed for EU markets) |
+| **AZH** | All-time / 52-week high, calculated from daily high bar history |
+| **Zone label** | Safe / Caution / Cash Only — colour-coded to current drawdown zone |
+| **Status dot** | Green = live · Grey = offline / fallback |
+
+**Strategy bars (4-row visual):**
+
+- **Withdrawal bar** (tall): shows the three withdrawal zones — Full ETF withdrawal (0% to −6%), Reduced ETF withdrawal (−6% to −13%), Cash Buffer only (below −13%) — with a live needle marking the current drawdown
+- **War Chest 1, 2, 3** (slim bars): show the three deployment tiers at −18%, −26%, −33%, with the exact CHF amount per tier calculated from your current War Chest slider
+
+**Three KPI badges** (Monthly Budget · Cash Buffer · War Chest) update automatically based on the live drawdown:
+
+| Drawdown range | Monthly Budget | Cash Buffer | War Chest |
+|---|---|---|---|
+| ≥ 0% | ✅ Withdrawal OK | ✅ Refill | ✅ Refill |
+| 0% to −6% | ✅ Withdrawal OK | 🟡 Standby | 🟡 Standby |
+| −6% to −13% | 🟡 Reduce | 🟡 Standby | 🟡 Standby |
+| < −13% | 🔴 Stopped | 🟠 Buffer active | 🟡 Near −18% |
+| ≤ −18% | 🔴 Stopped | 🟠 Buffer active | 🔴 DEPLOY TIER 1! |
+| ≤ −26% | 🔴 Stopped | 🟠 Buffer active | 🔴 DEPLOY TIER 2! |
+| ≤ −33% | 🔴 Stopped | 🟠 Buffer active | 🔴 DEPLOY TIER 3! |
+
+**Offline fallback:** If all proxy services are unreachable, the Barometer shows the most recent known values (SPPW.DE AZH: 42.04 EUR, reference price: 39.47 EUR) with a clear "Offline" status and a link to Deutsche Börse for manual verification.
+
+**Auto-refresh:** Prices reload every 5 minutes while the page is open. On network failure, automatic retry after 2 minutes.
+
+---
+
+### 🔧 Four Financial Formula Corrections
+
+The simulation engine received four accuracy improvements:
+
+**K1 — Total Withdrawal statistic corrected**  
+`Total Withdrawal` and `Market Gain` in the Withdrawal Analysis panel previously included pension income (AHV/Rente) — money that never comes from the portfolio. Both figures now correctly show only the ETF depot withdrawals, giving an accurate picture of how much capital was actually consumed.
+
+**K2 — Buffer months display corrected**  
+Buffer coverage was previously calculated as `buffer ÷ monthlyETF` — based only on ETF withdrawals. Since the buffer must cover the full monthly need (ETF + pension supplement), coverage is now correctly calculated as `buffer ÷ totalMonthly`. A 3-year buffer set in the slider now shows ~25 months of full coverage rather than a misleadingly high 36.
+
+**M1 — Purchasing Power corrected for indexed pensions**  
+The Purchasing Power KPI previously discounted the entire monthly budget (including pension) by inflation. Since Swiss AHV and most public pensions are indexed to inflation, only the ETF withdrawal portion is now discounted. The resulting real purchasing power figure is higher and more accurate.
+
+**M2 — SWR cap path: buffer allocation corrected**  
+When the Max SWR slider caps withdrawals below the solver optimum, the buffer and invested capital are now kept at solver-optimal levels rather than being recalculated based on the capped withdrawal amount. This prevents an artificial over-allocation to the ETF depot in capped scenarios.
+
+---
+
+### 🌍 Complete 21-Language Overhaul
+
+The entire i18n system was rebuilt from scratch. All 21 languages now have:
+
+- **188 translation keys** per language — every label, badge, tooltip, warning, and UI string
+- **37 export-specific keys** — the HTML Report now renders in the user's active language, including section headings, table headers, crisis names (e.g. "KRISE" / "CRISE" / "KRYZYS"), yearly milestones, and the footer disclaimer
+- **Correct browser language detection** — `navigator.language` maps to the right language on first load for all 21 locales including `de-CH`, `fr-CH`, `zh-CN`, `zh-TW`
+- **Fixed merge logic bug** — a critical regression caused DE and FR translations to be overwritten by EN fallbacks; all 188 keys now load correctly for every language
+- **Rebuilt language dropdown** — persistent click-outside handler (no more "frozen" dropdown after language switch), dropdown rebuilt on each open with the correct active state
+
+Supported languages: **EN · DE · FR · ES · IT · PT · NL · PL · RU · TR · SV · DA · NO · FI · CS · HU · RO · EL · UK · HI · ZH**
+
+---
+
+### 📤 Fully Localised HTML Export Report
+
+The HTML Report export (introduced in v6.2) is now fully translated into all 21 languages. When you export with German active, the report shows "Simulationsbericht", "Jaehrliche Meilensteine", "KRISE", and a German disclaimer. The same applies to all 21 languages.
+
+Additional improvements to the HTML Report:
+- Version updated from v6.2 → **v6.3** in subtitle and footer
+- Simulation mode translated ("historisch" / "historique" / "historico" etc.)
+- Crisis names localised via `getCrisisName()` — shows German names when in DE mode
+- Numbers formatted with locale-aware `Intl.NumberFormat`
+- Positive/negative delta rendered in green/amber respectively
+- Print CSS improved with better typography
+
+---
+
+### 🕐 Improved Live Price Status
+
+The market data status indicator now shows localised delay information in all 21 languages:
+
+| Language | Status text example |
+|---|---|
+| DE | `Yahoo (~15min verzoegert)` |
+| FR | `Yahoo (~15min retarde)` |
+| ES | `Yahoo (~15min retrasado)` |
+| PL | `Yahoo (~15min opozniony)` |
+| ZH | `Yahoo (~15min yanchi)` |
+
+**Fetch reliability fix:** A critical bug caused the Yahoo Finance fetch to silently fail on every refresh after the first successful load. The `AbortController` timeout was never cleared after a successful response, so 8 seconds later it aborted the *next* fetch call — forcing the Barometer offline. The timer is now properly cancelled on both success and failure paths.
+
 ---
 
 ## EN — What's New in v6.2
 
 ### 📤 Simulation Data Export — CSV · JSON · HTML Report
 
-A new **Export button** (↓ icon) appears in the Withdrawal Analysis panel. One click opens a modal with three export formats. Everything is generated locally in the browser — no data ever leaves your device.
+A new **Export button** (↓ icon) in the Withdrawal Analysis panel opens a modal with three export formats. Everything generated locally — no data leaves your device.
 
-**CSV — Monthly Detail** (Excel / LibreOffice / Numbers)
+**CSV — Monthly Detail** · 13 columns per month (ETF Depot, Buffer, War Chest, Total, B&H, Drawdown %, Crisis flag, …). Semicolon separator + UTF-8 BOM for direct European Excel compatibility.
 
-Every row is one simulation month. Columns:
+**JSON — Full Structured Data** · Sections: `meta`, `parameters`, `kpiSummary`, `crisisEvents[]`, `monthlyData[]`. Compatible with `pandas.read_json()`, Power BI, Power Query.
 
-| Column | Description |
-|---|---|
-| Year / Month | Calendar date of the simulation step |
-| ETF Depot | ETF portfolio value at end of month |
-| Cash Buffer | Cash Buffer balance at end of month |
-| War Chest | War Chest balance at end of month |
-| Property Net | Net property value (ownership mode only) |
-| Total Wealth | Sum of all buckets + property |
-| Buy & Hold | Parallel B&H simulation value for same month |
-| Strategy vs B&H | Delta: 3-bucket total minus B&H value |
-| Drawdown % | Current drawdown from all-time high |
-| ETF Monthly Return % | Approximate ETF return for this month |
-| Cash Interest | Money-market interest earned by Buffer + War Chest |
-| InCrisis Flag | 1 = crisis phase active, 0 = normal |
-
-The file opens with a parameter block (capital, duration, rates, full KPI summary) as comment lines. Uses semicolon separator + UTF-8 BOM for direct compatibility with European Excel, LibreOffice, and Apple Numbers.
-
-**JSON — Full Structured Data**
-
-Machine-readable export with four top-level sections: `meta`, `parameters`, `kpiSummary`, `crisisEvents[]`, and `monthlyData[]`. Ideal for Python (`pandas.read_json()`), Excel Power Query, Power BI, or any custom dashboard.
-
-**HTML Report — Print / Archive**
-
-A self-contained, internet-free printable report. Includes:
-- Full parameter table
-- 8 KPI cards: End Wealth, B&H End Wealth, Delta, Crises Survived, Rebalancing Events, Buffer Months Used, Drawdown Stop Months, Worst Depot
-- Crisis events table with name, date, duration, total drop, recovery, and type
-- Yearly milestones table: ETF Depot, Buffer, War Chest, Total Wealth, B&H, Strategy vs B&H delta, Drawdown %, Crisis flag
-- Print-ready CSS — use browser Print → Save as PDF for a clean, shareable document
-
-All formats reflect the exact simulation state at export time: timeline, crisis overlay, currency, language, and all parameter values.
+**HTML Report — Print / Archive** · Standalone printable report: parameter table, KPI summary, crisis events table, yearly milestones table. Use browser Print → Save as PDF.
 
 ---
 
 ## EN — What's New in v6.1
 
-### 1. 🏷️ Purchasing Power Label Correction
-The KPI previously showed *"real (today)"* — misleading, because the value displayed is the inflation-discounted buying power of your monthly budget **at the end** of the withdrawal period. The label now correctly reads **"real (at end)"** (DE: *"real (am Ende)"*). The sublabel dynamically shows the selected duration, e.g. *"real purchasing power after 30 years"*.
+**Purchasing Power label** corrected to "real (at end)" with duration-aware sublabel.
 
-### 2. 🔄 Smart Surplus & Refill Management
-When the Max SWR slider caps your budget below the solver's optimum, the monthly difference — the "surplus" — no longer sits idle in the ETF depot. The simulation now routes it through a strict priority waterfall every normal-market month:
+**Smart Surplus Refill:** SWR-cap surplus routed monthly via waterfall: Buffer → War Chest → ETF.
 
-**Priority 1: Cash Buffer** (filled to 100% of target) → **Priority 2: War Chest** (filled to 100% of target) → **Priority 3: ETF Depot** (remainder stays here)
+**Money-market interest** on Cash Buffer and War Chest: 1.5% p.a. (was 2.0%).
 
-Each bucket fill above 1 unit increments the Rebalancing Event counter. The SWR info panel shows the live surplus amount and its current destination in real time.
-
-### 3. 💰 Money-Market Interest on Cash Buckets
-Both the Cash Buffer and War Chest now compound at **1.5% p.a.** (monthly compounding), matching realistic current money-market ETF yields (e.g. iShares € Government Bond 0-1yr, Lyxor Smart Cash). Previously modelled at 2.0% p.a. A permanent note in the Safety Limits panel confirms the rate.
-
-### 4. 📊 Extended SWR Transparency Panel
-The info box below the SWR slider now shows three additional lines when SWR capping is active: the monthly surplus amount, its current routing destination (Buffer / War Chest / ETF), and the projected legacy impact. The 1.5% cash interest note is always visible — even when SWR is not capped.
-
-### 5. ⚡ Relaxed Rebalancing Logic — Dual Trigger
-The original ATH Rebalancing from v6.0 only fired on a strict new all-time high. After a significant correction, the depot can recover strongly for months without technically exceeding its pre-crash ATH — leaving buffers depleted far too long. Rebalancing now fires on two independent conditions:
-
-1. **Strict ATH trigger** (original v6.0): depot exceeds previous all-time high
-2. **5% growth trigger** *(new)*: depot has grown more than 5% compared to 12 months ago, AND at least one bucket is below 95% of its target
-
-This dual-trigger ensures post-crisis buffer regeneration happens during recovery — not only once the market has fully reclaimed its peak.
+**ATH Rebalancing dual-trigger:** fires on (1) new all-time high OR (2) depot +5% vs. 12 months ago with underfilled buckets.
 
 ---
 
 ## EN — What's New in v6.0
 
-### 🔄 Dynamic ATH Rebalancing (Fair-Weather Logic)
-When the ETF depot sets a new all-time high, up to 1.5% of the surplus above ATH is used to refill the Cash Buffer (65% share) and War Chest (35% share) back to their target levels. Solves the core problem of static bucket strategies: after a long bull market, shields can drift well below target — leaving you exposed when the next correction arrives. The number of rebalancing events is tracked and shown in the Withdrawal Analysis panel.
+**Dynamic ATH Rebalancing** — 1.5% of surplus above ATH refills Buffer (65%) + War Chest (35%).
 
-### ⚖️ Opportunity Cost Indicator
-A parallel Buy & Hold simulation runs alongside the main 3-bucket strategy using identical starting capital and monthly withdrawals. The results panel shows B&H End Wealth, Strategy End Wealth, and the exact delta. When the strategy trails B&H, a contextual annotation explains that the 3-bucket combination provides behavioural and crisis-protection benefits not captured in a simple wealth comparison — particularly the elimination of forced selling at market bottoms.
+**Opportunity Cost Indicator** — parallel B&H simulation with identical capital and withdrawals.
 
-### 🌗 Light / Dark Mode Toggle
-A ☀️/🌙 toggle button in the top-right control bar. Both themes use the same cohesive colour system. The label is fully translated across all 21 supported languages.
+**Light / Dark mode toggle** — fully translated in all 21 languages.
+
+**Crisis database extended** — Trump Tariff Crisis (2025), Yen Carry Unwind (2024), Regional Banking Crisis (2023).
 
 ---
 
 ## EN — Core Strategy: Why 3 Buckets?
 
-The combination of ETF Depot + Cash Buffer + War Chest is strategically superior to pure Buy & Hold for retirees on four compounding dimensions:
-
 | Problem | 3-Bucket Solution |
 |---|---|
-| **Sequence-of-Returns Risk** | Cash Buffer covers 2–6 years of expenses — you never sell ETF at the bottom |
-| **Crash Opportunity** | War Chest deploys at −18%, −26%, −33% drawdown thresholds — crises become buying opportunities |
-| **Behavioural Finance** | 2+ years of living expenses in cash eliminates panic selling — the single biggest destroyer of long-term returns |
+| **Sequence-of-Returns Risk** | Cash Buffer covers 2–6 years — you never sell ETF at the bottom |
+| **Crash Opportunity** | War Chest deploys at −18% / −26% / −33% — crises become buying opportunities |
+| **Behavioural Finance** | 2+ years of cash eliminates panic selling — the single biggest destroyer of long-term returns |
 | **Perpetual Readiness** | Dual-trigger rebalancing + SWR surplus refill keeps all buckets battle-ready at all times |
-
-The Opportunity Cost Indicator makes the trade-off explicit: in some scenarios, pure B&H wins on raw end wealth. But the 3-bucket strategy wins on **risk-adjusted, behaviourally stable, survivable outcomes** — especially critical in adverse return sequences where sequence risk destroys a pure-ETF retiree's portfolio.
 
 ---
 
@@ -138,12 +192,13 @@ The Opportunity Cost Indicator makes the trade-off explicit: in some scenarios, 
 - Wealth tax deducted monthly from total financial wealth
 - Property net worth tracked separately and compounded at configured growth rate
 
-**Bucket rules:**
-- In crisis + drawdown > 15%: withdrawals pause from ETF, Cash Buffer absorbs all expenses
-- In crisis + drawdown ≤ 15%: Cash Buffer used first, ETF only as overflow
-- War Chest never used for living expenses — only deployed at specific drawdown thresholds
-- SWR surplus flows: Buffer → War Chest → ETF (new in v6.1)
-- ATH + 5% growth rebalancing refills both cash buckets from ETF surplus (updated in v6.1)
+**Bucket rules (v6.3):**
+- Drawdown 0% to −6%: Full ETF withdrawal, Cash Buffer on standby
+- Drawdown −6% to −13%: Reduced ETF withdrawal, Cash Buffer supplements
+- Drawdown below −13%: **Zero ETF sales** — Cash Buffer covers 100% of expenses
+- War Chest deploys at −18% / −26% / −33% thresholds — never used for living expenses
+- SWR surplus flows: Buffer → War Chest → ETF (v6.1)
+- ATH + 5% growth dual-trigger rebalancing refills both cash buckets (v6.1)
 
 **War Chest deployment thresholds:**
 
@@ -152,19 +207,11 @@ The Opportunity Cost Indicator makes the trade-off explicit: in some scenarios, 
 | Standard ETF | 80% | −18% | −26% | −33% |
 | High-Beta | 20% | −25% | −40% | −50% |
 
-Each tier fires once per crisis and allocates a fixed fraction of remaining War Chest to the ETF depot.
-
-**B&H parallel simulation:**
-- Same starting capital (invested + buffer + war chest combined)
-- Same monthly withdrawals (inflation-adjusted)
-- Same crisis return profile
-- No buffers, no drawdown stops — direct comparison benchmark
-
 ### Crisis Engine
 
-**Historical mode (← 5Y / 5Y →):** Navigate through real calendar windows. The simulator overlays actual crisis phases as red-shaded chart zones with labelled tags.
+**Historical mode (← 5Y / 5Y →):** Real calendar windows overlaying actual crisis phases as red-shaded chart zones with labelled tags.
 
-**Random forecast mode (↻):** Anchors the simulation start at today. Generates realistic random futures using four crisis archetypes:
+**Random forecast mode (↻):** Anchors at today and generates realistic random futures using four crisis archetypes:
 
 | Archetype | Duration | Drop | Recovery |
 |---|---|---|---|
@@ -173,59 +220,54 @@ Each tier fires once per crisis and allocates a fixed fraction of remaining War 
 | Pandemic Shock | 3 months | −35% | 6 months |
 | Hyperinflation | 18 months | −40% | 30 months |
 
-Placement rules: at least one major crisis per decade, 1–3 smaller shocks per decade, non-overlapping with minimum gap padding. Each click generates a different random future.
+### Historical Crisis Database (1973–2026)
 
-### Historical Crisis Database (1973–2025)
-
-| Crisis | Year | Drop | Recovery | Type |
-|---|---|---|---|---|
-| Oil Crisis / Stagflation | 1973 | −48% | 18 mo | Monetary |
-| Volcker Recession | 1980 | −27% | 12 mo | Monetary |
-| Black Monday | 1987 | −34% | 20 mo | Liquidity |
-| Gulf War Recession | 1990 | −20% | 8 mo | Event-Driven |
-| Asian / LTCM Crisis | 1997 | −19% | 6 mo | Liquidity |
-| Dotcom Crash | 2000 | −49% | 24 mo | Structural |
-| Global Financial Crisis | 2007 | −57% | 24 mo | Structural |
-| EU Debt Crisis | 2011 | −19% | 8 mo | Structural |
-| China / Oil Shock | 2015 | −14% | 6 mo | Event-Driven |
-| COVID-19 Crash | 2020 | −34% | 5 mo | Event-Driven |
-| 2022 Bear Market | 2022 | −25% | 12 mo | Monetary |
-| Regional Banking Crisis | 2023 | −9% | 3 mo | Liquidity |
-| Yen Carry Trade Unwind | 2024 | −10% | 1 mo | Liquidity |
-| Trump Tariff Crisis | 2025 | −18% | 8 mo | Event-Driven |
+| Crisis | Year | Drop | Duration | Recovery | Type |
+|---|---|---|---|---|---|
+| Oil Crisis / Stagflation | 1973 | −48% | 21 mo | 18 mo | Monetary |
+| Volcker Recession | 1980 | −27% | 20 mo | 12 mo | Monetary |
+| Black Monday | 1987 | −34% | 3 mo | 20 mo | Liquidity |
+| Gulf War Recession | 1990 | −20% | 6 mo | 8 mo | Event-Driven |
+| Asian / LTCM Crisis | 1997 | −19% | 5 mo | 6 mo | Liquidity |
+| Dotcom Crash | 2000 | −49% | 30 mo | 24 mo | Structural |
+| Global Financial Crisis | 2007 | −57% | 17 mo | 24 mo | Structural |
+| EU Debt Crisis | 2011 | −19% | 6 mo | 8 mo | Structural |
+| China / Oil Shock | 2015 | −14% | 7 mo | 6 mo | Event-Driven |
+| COVID-19 Crash | 2020 | −34% | 2 mo | 5 mo | Event-Driven |
+| 2022 Bear Market | 2022 | −25% | 10 mo | 12 mo | Monetary |
+| Regional Banking Crisis | 2023 | −9% | 2 mo | 3 mo | Liquidity |
+| Yen Carry Unwind | 2024 | −10% | 1 mo | 1 mo | Liquidity |
+| Trump Tariff Crisis | 2025 | −18% | 4 mo | 2 mo | Event-Driven |
+| **Middle East War (Iran)** | **2026** | **−22%** | **6 mo** | **8 mo** | **Geopolitical** |
 
 ### Tax & Housing Engine
 
-**Taxes (all approximate — for simulation purposes):**
-- **Income tax:** applied to pension income + imputed rental value (if ownership + CHF currency)
-- **Capital gains tax:** applied to ETF withdrawal × estimated gains ratio (scales with return rate)
-- **Wealth tax:** annual rate applied to total financial wealth, deducted monthly
-- **Eigenmietwert (CH only):** added to taxable income when currency = CHF and ownership mode is active
-- **Tax deductions (ownership):** mortgage interest + maintenance deducted from taxable income
+**Taxes (simulation approximations):**
+- Income tax on pension income + imputed rental value (CH only)
+- Capital gains tax on ETF withdrawals × estimated gain ratio (scales with return rate)
+- Wealth tax: annual rate on total financial wealth, deducted monthly
+- Eigenmietwert (CH only): taxed when currency = CHF and ownership mode active
+- Mortgage interest + maintenance deductible in ownership mode
 
 **Housing modes:**
-- 🏠 Rent: cold rent + utilities as monthly housing cost
-- 🏡 Ownership: mortgage interest + maintenance as monthly cost; property net worth tracked and compounded separately; optional Eigenmietwert (CH)
-
-**Net budget breakdown:**
-Gross Budget → minus Taxes → minus Housing Costs → minus Living Costs → **Net Available**
+- 🏠 **Rent:** cold rent + utilities as monthly housing cost
+- 🏡 **Ownership:** mortgage interest + maintenance; property tracked and compounded separately
 
 ### Solver & Mathematics
 
-- **Newton-Raphson withdrawal solver** iterates to find the maximum monthly withdrawal that leaves the configured target legacy at the end of the period, given expected return, inflation, war chest, and buffer size
-- **SWR cap:** if the solver's result exceeds the Max SWR slider, the withdrawal is capped and the surplus is routed into the bucket structure
-- **Inflation adjustment:** all withdrawals increase monthly by `(1 + inflation/1200)^month`
-- **Dynamic safety net:** when depot falls below 40% of initial value, withdrawals scale down proportionally to preserve longevity
-- **Purchasing Power KPI:** nominal monthly budget discounted by `(1 + inflation/100)^years` — shows real value at end of period
-- **Stress resistance:** buffer-only coverage months at current monthly need, assuming −50% scenario where War Chest is fully deployed into ETF
+- **Newton-Raphson withdrawal solver** (150 iterations): finds maximum monthly withdrawal leaving configured target legacy at period end
+- **SWR cap:** solver result capped at Max SWR slider; surplus routed via waterfall
+- **Inflation adjustment:** `(1 + inflation/1200)^month` applied to withdrawals each step
+- **Purchasing Power KPI (v6.3 corrected):** only ETF withdrawal discounted by inflation; pension remains real-value (indexed)
+- **Total Withdrawal statistic (v6.3 corrected):** shows only ETF depot withdrawals, excluding pension income
 
 ### UI & Accessibility
 
-- **21 languages:** EN · DE · FR · ES · IT · PT · NL · PL · RU · TR · SV · DA · NO · FI · CS · HU · RO · EL · UK · HI · ZH
-- **20 currencies** with smart browser locale detection and scaled input ranges per currency group
-- **Dark / Light mode** — both themes fully print-friendly
-- **Mobile optimised** — all sliders, panels, dropdowns, and export modal designed for touch interaction
-- **100% offline** — single HTML file, CDN-loaded Chart.js and Google Fonts are the only external dependencies (both cacheable for full offline use)
+- **21 languages** with browser locale auto-detection (`navigator.language`)
+- **20 currencies** with locale-scaled input ranges
+- **Dark / Light mode** — both print-friendly
+- **Mobile optimised** — touch-friendly sliders, dropdowns, and modal
+- **100% offline** — single HTML file; Chart.js and Google Fonts are the only external dependencies (both cacheable)
 
 ---
 
@@ -235,9 +277,9 @@ Gross Budget → minus Taxes → minus Housing Costs → minus Living Costs → 
 Download `index.html` and open in any modern browser. No installation, no build step.
 
 ### Option 2: GitHub Pages
-1. Fork or upload `index.html` to a repository
-2. Settings → Pages → Deploy from `main` / root
-3. Available at `https://your-username.github.io/repo-name/`
+1. Upload `index.html` to a repository
+2. Settings → Pages → Deploy from `main`
+3. Live at `https://your-username.github.io/repo-name/`
 
 ### Option 3: Local dev server
 ```bash
@@ -254,7 +296,7 @@ Netlify Drop, Vercel, Cloudflare Pages, AWS S3 — drop the single file, instant
 
 | Parameter | Default | Range |
 |---|---:|---:|
-| Starting Capital | 1'200'000 | Currency-dependent (CHF: 100k – 10M) |
+| Starting Capital | 1'200'000 | Currency-dependent |
 | Withdrawal Duration | 30 years | 10 – 50 |
 | Target Legacy | 0 | 0 – 5'000'000 |
 | Inflation | 1.5% | 0 – 10% |
@@ -266,81 +308,114 @@ Netlify Drop, Vercel, Cloudflare Pages, AWS S3 — drop the single file, instant
 | Income Tax | 20% | 0 – 50% |
 | Capital Gains Tax | 0% | 0 – 35% |
 | Wealth Tax | 0.20% p.a. | 0 – 2% |
-| Cash Bucket Rate | **1.5% p.a.** | fixed |
+| Cash Bucket Rate | 1.5% p.a. | fixed |
 
 ---
 
 ## EN — Architecture
 
 ```
-index.html  (~2,400 lines, single file)
+index.html  (~6,000 lines, single file, 268 KB)
 │
 ├── HTML
 │   ├── Header (title · allocation bar · language / currency / theme pickers)
+│   ├── Withdrawal & War Chest Barometer (live ETF · drawdown · strategy bars · badges)  ← v6.3
 │   ├── KPI row (Monthly Budget · Cash Buffer · War Chest · Purchasing Power)
 │   ├── Left column (Base Parameters · Market & Strategy · Safety Limits)
 │   ├── Mid column (Housing · Taxes · Net Budget Breakdown)
 │   ├── Main column (Strategy Health · Chart · Withdrawal Analysis · Export button)
-│   └── Export Modal (overlay · CSV option · JSON option · HTML Report option)
+│   └── Export Modal (CSV · JSON · HTML Report)
 │
 ├── CSS
 │   ├── Dark / Light theme via CSS custom properties (:root / :root.light-mode)
 │   ├── Responsive grid: 1-col mobile → 2-col tablet → 3-col desktop
-│   ├── Glass-panel aesthetic (backdrop-filter, subtle borders)
-│   └── Export modal + button styles
+│   ├── Barometer: dd-strip, dd-compact-readout, smb-wrap, smb-row, smb-track  ← v6.3
+│   └── Glass-panel aesthetic (backdrop-filter, subtle borders)
 │
-└── JavaScript
-    ├── i18n engine (21 languages, dynamic key resolution, fallback to EN)
-    ├── Currency engine (20 currencies, scaled ranges, browser locale detection)
+└── JavaScript (~218 KB)
+    ├── i18n engine (21 languages · 188 keys · browser locale detection · EN fallback)  ← v6.3
+    ├── Currency engine (20 currencies · locale-scaled ranges · browser detection)
+    ├── Market data engine  ← v6.3
+    │   ├── fetchMarketData() — Yahoo Finance v8 API via CORS proxies
+    │   ├── AZH from 52-week daily high bars
+    │   ├── Auto-refresh every 5 min · retry on fail every 2 min
+    │   └── AbortController with proper cleanup (no refresh-abort race condition)
+    ├── Barometer engine  ← v6.3
+    │   ├── buildDDBar() / buildSmbTicks() / buildStrategyBars()
+    │   ├── updateDDBar() / updateKpiBadges()
+    │   └── 4-row visual: Withdrawal bar + War Chest Tier 1/2/3
     ├── Housing + Tax engine (Eigenmietwert CH-only flag)
-    ├── Crisis database (14 events, 1973–2025)
+    ├── Crisis database (15 events · 1973–2026)
     ├── Crisis engine
     │   ├── Historical navigation (← 5Y / 5Y → with boundary clamping)
-    │   └── Random forecast generator (today-anchored, typed archetypes, non-overlapping placement)
+    │   └── Random forecast (today-anchored · typed archetypes · non-overlapping)
     ├── Simulation engine
     │   ├── Newton-Raphson withdrawal solver (150 iterations max)
     │   ├── 3-bucket monthly simulation loop
-    │   ├── Drawdown tracker + −15% withdrawal stop rule
+    │   ├── Corrected drawdown zones: 0–6% full · 6–13% reduced · >13% buffer only  ← v6.3
     │   ├── Two-tier war chest deployment (std 80% + high-beta 20%)
-    │   ├── SWR surplus refill waterfall (Buffer → War Chest → ETF)  ← v6.1
-    │   ├── ATH + 5%-growth dual-trigger rebalancing                  ← v6.1
-    │   ├── Money-market interest 1.5% p.a. on cash buckets           ← v6.1
+    │   ├── SWR surplus refill waterfall (Buffer → War Chest → ETF)
+    │   ├── ATH + 5%-growth dual-trigger rebalancing
+    │   ├── Money-market interest 1.5% p.a. on cash buckets
+    │   ├── Corrected purchasing power (pension excluded from inflation discount)  ← v6.3
+    │   ├── Corrected total withdrawal statistic (ETF-only, excl. pension)  ← v6.3
+    │   ├── Corrected buffer months (based on full monthly need)  ← v6.3
+    │   ├── Corrected SWR-cap buffer allocation  ← v6.3
     │   ├── Wealth tax monthly deduction
     │   ├── Property net worth tracking + compounding
     │   ├── Dynamic withdrawal reduction safety net (<40% depot)
-    │   └── B&H parallel simulation (same capital, same withdrawals)
-    ├── Chart engine (Chart.js, crisis zone shading, legacy target line, B&H line)
-    ├── Export engine                                                  ← v6.2
-    │   ├── buildMonthlyRows()  — shared data preparation
-    │   ├── exportCSV()         — semicolon-separated, UTF-8 BOM, param comment header
-    │   ├── exportJSON()        — structured: meta / params / kpis / crises / monthly
-    │   └── exportHTMLReport()  — standalone printable report with KPI cards + tables
-    └── Theme engine (dark/light CSS class toggle, chart colour re-render)
+    │   └── B&H parallel simulation
+    ├── Chart engine (Chart.js · crisis zone shading · legacy line · B&H line)
+    ├── Export engine  ← v6.2 / fully localised v6.3
+    │   ├── getParams() / buildRows()  — shared data preparation
+    │   ├── exportCSV()       — 13 columns · semicolon · UTF-8 BOM
+    │   ├── exportJSON()      — meta / params / kpis / crises / monthly
+    │   └── exportHTMLReport() — fully i18n · 21 languages · v6.3 footer
+    └── Theme engine (dark/light CSS class toggle · chart colour re-render)
 ```
 
 ---
 
 ## EN — Changelog
 
-### v6.2 — Export Engine
-- **[NEW]** Export button in Withdrawal Analysis panel header
-- **[NEW]** Export modal with three format options and info line
-- **[NEW]** CSV export: 13 columns per month, parameter block as comment header, semicolon + BOM for Excel compatibility
-- **[NEW]** JSON export: fully structured `meta / parameters / kpiSummary / crisisEvents[] / monthlyData[]`
-- **[NEW]** HTML Report: standalone printable report with KPI cards, crisis table, yearly milestones table
+### v6.3 — Live Barometer, Formula Audit, Full i18n
+- **[NEW]** Withdrawal & War Chest Barometer with live SPPW.DE price data
+- **[NEW]** 4-row strategy bar: Withdrawal zones + 3 War Chest tiers with live amounts
+- **[NEW]** 3 KPI badges with real-time drawdown-driven status (21 states, 21 languages)
+- **[NEW]** SPPW.DE (ISIN IE00BFY0GT14, TER 0.12%) as reference ETF — Deutsche Börse Xetra
+- **[NEW]** AZH calculated from 52-week daily high bars (more accurate than meta.fiftyTwoWeekHigh)
+- **[NEW]** Auto-refresh every 5 min · retry every 2 min on failure · offline fallback with DB link
+- **[FIX]** AbortController timer race condition — timer now cleared on success and failure
+- **[FIX]** Total Withdrawal / Market Gain: AHV/pension excluded (ETF-only)
+- **[FIX]** Buffer months: based on full monthly need (ETF + pension), not ETF-only
+- **[FIX]** Purchasing Power: pension excluded from inflation discount (indexed)
+- **[FIX]** SWR-cap path: buffer/invested kept at solver-optimal levels
+- **[FIX]** i18n merge loop: DE and FR translations no longer overwritten by EN fallbacks
+- **[NEW]** 188 translation keys per language · 37 export-specific keys · all 21 languages
+- **[NEW]** HTML Report fully localised in all 21 languages (headings, tables, crisis names, footer)
+- **[NEW]** `delayedLabel` key — live price status text localised in all 21 languages
+- **[FIX]** Language dropdown: persistent click-outside handler (no frozen dropdown after switch)
+- **[NEW]** Browser language auto-detection for all 21 locales including de-CH, fr-CH, zh-CN
+- **[NEW]** Middle East War (Iran) 2026/02 added to crisis database
+- **[UPDATED]** Crisis recovery overlap validation — all 15 crises clean, no chain-blocking
 
-### v6.1 — Mathematical & Functional Optimization
-- **[FIX]** Purchasing Power KPI label corrected to "real (at end)" with duration-aware sublabel
-- **[NEW]** Smart Surplus Refill: SWR-cap surplus actively routed Buffer → War Chest → ETF each month
-- **[UPDATED]** Cash bucket interest: 2.0% → 1.5% p.a. (money-market ETF realistic rate)
-- **[NEW]** SWR info panel: surplus amount, routing destination, legacy impact, cash interest note
-- **[UPDATED]** ATH Rebalancing: dual-trigger added (strict ATH + 5% 12-month growth) for faster post-crisis buffer regeneration
+### v6.2 — Export Engine
+- **[NEW]** Export button, export modal with three format options
+- **[NEW]** CSV: 13 columns/month · semicolon + BOM · param comment header
+- **[NEW]** JSON: meta / parameters / kpiSummary / crisisEvents[] / monthlyData[]
+- **[NEW]** HTML Report: standalone printable · KPI cards · crisis table · yearly milestones
+
+### v6.1 — Mathematical & Functional Optimisation
+- **[FIX]** Purchasing Power label "real (at end)" with duration-aware sublabel
+- **[NEW]** Smart Surplus Refill: SWR-cap surplus → Buffer → War Chest → ETF
+- **[UPDATED]** Cash bucket interest: 2.0% → 1.5% p.a.
+- **[UPDATED]** ATH Rebalancing: dual-trigger (strict ATH + 5% 12-month growth)
 
 ### v6.0 — Bucket Strategy & UX Overhaul
 - **[NEW]** Dynamic ATH Rebalancing with event counter
-- **[NEW]** Opportunity Cost Indicator (B&H parallel simulation + delta + contextual annotation)
-- **[NEW]** Light / Dark mode toggle (translated in all 21 languages)
-- **[NEW]** Trump Tariff Crisis (2025), Yen Carry Trade Unwind (2024), Regional Banking Crisis (2023) added to database
+- **[NEW]** Opportunity Cost Indicator (B&H parallel simulation + delta)
+- **[NEW]** Light / Dark mode toggle (21 languages)
+- **[NEW]** Trump Tariff Crisis (2025), Yen Carry Unwind (2024), Regional Banking Crisis (2023)
 
 ### v5.x and earlier
 - 21-language i18n system, 20-currency system with locale detection
@@ -374,48 +449,145 @@ This is a simulation tool for **educational purposes only**. It does not constit
 
 Das Tool modelliert ein **3-Töpfe-Setup** (ETF-Depot + Cash-Puffer + Kriegskasse), **Steuern**, **Wohnen** (Miete vs. Eigentum mit Hypothek) und eine **Krisen-Engine** mit echter Marktgeschichte oder zufällig generierten Zukunftsszenarien. Alle Berechnungen laufen lokal im Browser — kein Server, kein Account, kein Daten-Upload.
 
+Neu in v6.3: ein vollständig live betriebenes **Entnahme- & Kriegskassen-Barometer** mit echten Marktdaten von SPPW.DE, ein korrigierter 4-Formeln-Rechenmotor, ein komplett überarbeitetes 21-Sprachen-System sowie ein vollständig übersetzter HTML-Export-Report.
+
+---
+
+## DE — Neu in v6.3
+
+### 📡 Live Entnahme- & Kriegskassen-Barometer
+
+Ein neues Echtzeit-Dashboard-Panel erscheint direkt im KPI-Bereich und zeigt auf einen Blick, wo der aktuelle Markt-Drawdown im Verhältnis zur Entnahme- und Kriegskassenstrategie steht.
+
+**Datenquelle:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — derselbe ETF, der als Standardreferenzindex in der gesamten Simulation verwendet wird. Preisdaten werden live von Yahoo Finance über zwei unabhängige CORS-Proxy-Dienste mit automatischem Fallback abgerufen.
+
+**Was der Barometer anzeigt:**
+
+| Element | Beschreibung |
+|---|---|
+| **Drawdown %** | Aktueller Abstand vom 52-Wochen-Hoch (AZH), alle 5 Minuten aktualisiert |
+| **Kurs** | Letzter verfügbarer Preis (Yahoo Finance, ~15 min verzögert für EU-Märkte) |
+| **AZH** | Allzeithoch / 52-Wochen-Hoch, berechnet aus täglichen Höchstkurs-Bars |
+| **Zonen-Label** | Sicher / Vorsicht / Nur Puffer — farblich nach Drawdown-Zone |
+| **Status-Punkt** | Grün = live · Grau = offline / Fallback |
+
+**Strategie-Balken (4-zeilig):**
+
+- **Entnahme-Balken** (hoch): zeigt die drei Entnahme-Zonen — Volle ETF-Entnahme (0% bis −6%), Reduzierte Entnahme (−6% bis −13%), Nur Cash-Puffer (unter −13%) — mit einer Live-Nadel am aktuellen Drawdown
+- **Kriegskasse 1, 2, 3** (schmal): zeigen die drei Einsatz-Schwellen bei −18%, −26%, −33% mit dem exakten CHF-Betrag pro Stufe, berechnet aus dem aktuellen Kriegskassen-Regler
+
+**Drei KPI-Badges** (Monatsbudget · Cash-Puffer · Kriegskasse) aktualisieren sich automatisch basierend auf dem Live-Drawdown:
+
+| Drawdown-Bereich | Monatsbudget | Cash-Puffer | Kriegskasse |
+|---|---|---|---|
+| ≥ 0% | ✅ Entnahme OK | ✅ Auffüllen | ✅ Auffüllen |
+| 0% bis −6% | ✅ Entnahme OK | 🟡 Bereitschaft | 🟡 Bereitschaft |
+| −6% bis −13% | 🟡 Reduzieren | 🟡 Bereitschaft | 🟡 Bereitschaft |
+| < −13% | 🔴 Gestoppt | 🟠 Puffer aktiv | 🟡 Nahe −18% |
+| ≤ −18% | 🔴 Gestoppt | 🟠 Puffer aktiv | 🔴 STUFE 1 EINSETZEN! |
+| ≤ −26% | 🔴 Gestoppt | 🟠 Puffer aktiv | 🔴 STUFE 2 EINSETZEN! |
+| ≤ −33% | 🔴 Gestoppt | 🟠 Puffer aktiv | 🔴 STUFE 3 EINSETZEN! |
+
+**Offline-Fallback:** Wenn alle Proxy-Dienste nicht erreichbar sind, zeigt der Barometer die zuletzt bekannten Werte (SPPW.DE AZH: 42,04 EUR, Referenzkurs: 39,47 EUR) mit einem klaren „Offline"-Status und einem Link zu Deutsche Börse zur manuellen Prüfung.
+
+**Auto-Refresh:** Preise werden alle 5 Minuten neu geladen. Bei Netzwerkfehler automatischer Neuversuch nach 2 Minuten.
+
+---
+
+### 🔧 Vier Formel-Korrekturen im Rechenmotor
+
+**K1 — Gesamtentnahme-Statistik korrigiert**  
+„Gesamte Entnahme" und „Marktgewinn" im Analyse-Panel enthielten bislang die Rente/AHV — Geld, das nie aus dem Portfolio kommt. Beide Kennzahlen zeigen jetzt ausschliesslich die ETF-Depot-Entnahmen.
+
+**K2 — Puffer-Monats-Anzeige korrigiert**  
+Die Puffer-Abdeckung wurde bisher als `Puffer ÷ monatliche ETF-Entnahme` berechnet. Da der Puffer den vollen monatlichen Bedarf (ETF + Rente) decken muss, wird jetzt korrekt `Puffer ÷ Gesamtbedarf` verwendet. Ein 3-Jahres-Puffer zeigt nun realistisch ~25 Monate statt der irreführend hohen 36 Monate.
+
+**M1 — Kaufkraft für indexierte Renten korrigiert**  
+Das Kaufkraft-KPI diskontierte bisher das gesamte Monatsbudget (inkl. Rente) mit Inflation. Da AHV und die meisten öffentlichen Renten inflationsindexiert sind, wird jetzt nur der ETF-Entnahme-Teil diskontiert. Die angezeigte Kaufkraft ist dadurch höher und realistischer.
+
+**M2 — SWR-Cap-Pfad: Pufferzuweisung korrigiert**  
+Wenn der Max-SWR-Regler die Entnahme deckelt, werden Puffer und investiertes Kapital jetzt auf dem Solver-optimalen Niveau gehalten, statt auf Basis des gedeckelten Betrags neu berechnet zu werden.
+
+---
+
+### 🌍 Vollständiges 21-Sprachen-System
+
+Das gesamte i18n-System wurde neu aufgebaut. Alle 21 Sprachen haben jetzt:
+
+- **188 Übersetzungsschlüssel** pro Sprache — jedes Label, Badge, Tooltip, jede Warnung und jeder UI-String
+- **37 Export-spezifische Schlüssel** — der HTML-Report wird in der aktiven Benutzersprache gerendert (Abschnittsüberschriften, Tabellenkopfzeilen, Krisennamen z.B. „KRISE", Jahresmeilensteine, Footer-Disclaimer)
+- **Korrekte Browser-Spracherkennung** — `navigator.language` wählt beim ersten Laden die richtige Sprache für alle 21 Lokale inkl. `de-CH`, `fr-CH`, `zh-CN`
+- **Merge-Logik-Bug behoben** — ein kritischer Fehler liess DE und FR durch EN-Fallbacks überschreiben; alle 188 Schlüssel laden jetzt korrekt für jede Sprache
+- **Sprach-Dropdown neu aufgebaut** — persistenter Klick-aussen-Handler (kein „eingefrorenes" Dropdown nach Sprachwechsel), Dropdown wird bei jedem Öffnen mit korrektem aktivem Status neu aufgebaut
+
+Unterstützte Sprachen: **EN · DE · FR · ES · IT · PT · NL · PL · RU · TR · SV · DA · NO · FI · CS · HU · RO · EL · UK · HI · ZH**
+
+---
+
+### 📤 Vollständig lokalisierter HTML-Export-Report
+
+Der HTML-Report-Export (eingeführt in v6.2) ist jetzt in alle 21 Sprachen übersetzt. Bei aktiver DE-Einstellung zeigt der Report „Simulationsbericht", „Jaehrliche Meilensteine", „KRISE" sowie einen deutschen Disclaimer-Text. Ebenso für alle weiteren 21 Sprachen.
+
+Weitere Verbesserungen am HTML-Report:
+- Version von v6.2 → **v6.3** in Untertitel und Footer aktualisiert
+- Simulationsmodus übersetzt („historisch" / „historique" / „historico" etc.)
+- Krisennamen lokalisiert via `getCrisisName()` — zeigt deutsche Namen bei DE-Modus
+- Zahlen mit lokalem `Intl.NumberFormat` formatiert
+- Positives/negatives Delta in Grün/Amber dargestellt
+
+---
+
+### 🕐 Verbesserter Live-Kurs-Status
+
+Der Marktdaten-Status-Indikator zeigt jetzt lokalisierte Verzögerungsinformationen in allen 21 Sprachen:
+
+| Sprache | Status-Text-Beispiel |
+|---|---|
+| DE | `Yahoo (~15min verzoegert)` |
+| FR | `Yahoo (~15min retarde)` |
+| ES | `Yahoo (~15min retrasado)` |
+| PL | `Yahoo (~15min opozniony)` |
+| ZH | `Yahoo (~15min yanchi)` |
+
+**Fetch-Zuverlässigkeits-Fix:** Ein kritischer Bug liess den Yahoo-Finance-Fetch nach dem ersten erfolgreichen Laden bei jedem folgenden Refresh stumm fehlschlagen. Der `AbortController`-Timer wurde nach einer erfolgreichen Antwort nie beendet, sodass er 8 Sekunden später den *nächsten* Fetch abbrach — was den Barometer offline zwang. Der Timer wird jetzt korrekt bei Erfolg und Fehler abgebrochen.
+
 ---
 
 ## DE — Neu in v6.2
 
 ### 📤 Simulations-Daten Export — CSV · JSON · HTML-Report
 
-Ein neuer **Export-Button** (↓ Icon) erscheint im Panel „Auszahlungs-Analyse". Ein Klick öffnet ein Modal mit drei Exportformaten — alles lokal generiert, keine Daten verlassen dein Gerät.
+Ein neuer **Export-Button** (↓ Icon) im Analyse-Panel öffnet ein Modal mit drei Exportformaten — alles lokal, keine Daten verlassen das Gerät.
 
-**CSV — Monatliches Detail** (für Excel / LibreOffice / Numbers)
-Jede Zeile = 1 Simulationsmonat. 13 Spalten: Jahr, Monat, ETF-Depot, Cash-Puffer, Kriegskasse, Immobilie Netto, Gesamtvermögen, Buy & Hold, Strategie vs. B&H Delta, Drawdown %, ETF Monatsrendite %, Zinsen Cash-Töpfe, Krisen-Flag. Parameterblock als Kommentarkopf, Semikolon-Separator + UTF-8 BOM → direkt in europäischem Excel öffnen.
+**CSV — Monatliches Detail** · 13 Spalten pro Monat (ETF-Depot, Puffer, Kriegskasse, Gesamt, B&H, Drawdown %, Krisen-Flag, …). Semikolon + UTF-8 BOM für direkten europäischen Excel-Öffner.
 
-**JSON — Vollständige Daten** (für Python, Power Query, eigene Dashboards)
-Strukturiert mit `meta`, `parameters`, `kpiSummary`, `crisisEvents[]` und `monthlyData[]`. Ideal für `pandas.read_json()`, Power BI oder individuelle Auswertungen.
+**JSON — Vollständige Daten** · Abschnitte: `meta`, `parameters`, `kpiSummary`, `crisisEvents[]`, `monthlyData[]`. Kompatibel mit `pandas.read_json()`, Power BI, Power Query.
 
-**HTML-Report — Drucken / Archivieren**
-Eigenständige Seite ohne Internetbedarf. Enthält: Parameterübersicht, 8 KPI-Kacheln, Krisentabelle mit Drawdown und Erholungszeit, Jahres-Meilenstein-Tabelle mit ETF, Töpfe, Gesamtvermögen, B&H-Vergleich, Drawdown-% und Krisen-Flag. Druckoptimiertes CSS — als PDF speichern direkt über den Browser-Druckdialog.
+**HTML-Report — Drucken / Archivieren** · Eigenständiger Druckbericht: Parametertabelle, KPI-Zusammenfassung, Krisentabelle, Jahresmeilenstein-Tabelle. Browser-Druck → Als PDF speichern.
 
 ---
 
 ## DE — Neu in v6.1
 
-**Kaufkraft-Korrektur:** Das KPI-Label lautet jetzt korrekt „real (am Ende)" mit dynamischem Sublabel, z.B. „reale Kaufkraft nach 30 Jahren".
+**Kaufkraft-Korrektur:** KPI-Label jetzt korrekt „real (am Ende)" mit dynamischem Sublabel, z.B. „reale Kaufkraft nach 30 Jahren".
 
-**Smart Surplus Refill:** Der monatliche SWR-Surplus fließt aktiv nach Priorität: Cash-Puffer → Kriegskasse → ETF-Depot. Jede Befüllung inkrementiert den Rebalancing-Zähler. Der aktuelle Betrag und Ziel-Topf werden live im SWR-Panel angezeigt.
+**Smart Surplus Refill:** SWR-Surplus-Überschuss fliesst monatlich via Wasserfall: Puffer → Kriegskasse → ETF.
 
-**Geldmarkt-Verzinsung:** Beide Cash-Töpfe werden mit **1,5% p.a.** verzinst (realistischer Geldmarkt-ETF, z.B. iShares). Vorher 2,0% p.a.
+**Geldmarkt-Verzinsung** auf Cash-Puffer und Kriegskasse: 1,5% p.a. (war 2,0%).
 
-**Erweitertes SWR-Panel:** Zeigt Surplus-Betrag, Ziel-Topf, Legacy-Auswirkung und dauerhafter Hinweis auf 1,5%-Verzinsung.
-
-**Gelockerte Rebalancing-Logik — Dual-Trigger:** Rebalancing feuert jetzt bei zwei unabhängigen Bedingungen: (1) striktes neues Allzeithoch, oder (2) Depot +5% vs. Vorjahr bei unterfüllten Töpfen. Puffer füllen sich nach Krisen deutlich schneller auf.
+**ATH-Rebalancing Dual-Trigger:** feuert bei (1) neuem Allzeithoch ODER (2) Depot +5% vs. Vorjahr bei unterfüllten Töpfen.
 
 ---
 
 ## DE — Neu in v6.0
 
-**Dynamisches ATH-Rebalancing:** Bei neuem Allzeithoch werden bis zu 1,5% des Überschusses automatisch in Cash-Puffer (65%) und Kriegskasse (35%) umgeschichtet. Verhindert, dass Schutzpuffer in langen Bullenmärkten auf kritische Niveaus schrumpfen.
+**Dynamisches ATH-Rebalancing** — 1,5% des Überschusses über ATH befüllt Puffer (65%) + Kriegskasse (35%).
 
-**Opportunitätskosten-Indikator:** Parallele Buy-&-Hold-Simulation mit identischem Startkapital. Zeigt B&H-Endvermögen, Strategie-Endvermögen und exakten Delta mit kontextueller Erläuterung.
+**Opportunitätskosten-Indikator** — parallele B&H-Simulation mit identischem Kapital und identischen Entnahmen.
 
-**Hell/Dunkel-Modus:** Umschalter oben rechts, in allen 21 Sprachen übersetzt.
+**Hell/Dunkel-Modus** — in allen 21 Sprachen übersetzt.
 
-**Krisen-Datenbank erweitert:** Trump Tariff Crisis (2025), Yen Carry Trade Unwind (2024) und Regional Banking Crisis (2023) hinzugefügt.
+**Krisen-Datenbank erweitert** — Trump Tariff Crisis (2025), Yen Carry Unwind (2024), Regional Banking Crisis (2023).
 
 ---
 
@@ -425,8 +597,30 @@ Eigenständige Seite ohne Internetbedarf. Enthält: Parameterübersicht, 8 KPI-K
 |---|---|
 | **Sequence-of-Returns-Risiko** | Cash-Puffer deckt 2–6 Jahre — kein ETF-Verkauf am Tiefpunkt |
 | **Crash-Chance nutzen** | Kriegskasse kauft bei −18% / −26% / −33% nach — Krisen werden zur Chance |
-| **Verhaltensfinanzierung** | 2+ Jahre Cash eliminiert Panikverkäufe — der größte Renditekiller langfristig |
+| **Verhaltensfinanzierung** | 2+ Jahre Cash eliminiert Panikverkäufe — der grösste Renditekiller langfristig |
 | **Perpetuelle Bereitschaft** | Dual-Trigger-Rebalancing + SWR-Surplus hält alle Töpfe dauerhaft gefüllt |
+
+---
+
+## DE — Historische Krisen-Datenbank (1973–2026)
+
+| Krise | Jahr | Einbruch | Dauer | Erholung | Typ |
+|---|---|---|---|---|---|
+| Ölkrise / Stagflation | 1973 | −48% | 21 Mo. | 18 Mo. | Geldpolitisch |
+| Volcker-Rezession | 1980 | −27% | 20 Mo. | 12 Mo. | Geldpolitisch |
+| Schwarzer Montag | 1987 | −34% | 3 Mo. | 20 Mo. | Liquidität |
+| Golfkrieg | 1990 | −20% | 6 Mo. | 8 Mo. | Ereignis |
+| Asienkrise / LTCM | 1997 | −19% | 5 Mo. | 6 Mo. | Liquidität |
+| Dotcom-Crash | 2000 | −49% | 30 Mo. | 24 Mo. | Strukturell |
+| Finanzkrise | 2007 | −57% | 17 Mo. | 24 Mo. | Strukturell |
+| Euro-Schuldenkrise | 2011 | −19% | 6 Mo. | 8 Mo. | Strukturell |
+| China / Ölschock | 2015 | −14% | 7 Mo. | 6 Mo. | Ereignis |
+| COVID-19-Crash | 2020 | −34% | 2 Mo. | 5 Mo. | Ereignis |
+| 2022 Bärenmarkt | 2022 | −25% | 10 Mo. | 12 Mo. | Geldpolitisch |
+| Bankencrash | 2023 | −9% | 2 Mo. | 3 Mo. | Liquidität |
+| Yen Carry Unwind | 2024 | −10% | 1 Mo. | 1 Mo. | Liquidität |
+| Handelskrieg USA | 2025 | −18% | 4 Mo. | 2 Mo. | Ereignis |
+| **Nahostkrieg (Iran)** | **2026** | **−22%** | **6 Mo.** | **8 Mo.** | **Geopolitisch** |
 
 ---
 
@@ -442,6 +636,9 @@ python3 -m http.server 8080
 
 # Option 3: GitHub Pages
 # index.html in Repository → Settings → Pages → Deploy from main
+
+# Option 4: Beliebiges Static Hosting
+# Netlify Drop, Vercel, Cloudflare Pages, AWS S3 — Datei ablegen, sofort live.
 ```
 
 ---
