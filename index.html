@@ -698,12 +698,9 @@ var futureCrises = [];
 // DRAWDOWN BAROMETER CONFIG
 // ============================================================
 var DD_ZONES = [
-  {id:'green',  label:'Safe Withdrawal', labelDE:'Sichere Entnahme', labelShort:'Entnahme', min:-5,  max:0,   color:'#22c55e', pct:5},
-  {id:'yellow', label:'Careful',         labelDE:'Vorsicht',         labelShort:'Vorsicht',  min:-10, max:-5,  color:'#eab308', pct:5},
-  {id:'orange', label:'Cash Only',       labelDE:'Nur Cash',         labelShort:'Cash',      min:-15, max:-10, color:'#f97316', pct:5},
-  {id:'red1',   label:'WC Tier 1',       labelDE:'KK Stufe 1',       labelShort:'WC-1',      min:-20, max:-15, color:'#ef4444', pct:5},
-  {id:'red2',   label:'WC Tier 2',       labelDE:'KK Stufe 2',       labelShort:'WC-2',      min:-30, max:-20, color:'#dc2626', pct:10},
-  {id:'red3',   label:'WC Tier 3',       labelDE:'KK Stufe 3',       labelShort:'WC-3',      min:-50, max:-30, color:'#991b1b', pct:20}
+  {id:'green',  label:'Safe',       labelDE:'Sicher',   labelShort:'Sicher',   min:-6,  max:0,   color:'#22c55e', pct:6},
+  {id:'yellow', label:'Caution',    labelDE:'Vorsicht', labelShort:'Vorsicht', min:-13, max:-6,  color:'#eab308', pct:7},
+  {id:'orange', label:'Cash Only',  labelDE:'Nur Cash', labelShort:'Nur Cash', min:-50, max:-13, color:'#f97316', pct:37}
 ];
 var DD_TOTAL = 52;
 var WC_TRIGGERS = [
@@ -1144,8 +1141,6 @@ function setKpiBadge(badgeId, txtId, config) {
 // ============================================================
 var _mktRefreshTimer = null;
 
-var _mktRefreshTimer = null;
-
 function fetchMarketData() {
   var dot = document.getElementById('dd-dot');
   var txt = document.getElementById('dd-status-txt');
@@ -1162,13 +1157,18 @@ function fetchMarketData() {
     var controller;
     try { controller = new AbortController(); } catch(e) { controller = null; }
     var opts = controller ? {signal: controller.signal} : {};
-    if (controller) setTimeout(function(){ controller.abort(); }, 8000);
+    // WICHTIG: abortTimer in Variable speichern damit er nach Erfolg/Fehler
+    // gecleant werden kann — sonst bricht er den NÄCHSTEN Fetch-Call ab!
+    var abortTimer = controller
+      ? setTimeout(function(){ controller.abort(); }, 10000)
+      : null;
 
     fetch(url, opts).then(function(res) {
+      if (abortTimer) { clearTimeout(abortTimer); abortTimer = null; }
       if (!res.ok) { tryProxy(idx + 1); return; }
       return res.json();
     }).then(function(data) {
-      if (!data) return;
+      if (!data) { tryProxy(idx + 1); return; }
       var result = data && data.chart && data.chart.result && data.chart.result[0];
       var meta   = result && result.meta;
       if (!meta) { tryProxy(idx + 1); return; }
@@ -1227,6 +1227,7 @@ function fetchMarketData() {
       if (_mktRefreshTimer) clearTimeout(_mktRefreshTimer);
       _mktRefreshTimer = setTimeout(fetchMarketData, 5 * 60 * 1000);
     }).catch(function() {
+      if (abortTimer) { clearTimeout(abortTimer); abortTimer = null; }
       tryProxy(idx + 1);
     });
   }
