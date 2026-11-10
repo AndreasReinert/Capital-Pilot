@@ -1163,21 +1163,22 @@ function fetchMarketData() {
       ? setTimeout(function(){ controller.abort(); }, 10000)
       : null;
 
+    // Fehler bei Abruf/Validierung -> naechster Proxy (genau einmal).
+    // Fehler beim Anwenden der Daten loesen KEINEN weiteren Proxy-Aufruf aus.
     fetch(url, opts).then(function(res) {
       if (abortTimer) { clearTimeout(abortTimer); abortTimer = null; }
-      if (!res.ok) { tryProxy(idx + 1); return; }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
     }).then(function(data) {
-      if (!data) { tryProxy(idx + 1); return; }
       var result = data && data.chart && data.chart.result && data.chart.result[0];
       var meta   = result && result.meta;
-      if (!meta) { tryProxy(idx + 1); return; }
+      if (!meta) throw new Error('no meta');
 
       // Aktueller Kurs: regularMarketPrice ist der letzte bekannte Preis (Yahoo ~15min delayed)
       var current = meta.regularMarketPrice
                  || meta.chartPreviousClose
                  || meta.previousClose;
-      if (!current || current <= 0) { tryProxy(idx + 1); return; }
+      if (!current || current <= 0) throw new Error('no price');
 
       // AZH: Maximum aus den historischen Schlusskursen der letzten 52 Wochen
       // Das ist genauer als meta.fiftyTwoWeekHigh welches oft nicht aktuell ist
@@ -1209,10 +1210,12 @@ function fetchMarketData() {
       // Aktuellen Preis mit AZH vergleichen: current kann nie > azh sein
       if (current > azh) azh = current; // Sicherheitsnetz
 
-      mktState.current  = current;
-      mktState.azh      = azh;
-      mktState.drawdown = ((current - azh) / azh) * 100;
-      mktState.currency = meta.currency || ETF_FALLBACK.currency;
+      return {current:current, azh:azh, currency:meta.currency || ETF_FALLBACK.currency};
+    }).then(function(q) {
+      mktState.current  = q.current;
+      mktState.azh      = q.azh;
+      mktState.drawdown = ((q.current - q.azh) / q.azh) * 100;
+      mktState.currency = q.currency;
       mktState.source   = 'live';
 
       dot.className = 'dd-live-dot live';
@@ -1226,7 +1229,7 @@ function fetchMarketData() {
       // Auto-Refresh alle 5 Minuten
       if (_mktRefreshTimer) clearTimeout(_mktRefreshTimer);
       _mktRefreshTimer = setTimeout(fetchMarketData, 5 * 60 * 1000);
-    }).catch(function() {
+    }, function() {
       if (abortTimer) { clearTimeout(abortTimer); abortTimer = null; }
       tryProxy(idx + 1);
     });
@@ -4973,15 +4976,17 @@ function buildLangDD() {
   });
 }
 
-// One persistent click-outside handler for the language dropdown
+// One persistent click-outside handler for the language and currency dropdowns
 document.addEventListener('click', function(e) {
-  var dd = document.getElementById('langDropdown');
-  var btn = document.getElementById('langBtn');
-  if (dd && dd.classList.contains('open')) {
-    if (!dd.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-      dd.classList.remove('open');
+  [['langDropdown','langBtn'],['curDropdown','curBtn']].forEach(function(p) {
+    var dd = document.getElementById(p[0]);
+    var btn = document.getElementById(p[1]);
+    if (dd && btn && dd.classList.contains('open')) {
+      if (!dd.contains(e.target) && !btn.contains(e.target)) {
+        dd.classList.remove('open');
+      }
     }
-  }
+  });
 });
 
 function toggleLangDD() {
@@ -5185,15 +5190,10 @@ function setCurrency(code){
 
 function toggleCurDD(){
   var dd=el('curDropdown');
-  dd.classList.toggle('open');
-  if(dd.classList.contains('open')){
-    setTimeout(function(){
-      document.addEventListener('click',function h(e){
-        if(!dd.contains(e.target)&&e.target.id!=='curBtn') dd.classList.remove('open');
-        document.removeEventListener('click',h);
-      });
-    },10);
-  }
+  var isOpen=dd.classList.contains('open');
+  el('langDropdown').classList.remove('open');
+  dd.classList.toggle('open',!isOpen);
+  // Click-outside closing: persistent handler next to toggleLangDD
 }
 
 (function buildCurDD(){
@@ -5271,7 +5271,9 @@ function simulate(params){
     var calYear=Math.floor((nowAbs-1)/12);
     var calMonth=((nowAbs-1)%12)+1;
 
-    var inCrisis=false, crisisRet=0, activeCrisis=null, cumDrop=0;
+    // A crash phase takes precedence over another crisis' recovery phase
+    // (e.g. 2023 Banking Crisis inside the 2022 Bear Market recovery)
+    var inCrisis=false, crisisRet=0, activeCrisis=null, cumDrop=0, recRet=null;
     for(var ci=0; ci<activeCrises.length; ci++){
       var c=activeCrises[ci];
       var cStart=c.startYear*12+c.startMonth;
@@ -5285,12 +5287,12 @@ function simulate(params){
         crisisRet=c.totalDrop/c.durationMonths*(1.2-wgt*0.4)+(Math.random()-0.4)*0.008;
         cumDrop=Math.abs(c.totalDrop)*Math.min(1,prog*1.3);
         break;
-      } else if(nowC>=cEnd && nowC<recEnd){
+      } else if(recRet===null && nowC>=cEnd && nowC<recEnd){
         var rp=(nowC-cEnd)/c.recovery;
-        crisisRet=Math.abs(c.totalDrop)/c.recovery*(1.1-rp*0.5)+(Math.random()-0.3)*0.005;
-        break;
+        recRet=Math.abs(c.totalDrop)/c.recovery*(1.1-rp*0.5)+(Math.random()-0.3)*0.005;
       }
     }
+    if(!inCrisis && recRet!==null) crisisRet=recRet;
 
     if(inCrisis && activeCrisis){
       if(!hitCrises.find(function(h){ return h.name===activeCrisis.name; })){
@@ -5302,6 +5304,7 @@ function simulate(params){
       }
     } else if(!inCrisis){ lastCrisisName=null; }
 
+    var prevATH=depotATH;
     depotATH=Math.max(depotATH,d);
     var drawdown=depotATH>0?(depotATH-d)/depotATH:0;
 
@@ -5368,10 +5371,11 @@ function simulate(params){
 
       // ATH dual-trigger rebalancing
       var prevD=hD.length>=12?hD[hD.length-12]:invested;
-      var athTrig=(d>depotATH);
+      // ATH check uses the start-of-month depot (before this month's withdrawal)
+      var athTrig=(depotATH>prevATH);
       var growTrig=(prevD>0&&d>prevD*1.05&&(b<buffer*0.95||w<warChest*0.95));
       if(athTrig||growTrig){
-        var surpBase=d>depotATH?(d-depotATH):(d-prevD);
+        var surpBase=athTrig?(depotATH-prevATH):(d-prevD);
         var surp=Math.max(0,surpBase)*REBAL_FRAC;
         var refilled=false;
         if(b<buffer){ var nb=Math.min(surp*0.65,buffer-b); if(nb>1){b+=nb;d-=nb;refilled=true;} }
