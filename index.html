@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-mode">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#080c14">
+<meta name="theme-color" content="#f0f4f8">
 <title>Capital Pilot v6.3 - Strategic Withdrawal Simulation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -325,8 +325,8 @@ input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;b
   </div>
   <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
     <button class="lang-btn" id="themeBtn" onclick="toggleTheme()">
-      <svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <span id="themeLabel">Dark</span>
+      <svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="themeLabel">Light</span>
     </button>
     <div class="lang-picker">
       <button class="lang-btn" id="curBtn" onclick="toggleCurDD()">
@@ -680,7 +680,7 @@ var _now = new Date();
 // ============================================================
 // GLOBAL STATE
 // ============================================================
-var isLightMode = false;
+var isLightMode = true; // Light mode is the default theme
 var _lastSim = null;
 var _lastLegacy = 0;
 var chart = null;
@@ -713,9 +713,19 @@ var mktState = {drawdown:null, current:null, azh:null, currency:'EUR', source:'l
 var ETF_SYMBOL = 'SPPW.DE';
 var ETF_NAME = 'SPPW - SPDR MSCI World EUR';
 var ETF_FALLBACK = {azh:42.04, current:39.47, currency:'EUR'}; // Deutsche Boerse 20.03.26: 39.473 EUR | 52W-High: 42.04 EUR → DD: -6.1%
+// Primary source: snapshot written by the GitHub Action (.github/workflows/market-data.yml)
+// to the 'market-data' branch. raw.githubusercontent.com sends CORS headers, so no proxy is needed.
+var MARKET_SNAPSHOT_URL = 'https://raw.githubusercontent.com/AndreasReinert/Capital-Pilot/market-data/market.json';
+var SNAPSHOT_MAX_AGE_MIN = 45; // older snapshots trigger a live attempt via the CORS proxies
+// Secondary source: Yahoo Finance via public CORS proxies (tried in order).
+// unwrap() turns the proxy response text into the Yahoo JSON object.
 var PROXIES = [
-  function(u){return 'https://corsproxy.io/?' + encodeURIComponent(u);},
-  function(u){return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u);}
+  {name:'codetabs',   url:function(u){return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u);},
+                      unwrap:function(t){return JSON.parse(t);}},
+  {name:'allorigins', url:function(u){return 'https://api.allorigins.win/get?url=' + encodeURIComponent(u);},
+                      unwrap:function(t){return JSON.parse(JSON.parse(t).contents);}},
+  {name:'corsproxy',  url:function(u){return 'https://corsproxy.io/?url=' + encodeURIComponent(u);},
+                      unwrap:function(t){return JSON.parse(t);}}
 ];
 
 // ============================================================
@@ -1140,118 +1150,142 @@ function setKpiBadge(badgeId, txtId, config) {
 // FETCH MARKET DATA
 // ============================================================
 var _mktRefreshTimer = null;
+var _mktFetchId = 0; // ignores results of an older, superseded fetch run
 
-function fetchMarketData() {
+// fetch() with timeout; the abort timer is always cleared (success and failure),
+// otherwise it would abort the NEXT request (v6.3 bug).
+function fetchTextWithTimeout(url, ms) {
+  var controller = null;
+  try { controller = new AbortController(); } catch(e) {}
+  var timer = controller ? setTimeout(function(){ controller.abort(); }, ms) : null;
+  var opts = controller ? {signal: controller.signal, cache: 'no-store'} : {cache: 'no-store'};
+  return fetch(url, opts).then(function(res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.text();
+  }).then(function(t) {
+    if (timer) clearTimeout(timer);
+    return t;
+  }, function(err) {
+    if (timer) clearTimeout(timer);
+    throw err;
+  });
+}
+
+// Yahoo v8 chart JSON -> {current, azh, currency, marketTime}
+function parseYahooChart(data) {
+  var result = data && data.chart && data.chart.result && data.chart.result[0];
+  var meta   = result && result.meta;
+  if (!meta) throw new Error('no meta');
+  // regularMarketPrice = last known price (Yahoo ~15 min delayed)
+  var current = meta.regularMarketPrice || meta.chartPreviousClose || meta.previousClose;
+  if (!current || current <= 0) throw new Error('no price');
+  // AZH: maximum of the daily highs (fallback: closes) of the last 52 weeks
+  var q = result.indicators && result.indicators.quote && result.indicators.quote[0];
+  var priceArr = (q && q.high && q.high.length) ? q.high : (q && q.close);
+  var azhFromHistory = 0;
+  if (priceArr) {
+    for (var i = 0; i < priceArr.length; i++) {
+      if (priceArr[i] && priceArr[i] > azhFromHistory) azhFromHistory = priceArr[i];
+    }
+  }
+  var azh = azhFromHistory > 0
+          ? Math.max(azhFromHistory, meta.fiftyTwoWeekHigh || 0)
+          : (meta.fiftyTwoWeekHigh || ETF_FALLBACK.azh);
+  if (current > azh) azh = current; // safety net: price can never exceed AZH
+  return {current: current, azh: azh, currency: meta.currency || ETF_FALLBACK.currency,
+          marketTime: meta.regularMarketTime ? meta.regularMarketTime * 1000 : Date.now()};
+}
+
+// Snapshot JSON from the GitHub Action
+function parseSnapshot(t) {
+  var d = JSON.parse(t);
+  if (!d || !(d.current > 0) || !(d.azh > 0)) throw new Error('bad snapshot');
+  return {current: d.current, azh: Math.max(d.azh, d.current), currency: d.currency || 'EUR',
+          marketTime: d.marketTime ? d.marketTime * 1000 : Date.parse(d.updated),
+          updated: Date.parse(d.updated)};
+}
+
+function fmtMktTime(ms) {
+  var d = new Date(ms), now = new Date();
+  var hm = d.toLocaleTimeString('de-CH', {hour:'2-digit', minute:'2-digit'});
+  if (d.toDateString() === now.toDateString()) return hm;
+  return d.toLocaleDateString('de-CH', {day:'2-digit', month:'2-digit'}) + ' ' + hm;
+}
+
+function applyMarketQuote(q, source) {
+  mktState.current  = q.current;
+  mktState.azh      = q.azh;
+  mktState.drawdown = ((q.current - q.azh) / q.azh) * 100;
+  mktState.currency = q.currency;
+  mktState.source   = source;
   var dot = document.getElementById('dd-dot');
   var txt = document.getElementById('dd-status-txt');
-  dot.className = 'dd-live-dot stale';
-  txt.textContent = 'Loading...';
+  var ts  = document.getElementById('dd-ts');
+  if (source === 'fallback') {
+    dot.className   = 'dd-live-dot offline';
+    txt.textContent = T('mktOffline');
+    if (ts) ts.textContent = '(' + T('mktCheck') + ')';
+  } else {
+    dot.className   = source === 'stale' ? 'dd-live-dot stale' : 'dd-live-dot live';
+    txt.textContent = 'Yahoo (~15min ' + T('delayedLabel') + ')';
+    if (ts) ts.textContent = T('mktAsOf') + ' ' + fmtMktTime(q.marketTime);
+  }
+  updateDDBar(mktState.drawdown);
+}
 
-  // 1 Jahr Daten + tägliche Auflösung für echtes 52W-Hoch aus Schlusskursen
-  var yUrl = 'https://query2.finance.yahoo.com/v8/finance/chart/' + ETF_SYMBOL
+function scheduleMarketRefresh(minutes) {
+  if (_mktRefreshTimer) clearTimeout(_mktRefreshTimer);
+  _mktRefreshTimer = setTimeout(fetchMarketData, minutes * 60 * 1000);
+}
+
+function fetchMarketData() {
+  var runId = ++_mktFetchId;
+  var dot = document.getElementById('dd-dot');
+  var txt = document.getElementById('dd-status-txt');
+  if (mktState.source === 'loading') {
+    dot.className = 'dd-live-dot stale';
+    txt.textContent = 'Loading...';
+  }
+  var yUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/' + ETF_SYMBOL
     + '?range=1y&interval=1d&includePrePost=false';
+  var snapshot = null;
+
+  // 1) GitHub snapshot (reliable, no proxy)
+  fetchTextWithTimeout(MARKET_SNAPSHOT_URL + '?t=' + Date.now(), 8000)
+    .then(parseSnapshot)
+    .then(function(q) { snapshot = q; }, function(e) {
+      if (window.console) console.warn('[market] snapshot failed:', e && e.message);
+    })
+    .then(function() {
+      if (runId !== _mktFetchId) return;
+      var fresh = snapshot && (Date.now() - snapshot.updated) < SNAPSHOT_MAX_AGE_MIN * 60 * 1000;
+      if (snapshot) applyMarketQuote(snapshot, fresh ? 'live' : 'stale');
+      if (fresh) { scheduleMarketRefresh(5); return; }
+      tryProxy(0); // 2) snapshot missing/old -> live attempt via proxies
+    });
 
   function tryProxy(idx) {
-    if (idx >= PROXIES.length) { useFallback(); return; }
-    var url = PROXIES[idx](yUrl);
-    var controller;
-    try { controller = new AbortController(); } catch(e) { controller = null; }
-    var opts = controller ? {signal: controller.signal} : {};
-    // WICHTIG: abortTimer in Variable speichern damit er nach Erfolg/Fehler
-    // gecleant werden kann — sonst bricht er den NÄCHSTEN Fetch-Call ab!
-    var abortTimer = controller
-      ? setTimeout(function(){ controller.abort(); }, 10000)
-      : null;
-
-    // Fehler bei Abruf/Validierung -> naechster Proxy (genau einmal).
-    // Fehler beim Anwenden der Daten loesen KEINEN weiteren Proxy-Aufruf aus.
-    fetch(url, opts).then(function(res) {
-      if (abortTimer) { clearTimeout(abortTimer); abortTimer = null; }
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    }).then(function(data) {
-      var result = data && data.chart && data.chart.result && data.chart.result[0];
-      var meta   = result && result.meta;
-      if (!meta) throw new Error('no meta');
-
-      // Aktueller Kurs: regularMarketPrice ist der letzte bekannte Preis (Yahoo ~15min delayed)
-      var current = meta.regularMarketPrice
-                 || meta.chartPreviousClose
-                 || meta.previousClose;
-      if (!current || current <= 0) throw new Error('no price');
-
-      // AZH: Maximum aus den historischen Schlusskursen der letzten 52 Wochen
-      // Das ist genauer als meta.fiftyTwoWeekHigh welches oft nicht aktuell ist
-      var closes = result.indicators
-                && result.indicators.quote
-                && result.indicators.quote[0]
-                && result.indicators.quote[0].close;
-      var highs  = result.indicators
-                && result.indicators.quote
-                && result.indicators.quote[0]
-                && result.indicators.quote[0].high;
-
-      var azhFromHistory = 0;
-      // Verwende Tageshochs für präziseres AZH
-      var priceArr = (highs && highs.length > 0) ? highs : closes;
-      if (priceArr && priceArr.length > 0) {
-        for (var i = 0; i < priceArr.length; i++) {
-          if (priceArr[i] && priceArr[i] > azhFromHistory) {
-            azhFromHistory = priceArr[i];
-          }
-        }
-      }
-
-      // Fallback: meta.fiftyTwoWeekHigh wenn keine Historik verfügbar
-      var azh = azhFromHistory > 0
-              ? Math.max(azhFromHistory, meta.fiftyTwoWeekHigh || 0)
-              : (meta.fiftyTwoWeekHigh || ETF_FALLBACK.azh);
-
-      // Aktuellen Preis mit AZH vergleichen: current kann nie > azh sein
-      if (current > azh) azh = current; // Sicherheitsnetz
-
-      return {current:current, azh:azh, currency:meta.currency || ETF_FALLBACK.currency};
-    }).then(function(q) {
-      mktState.current  = q.current;
-      mktState.azh      = q.azh;
-      mktState.drawdown = ((q.current - q.azh) / q.azh) * 100;
-      mktState.currency = q.currency;
-      mktState.source   = 'live';
-
-      dot.className = 'dd-live-dot live';
-      var now = new Date();
-      // Yahoo ist ~15min verzögert für EU-Börsen — explizit im Status zeigen
-      txt.textContent = 'Yahoo (~15min ' + T('delayedLabel') + ')';
-      var ts = document.getElementById('dd-ts');
-      if (ts) ts.textContent = now.toLocaleTimeString('de-CH', {hour:'2-digit', minute:'2-digit'});
-      updateDDBar(mktState.drawdown);
-
-      // Auto-Refresh alle 5 Minuten
-      if (_mktRefreshTimer) clearTimeout(_mktRefreshTimer);
-      _mktRefreshTimer = setTimeout(fetchMarketData, 5 * 60 * 1000);
-    }, function() {
-      if (abortTimer) { clearTimeout(abortTimer); abortTimer = null; }
-      tryProxy(idx + 1);
-    });
+    if (runId !== _mktFetchId) return;
+    if (idx >= PROXIES.length) { done(); return; }
+    var p = PROXIES[idx];
+    fetchTextWithTimeout(p.url(yUrl), 8000)
+      .then(function(t) { return parseYahooChart(p.unwrap(t)); })
+      .then(function(q) {
+        if (runId !== _mktFetchId) return;
+        applyMarketQuote(q, 'live');
+        scheduleMarketRefresh(5);
+      }, function(e) {
+        if (window.console) console.warn('[market] proxy ' + p.name + ' failed:', e && e.message);
+        tryProxy(idx + 1);
+      });
   }
 
-  function useFallback() {
-    mktState.current  = ETF_FALLBACK.current;
-    mktState.azh      = ETF_FALLBACK.azh;
-    mktState.drawdown = ((ETF_FALLBACK.current - ETF_FALLBACK.azh) / ETF_FALLBACK.azh) * 100;
-    mktState.currency = ETF_FALLBACK.currency;
-    mktState.source   = 'fallback';
-    dot.className     = 'dd-live-dot offline';
-    txt.textContent   = 'Offline - fallback';
-    var ts = document.getElementById('dd-ts');
-    if (ts) ts.textContent = '(manuell prüfen)';
-    updateDDBar(mktState.drawdown);
-    // Retry nach 2 Minuten
-    if (_mktRefreshTimer) clearTimeout(_mktRefreshTimer);
-    _mktRefreshTimer = setTimeout(fetchMarketData, 2 * 60 * 1000);
+  // 3) nothing live: keep the (older) snapshot if we have one, else hard-coded values
+  function done() {
+    if (!snapshot) applyMarketQuote({current: ETF_FALLBACK.current, azh: ETF_FALLBACK.azh,
+                                     currency: ETF_FALLBACK.currency}, 'fallback');
+    scheduleMarketRefresh(2);
   }
-
-  tryProxy(0);
 }
 
 // ============================================================
@@ -1291,7 +1325,7 @@ var LANGS = {
     warnHighSWR:'Withdrawal rate {0}% - above the 4% rule.',
     warnHighLegacy:'Target legacy > 60% of capital.',
     methodInfo:'Historical crisis overlay 1973-2026. Newton-Raphson solver, inflation-adjusted withdrawals. 0% to -6%: full ETF withdrawal. -6% to -13%: reduced ETF. Below -13%: Cash Buffer ONLY. War Chest deploys at -18% / -26% / -33%.',
-    smbTitle:'Withdrawal & War Chest Strategy',smbWithdrawal:'Withdrawal',smbWC1:'War Chest 1',smbWC2:'War Chest 2',smbWC3:'War Chest 3',smbSafe:'Safe',smbReduced:'Reduced',smbCashOnly:'Cash only',smbWCshort:'WC',badgeMonthlyATH:'Withdrawal OK',badgeMonthlyOK:'Withdrawal OK',badgeMonthlyReduced:'Reduce withdrawal',badgeMonthlyStopped:'Withdrawal stopped',badgeBufferRefill:'Refill buffer',badgeBufferFull:'Standby',badgeBufferStandby:'Standby',badgeBufferActive:'Buffer active',badgeWCRefill:'Refill war chest',badgeWCReady:'Standby',badgeWCStandby:'Approaching -18%',badgeWCTier1:'DEPLOY TIER 1!',badgeWCTier2:'DEPLOY TIER 2!',badgeWCTier3:'DEPLOY TIER 3!',rebalEvents:'Rebalancing Events',cascadeTitle:'Liquidity Cascade - War Chest Deployment',cascadeTier1:'Invest 20% of War Chest',cascadeTier2:'Invest further 30%',cascadeTier3:'Full In - remaining 50%',cascadeReady:'Ready',cascadeFired:'DEPLOY NOW!',cascadeDone:'Deployed',cascadeInfoCash:'Cash Buffer only above -15% DD',expReportTitle:'Capital Pilot - Simulation Report',expParameters:'Parameters',expKpiSummary:'KPI Summary',expCrisesEncountered:'Crises Encountered',expYearlyMilestones:'Yearly Milestones',expParameter:'Parameter',expValue:'Value',expStartingCapital:'Starting Capital',expDuration:'Duration',expReturnInflation:'Return / Inflation',expWarChestBuffer:'War Chest / Buffer',expPension:'Pension',expMonth:'month',expYears:'years',expMetric:'Metric',expEndWealthStrategy:'End Wealth (Strategy)',expEndWealthBH:'End Wealth (B&H)',expDeltaBH:'Delta vs B&H',expCrisesSurvived:'Crises Survived',expBufferMonthsUsed:'Buffer Months Used',expRebalancingEvents:'Rebalancing Events',expCrisis:'Crisis',expYear:'Year',expDuration2:'Duration',expDrop:'Drop',expRecovery:'Recovery',expETF:'ETF Depot',expBuffer:'Buffer',expWarChest:'War Chest',expTotal:'Total',expBH:'Buy&Hold',expDrawdown:'Drawdown',expStatus:'Status',expCrisisTag:'CRISIS',expHistorical:'historical',expRandom:'random',expFooter:'Capital Pilot v6.3 | Educational purposes only. Not financial advice.',delayedLabel:'delayed',oppCostTitle:'Opportunity Cost vs. B&H',
+    smbTitle:'Withdrawal & War Chest Strategy',smbWithdrawal:'Withdrawal',smbWC1:'War Chest 1',smbWC2:'War Chest 2',smbWC3:'War Chest 3',smbSafe:'Safe',smbReduced:'Reduced',smbCashOnly:'Cash only',smbWCshort:'WC',badgeMonthlyATH:'Withdrawal OK',badgeMonthlyOK:'Withdrawal OK',badgeMonthlyReduced:'Reduce withdrawal',badgeMonthlyStopped:'Withdrawal stopped',badgeBufferRefill:'Refill buffer',badgeBufferFull:'Standby',badgeBufferStandby:'Standby',badgeBufferActive:'Buffer active',badgeWCRefill:'Refill war chest',badgeWCReady:'Standby',badgeWCStandby:'Approaching -18%',badgeWCTier1:'DEPLOY TIER 1!',badgeWCTier2:'DEPLOY TIER 2!',badgeWCTier3:'DEPLOY TIER 3!',rebalEvents:'Rebalancing Events',cascadeTitle:'Liquidity Cascade - War Chest Deployment',cascadeTier1:'Invest 20% of War Chest',cascadeTier2:'Invest further 30%',cascadeTier3:'Full In - remaining 50%',cascadeReady:'Ready',cascadeFired:'DEPLOY NOW!',cascadeDone:'Deployed',cascadeInfoCash:'Cash Buffer only above -15% DD',expReportTitle:'Capital Pilot - Simulation Report',expParameters:'Parameters',expKpiSummary:'KPI Summary',expCrisesEncountered:'Crises Encountered',expYearlyMilestones:'Yearly Milestones',expParameter:'Parameter',expValue:'Value',expStartingCapital:'Starting Capital',expDuration:'Duration',expReturnInflation:'Return / Inflation',expWarChestBuffer:'War Chest / Buffer',expPension:'Pension',expMonth:'month',expYears:'years',expMetric:'Metric',expEndWealthStrategy:'End Wealth (Strategy)',expEndWealthBH:'End Wealth (B&H)',expDeltaBH:'Delta vs B&H',expCrisesSurvived:'Crises Survived',expBufferMonthsUsed:'Buffer Months Used',expRebalancingEvents:'Rebalancing Events',expCrisis:'Crisis',expYear:'Year',expDuration2:'Duration',expDrop:'Drop',expRecovery:'Recovery',expETF:'ETF Depot',expBuffer:'Buffer',expWarChest:'War Chest',expTotal:'Total',expBH:'Buy&Hold',expDrawdown:'Drawdown',expStatus:'Status',expCrisisTag:'CRISIS',expHistorical:'historical',expRandom:'random',expFooter:'Capital Pilot v6.3 | Educational purposes only. Not financial advice.',delayedLabel:'delayed',mktAsOf:'as of',mktOffline:'Offline - last known values',mktCheck:'check manually',oppCostTitle:'Opportunity Cost vs. B&H',
     oppHoldEnd:'B&H End Wealth',oppStratEnd:'Strategy End Wealth',
     oppAhead:'Strategy outperforms B&H by',oppBehind:'Strategy trails B&H by',
     bahLine:'Buy & Hold',themeDark:'Dark',themeLight:'Light',
@@ -4864,7 +4898,7 @@ var LANGS_EXTRA = {
     expCrisisTag:'KRISE',
     expHistorical:'historisch',
     expRandom:'zufaellig',
-    expFooter:'Capital Pilot v6.3 | Nur zu Bildungszwecken. Keine Finanzberatung.',delayedLabel:'verzoegert',
+    expFooter:'Capital Pilot v6.3 | Nur zu Bildungszwecken. Keine Finanzberatung.',delayedLabel:'verzoegert',mktAsOf:'Stand',mktOffline:'Offline - letzte bekannte Werte',mktCheck:'manuell pruefen',
   },
   fr:{
     code:'FR',name:'Francais',
@@ -4904,7 +4938,7 @@ var LANGS_EXTRA = {
     expCrisisTag:'CRISE',
     expHistorical:'historique',
     expRandom:'aleatoire',
-    expFooter:'Capital Pilot v6.3 | A des fins educatives uniquement. Pas un conseil financier.',delayedLabel:'retarde',
+    expFooter:'Capital Pilot v6.3 | A des fins educatives uniquement. Pas un conseil financier.',delayedLabel:'retarde',mktAsOf:'au',mktOffline:'Hors ligne - dernieres valeurs connues',mktCheck:'verifier manuellement',
   }
 };
 // Merge extra language translations into LANGS
