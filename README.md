@@ -35,7 +35,7 @@ New in v6.3: a fully live **Withdrawal & War Chest Barometer** powered by real S
 
 A new real-time dashboard panel appears directly in the KPI area, showing you where the current market drawdown sits relative to your withdrawal and War Chest strategy — at a glance, every time you open the app.
 
-**Data source:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — the same ETF used as the standard reference index throughout the simulation. Price data comes from Yahoo Finance. Primary source is a snapshot that a GitHub Action (`.github/workflows/market-data.yml`) fetches server-side every 15 minutes during trading hours and publishes as `market.json` on the `market-data` branch (read via raw.githubusercontent.com, no proxy needed). If the snapshot is missing or older than 45 minutes, the app tries three public CORS proxies (codetabs, allorigins, corsproxy.io) for a live quote.
+**Data source:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — the same ETF used as the standard reference index throughout the simulation. Price data comes from Yahoo Finance. Primary source is a snapshot that a GitHub Action (`.github/workflows/market-data.yml`) fetches server-side every 15 minutes during trading hours and publishes as `market.json` on the `market-data` branch (read via raw.githubusercontent.com, no proxy needed). If the snapshot is missing or older than 45 minutes, the app tries two public CORS proxies (codetabs, allorigins) as a best-effort extra for a live quote.
 
 **What the Barometer shows:**
 
@@ -459,7 +459,7 @@ Neu in v6.3: ein vollständig live betriebenes **Entnahme- & Kriegskassen-Barome
 
 Ein neues Echtzeit-Dashboard-Panel erscheint direkt im KPI-Bereich und zeigt auf einen Blick, wo der aktuelle Markt-Drawdown im Verhältnis zur Entnahme- und Kriegskassenstrategie steht.
 
-**Datenquelle:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — derselbe ETF, der als Standardreferenzindex in der gesamten Simulation verwendet wird. Preisdaten stammen von Yahoo Finance. Primärquelle ist ein Snapshot, den eine GitHub Action (`.github/workflows/market-data.yml`) während der Handelszeiten alle 15 Minuten serverseitig abruft und als `market.json` im Branch `market-data` ablegt (Abruf über raw.githubusercontent.com, ohne Proxy). Fehlt der Snapshot oder ist er älter als 45 Minuten, versucht die App drei öffentliche CORS-Proxys (codetabs, allorigins, corsproxy.io) für einen Live-Kurs.
+**Datenquelle:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — derselbe ETF, der als Standardreferenzindex in der gesamten Simulation verwendet wird. Preisdaten stammen von Yahoo Finance. Primärquelle ist ein Snapshot, den eine GitHub Action (`.github/workflows/market-data.yml`) während der Handelszeiten alle 15 Minuten serverseitig abruft und als `market.json` im Branch `market-data` ablegt (Abruf über raw.githubusercontent.com, ohne Proxy). Fehlt der Snapshot oder ist er älter als 45 Minuten, versucht die App zusätzlich zwei öffentliche CORS-Proxys (codetabs, allorigins) für einen Live-Kurs.
 
 **Was der Barometer anzeigt:**
 

@@ -723,9 +723,8 @@ var PROXIES = [
   {name:'codetabs',   url:function(u){return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u);},
                       unwrap:function(t){return JSON.parse(t);}},
   {name:'allorigins', url:function(u){return 'https://api.allorigins.win/get?url=' + encodeURIComponent(u);},
-                      unwrap:function(t){return JSON.parse(JSON.parse(t).contents);}},
-  {name:'corsproxy',  url:function(u){return 'https://corsproxy.io/?url=' + encodeURIComponent(u);},
-                      unwrap:function(t){return JSON.parse(t);}}
+                      unwrap:function(t){return JSON.parse(JSON.parse(t).contents);}}
+  // corsproxy.io removed: since 2025 it requires an API key (403/401 from github.io)
 ];
 
 // ============================================================
