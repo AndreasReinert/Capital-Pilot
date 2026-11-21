@@ -35,7 +35,7 @@ New in v6.3: a fully live **Withdrawal & War Chest Barometer** powered by real S
 
 A new real-time dashboard panel appears directly in the KPI area, showing you where the current market drawdown sits relative to your withdrawal and War Chest strategy — at a glance, every time you open the app.
 
-**Data source:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — the same ETF used as the standard reference index throughout the simulation. Price data is fetched live from Yahoo Finance via two independent CORS proxy services with automatic fallback.
+**Data source:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — the same ETF used as the standard reference index throughout the simulation. Price data comes from Yahoo Finance. Primary source is a snapshot that a GitHub Action (`.github/workflows/market-data.yml`) fetches server-side every 15 minutes during trading hours and publishes as `market.json` on the `market-data` branch (read via raw.githubusercontent.com, no proxy needed). If the snapshot is missing or older than 45 minutes, the app tries two public CORS proxies (codetabs, allorigins) as a best-effort extra for a live quote.
 
 **What the Barometer shows:**
 
@@ -64,7 +64,7 @@ A new real-time dashboard panel appears directly in the KPI area, showing you wh
 | ≤ −26% | 🔴 Stopped | 🟠 Buffer active | 🔴 DEPLOY TIER 2! |
 | ≤ −33% | 🔴 Stopped | 🟠 Buffer active | 🔴 DEPLOY TIER 3! |
 
-**Offline fallback:** If all proxy services are unreachable, the Barometer shows the most recent known values (SPPW.DE AZH: 42.04 EUR, reference price: 39.47 EUR) with a clear "Offline" status and a link to Deutsche Börse for manual verification.
+**Offline fallback:** If neither the snapshot nor any proxy is reachable, the Barometer shows the most recent known values (SPPW.DE AZH: 42.04 EUR, reference price: 39.47 EUR) with a clear "Offline" status and a link to Deutsche Börse for manual verification.
 
 **Auto-refresh:** Prices reload every 5 minutes while the page is open. On network failure, automatic retry after 2 minutes.
 
@@ -265,7 +265,7 @@ A new **Export button** (↓ icon) in the Withdrawal Analysis panel opens a moda
 
 - **21 languages** with browser locale auto-detection (`navigator.language`)
 - **20 currencies** with locale-scaled input ranges
-- **Dark / Light mode** — both print-friendly
+- **Light / Dark mode** — Light is the default; both print-friendly
 - **Mobile optimised** — touch-friendly sliders, dropdowns, and modal
 - **100% offline** — single HTML file; Chart.js and Google Fonts are the only external dependencies (both cacheable)
 
@@ -336,7 +336,7 @@ index.html  (~6,000 lines, single file, 268 KB)
     ├── i18n engine (21 languages · 188 keys · browser locale detection · EN fallback)  ← v6.3
     ├── Currency engine (20 currencies · locale-scaled ranges · browser detection)
     ├── Market data engine  ← v6.3
-    │   ├── fetchMarketData() — Yahoo Finance v8 API via CORS proxies
+    │   ├── fetchMarketData() — GitHub Action snapshot (market-data branch), then Yahoo v8 via CORS proxies
     │   ├── AZH from 52-week daily high bars
     │   ├── Auto-refresh every 5 min · retry on fail every 2 min
     │   └── AbortController with proper cleanup (no refresh-abort race condition)
@@ -459,7 +459,7 @@ Neu in v6.3: ein vollständig live betriebenes **Entnahme- & Kriegskassen-Barome
 
 Ein neues Echtzeit-Dashboard-Panel erscheint direkt im KPI-Bereich und zeigt auf einen Blick, wo der aktuelle Markt-Drawdown im Verhältnis zur Entnahme- und Kriegskassenstrategie steht.
 
-**Datenquelle:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — derselbe ETF, der als Standardreferenzindex in der gesamten Simulation verwendet wird. Preisdaten werden live von Yahoo Finance über zwei unabhängige CORS-Proxy-Dienste mit automatischem Fallback abgerufen.
+**Datenquelle:** SPDR MSCI World UCITS ETF (SPPW.DE, ISIN IE00BFY0GT14, TER 0.12%) — derselbe ETF, der als Standardreferenzindex in der gesamten Simulation verwendet wird. Preisdaten stammen von Yahoo Finance. Primärquelle ist ein Snapshot, den eine GitHub Action (`.github/workflows/market-data.yml`) während der Handelszeiten alle 15 Minuten serverseitig abruft und als `market.json` im Branch `market-data` ablegt (Abruf über raw.githubusercontent.com, ohne Proxy). Fehlt der Snapshot oder ist er älter als 45 Minuten, versucht die App zusätzlich zwei öffentliche CORS-Proxys (codetabs, allorigins) für einen Live-Kurs.
 
 **Was der Barometer anzeigt:**
 
@@ -488,7 +488,7 @@ Ein neues Echtzeit-Dashboard-Panel erscheint direkt im KPI-Bereich und zeigt auf
 | ≤ −26% | 🔴 Gestoppt | 🟠 Puffer aktiv | 🔴 STUFE 2 EINSETZEN! |
 | ≤ −33% | 🔴 Gestoppt | 🟠 Puffer aktiv | 🔴 STUFE 3 EINSETZEN! |
 
-**Offline-Fallback:** Wenn alle Proxy-Dienste nicht erreichbar sind, zeigt der Barometer die zuletzt bekannten Werte (SPPW.DE AZH: 42,04 EUR, Referenzkurs: 39,47 EUR) mit einem klaren „Offline"-Status und einem Link zu Deutsche Börse zur manuellen Prüfung.
+**Offline-Fallback:** Wenn weder der Snapshot noch ein Proxy erreichbar ist, zeigt der Barometer die zuletzt bekannten Werte (SPPW.DE AZH: 42,04 EUR, Referenzkurs: 39,47 EUR) mit einem klaren „Offline"-Status und einem Link zu Deutsche Börse zur manuellen Prüfung.
 
 **Auto-Refresh:** Preise werden alle 5 Minuten neu geladen. Bei Netzwerkfehler automatischer Neuversuch nach 2 Minuten.
 

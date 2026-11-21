@@ -18,7 +18,7 @@ Verification is manual: load the page, change inputs, switch language/currency/t
 
 ## Layout of index.html
 
-- Lines ~12–308: `<style>` with CSS custom properties; light mode is toggled by `toggleTheme()` / `isLightMode`.
+- Lines ~12–308: `<style>` with CSS custom properties; light mode is the default (`class="light-mode"` on `<html>`, `isLightMode = true`) and is toggled by `toggleTheme()`.
 - Lines ~309–674: static HTML markup. Inputs have ids `in-*`; translatable text uses `data-i18n="key"` and tooltips `data-i18n-tip="key"`.
 - Lines ~675–5979: a single `'use strict'` script using ES5 style (`var`, `function` declarations, no modules). Keep that style.
 
@@ -26,7 +26,7 @@ Main script sections, in order:
 
 1. **Global state** (`currentLang`, `currentCurrency`, `housingMode`, `simulationMode`, `timelineStartYear/Month`, `activeCrises`, `_lastSim`).
 2. **Drawdown Barometer** config and rendering: `DD_ZONES` (0/−6/−13% withdrawal zones), `WC_TRIGGERS` (War Chest tiers at −18/−26/−33%), `buildDDBar`, `buildStrategyBars`, `updateKpiBadges`.
-3. **Live market data**: `fetchMarketData()` pulls SPPW.DE from Yahoo Finance through the `PROXIES` CORS proxies with fallback to `ETF_FALLBACK`. Refreshes every 5 min, retries after 2 min on failure. Each fetch's `AbortController` timer must be cleared on both success and failure (a past bug caused the next fetch to be aborted).
+3. **Live market data**: `fetchMarketData()` first reads `MARKET_SNAPSHOT_URL` (market.json on the orphan `market-data` branch, written by `.github/workflows/market-data.yml` + `scripts/fetch_market.py`). If that snapshot is missing or older than `SNAPSHOT_MAX_AGE_MIN`, it tries the `PROXIES` CORS proxies for Yahoo Finance; if all fail it keeps the older snapshot, else falls back to `ETF_FALLBACK`. Refreshes every 5 min, retries after 2 min on failure. `fetchTextWithTimeout()` must clear its abort timer on both success and failure (a past bug caused the next fetch to be aborted).
 4. **i18n**: `LANGS` holds full `en`, `de`, `fr` dictionaries; `LANGS_EXTRA` holds the other 18 languages plus `de`/`fr` additions. At load, `LANGS_EXTRA` is merged into `LANGS`, with new languages seeded from `en`. Look up strings with `T(key)` (falls back to `en`, then the key itself). `setLang()` rewrites all `data-i18n` nodes and then calls `recalc()`.
 5. **Crisis data**: `HISTORICAL_CRISES` (name/nameDE, start, duration, drop, recovery) and `FUTURE_TEMPLATES` for random mode (`generateFutureCrises`). `getCrisisName()` localises names.
 6. **Helpers**: `el(id)`, the `INP` map of input elements, number/currency formatting (`fmt`, `fmtK`, `fmtCapital`, `CURRENCIES`, `CUR_SCALE`).

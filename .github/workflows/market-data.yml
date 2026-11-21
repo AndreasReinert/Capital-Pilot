@@ -1,0 +1,43 @@
+name: Market data snapshot
+
+# Fetches the SPPW.DE quote server-side (no CORS issue) and publishes it as
+# market.json on the orphan branch 'market-data'. index.html reads it from
+# raw.githubusercontent.com. The branch is force-pushed with a single commit,
+# so it never accumulates history and main stays untouched.
+
+on:
+  schedule:
+    - cron: '*/15 6-17 * * 1-5'   # every 15 min during Xetra trading hours (UTC)
+    - cron: '7 */3 * * *'         # every 3 h otherwise (weekends, nights)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-data
+  cancel-in-progress: true
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+
+      - name: Fetch quote
+        run: python3 scripts/fetch_market.py "$RUNNER_TEMP/market.json"
+
+      - name: Publish to market-data branch
+        run: |
+          cd "$RUNNER_TEMP"
+          mkdir publish && cd publish
+          git init -q -b market-data
+          cp "$RUNNER_TEMP/market.json" .
+          git add market.json
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "Market snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" market-data
